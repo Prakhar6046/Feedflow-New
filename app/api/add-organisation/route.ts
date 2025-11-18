@@ -14,13 +14,42 @@ export async function POST(req: NextRequest) {
       },
     });
     const body = await req.json();
+    console.log('Received organisation creation request:', body);
+    const allocatedAdvisorsInput = Array.isArray(body.allocatedAdvisors)
+      ? body.allocatedAdvisors
+      : [];
+    const advisorAssignments = allocatedAdvisorsInput
+      .filter(
+        (item: any) =>
+          item &&
+          typeof item.advisorId === 'number' &&
+          !Number.isNaN(item.advisorId),
+      )
+      .reduce((acc: Array<{ advisorId: number; accessLevel: number }>, item: any) => {
+        const advisorId = Number(item.advisorId);
+        if (!acc.some((existing) => existing.advisorId === advisorId)) {
+          acc.push({
+            advisorId,
+            accessLevel: Number(item.accessLevel ?? 0),
+          });
+        }
+        return acc;
+      }, []);
     const invitedByOrg = await prisma.organisation.findUnique({
       where: { id: Number(body.createdBy) },
       include: { contact: true },
     });
-    const findOrganisationAdmin = invitedByOrg?.contact.find(
-      (org) => org.permission === 'ADMIN' || org.permission === 'SUPERADMIN',
-    );
+    // Helper function to get primary contact (Business manager, Feedflow Administrator, or SUPERADMIN)
+    const getPrimaryContact = (contacts: any[]) => {
+      if (!contacts || contacts.length === 0) return null;
+      return (
+        contacts.find((c) => c.permission === 'SUPERADMIN') ||
+        contacts.find((c) => c.permission === 'Business manager') ||
+        contacts.find((c) => c.permission === 'Feedflow Administrator (Admin)') ||
+        contacts[0]
+      );
+    };
+    const findOrganisationAdmin = invitedByOrg?.contact ? getPrimaryContact(invitedByOrg.contact) : null;
     const checkContactExist = body.contacts
       .filter((contact: any) => !contact.id)
       .map((contact: any) => contact.email)
@@ -79,13 +108,19 @@ export async function POST(req: NextRequest) {
     const createdUsers: User[] = [];
     for (const contact of body.contacts) {
       const shouldSendInvite = contact.invite;
+      const modulePermissions =
+        (contact.permissions && typeof contact.permissions === 'object'
+          ? contact.permissions
+          : {}) || {};
+
       const createdUser = await prisma.user.create({
         data: {
           email: contact.email.toLowerCase(),
           name: capitalizeFirstLetter(contact.name),
           organisationId: organisation.id,
-          role: contact.permissions?.toUpperCase(),
-          permissions: contact.permissions || {},
+          role: contact.userType || '',
+          inputRole: contact.inputRole || contact.role || '',
+          permissions: modulePermissions,
           invite: shouldSendInvite ? shouldSendInvite : false,
         },
       });
@@ -228,17 +263,98 @@ export async function POST(req: NextRequest) {
 
     // Create contacts with the proper userId
     const contacts = await prisma.contact.createMany({
-      data: body.contacts.map((contact: any, index: number) => ({
-        name: capitalizeFirstLetter(contact.name),
-        email: contact.email.toLowerCase(),
-        phone: contact.phone,
-        role: contact.role,
-        organisationId: organisation.id,
-        permission: contact.permission,
-        userId: createdUsers[index].id,
-        invite: contact.invite || false,
-      })),
+      data: body.contacts.map((contact: any, index: number) => {
+        const modulePermissions =
+          (contact.permissions && typeof contact.permissions === 'object'
+            ? contact.permissions
+            : {}) || {};
+        return {
+          name: capitalizeFirstLetter(contact.name),
+          email: contact.email.toLowerCase(),
+          phone: contact.phone,
+          role: contact.userType || contact.role || '',
+          inputRole: contact.inputRole || contact.role || '',
+          organisationId: organisation.id,
+          permission: contact.permission || contact.userType || '',
+          permissions: modulePermissions,
+          userId: createdUsers[index].id,
+          invite: contact.invite || false,
+        };
+      }),
     });
+
+    // Create OrganisationAdvisor entries for contacts with advisor userType
+    const advisorContactsFromContacts = body.contacts.filter(
+      (contact: any) => contact.userType === 'Advisor: Technical services - adviser to Clients'
+    );
+
+    if (advisorContactsFromContacts.length > 0) {
+      const advisorEntriesFromContacts = [];
+      for (const advisorContact of advisorContactsFromContacts) {
+        const matchingUser = createdUsers.find(
+          (user) => user.email.toLowerCase() === advisorContact.email.toLowerCase()
+        );
+        if (matchingUser) {
+          // Check if this advisor is already in advisorContacts (from allocatedAdvisors section)
+          const existingAdvisorAssignment = body.advisorContacts?.find(
+            (ac: any) => ac.email.toLowerCase() === advisorContact.email.toLowerCase()
+          );
+          // Only create if not already handled in advisorContacts
+          if (!existingAdvisorAssignment) {
+            advisorEntriesFromContacts.push({
+              organisationId: organisation.id,
+              advisorId: matchingUser.id,
+              accessLevel: 3, // Default access level
+            });
+          }
+        }
+      }
+      
+      if (advisorEntriesFromContacts.length > 0) {
+        await prisma.organisationAdvisor.createMany({
+          data: advisorEntriesFromContacts,
+          skipDuplicates: true,
+        });
+      }
+    }
+
+    // Handle advisor assignments (manually added advisors)
+    if (advisorAssignments.length) {
+      await prisma.organisationAdvisor.createMany({
+        data: advisorAssignments.map((assignment) => ({
+          organisationId: organisation.id,
+          advisorId: assignment.advisorId,
+          accessLevel: assignment.accessLevel,
+        })),
+        skipDuplicates: true,
+      });
+    }
+
+    // Handle advisor contacts - create OrganisationAdvisor entries for contacts with advisor userType
+    const advisorContacts = body.advisorContacts || [];
+    if (advisorContacts.length > 0) {
+      // Find the created users that match advisor contacts by email
+      const advisorUserEntries = [];
+      for (const advisorContact of advisorContacts) {
+        const matchingUser = createdUsers.find(
+          (user) => user.email.toLowerCase() === advisorContact.email.toLowerCase()
+        );
+        if (matchingUser) {
+          advisorUserEntries.push({
+            organisationId: organisation.id,
+            advisorId: matchingUser.id,
+            accessLevel: advisorContact.accessLevel || 3,
+          });
+        }
+      }
+      
+      if (advisorUserEntries.length > 0) {
+        await prisma.organisationAdvisor.createMany({
+          data: advisorUserEntries,
+          skipDuplicates: true,
+        });
+      }
+    }
 
     if (body.hatcheryName) {
       await prisma.hatchery.create({

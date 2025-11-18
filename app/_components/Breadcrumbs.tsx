@@ -13,6 +13,9 @@ import { getCookie, setCookie } from 'cookies-next';
 import { useDebounce } from '../hooks/useDebounce';
 import SearchBar from './SearchBar';
 import { getLocalItem, removeLocalItem, setLocalItem } from '../_lib/utils';
+import { UserAccessConfig } from '../_lib/constants/userAccessMatrix';
+import { canAddOrganisation, canAddFarm, canAddUsers } from '../_lib/utils/permissions/access';
+
 interface Props {
   heading: string;
   buttonName?: string;
@@ -22,6 +25,7 @@ interface Props {
   buttonRoute?: string;
   permissions?: boolean;
   extraButton?: { buttonName: string; route: string };
+  userAccess?: UserAccessConfig;
 }
 
 export default function BasicBreadcrumbs({
@@ -33,6 +37,7 @@ export default function BasicBreadcrumbs({
   buttonRoute,
   permissions,
   extraButton,
+  userAccess,
 }: Props) {
   const role = getCookie('role');
   const pathName = usePathname();
@@ -42,6 +47,7 @@ export default function BasicBreadcrumbs({
   const [updatedPathName, setUpdatedPathName] = useState<string>();
   const sortvalue = useAppSelector(selectSort);
   const loggedUser: any = getCookie('logged-user');
+  const loggedUserData = JSON.parse(loggedUser || '');
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState('');
   const [currentRole, setCurrentRole] = useState<string>('');
@@ -229,9 +235,84 @@ export default function BasicBreadcrumbs({
             )}
           </Box>
         ) : pathName === '/dashboard/organisation' ? (
-          permissions &&
+          // Show Add button only if user has add permission (level 3 or 4)
+          canAddOrganisation(userAccess, currentRole) &&
           buttonName &&
           buttonName !== 'Add Organization' && (
+            <Button
+              variant="contained"
+              onClick={handleClick}
+              sx={{
+                background: '#06A19B',
+                fontWeight: 600,
+                padding: '8px 20px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
+                textWrap: 'nowrap',
+                display: 'flex',
+                gap: 1,
+                alignItems: 'center',
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="1.5em"
+                height="1.5em"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="none"
+                  stroke="#fff"
+                  strokeLinecap="round"
+                  strokeWidth="2"
+                  d="M12 6v12m6-6H6"
+                />
+              </svg>
+              {buttonName}
+            </Button>
+          )
+        ) : pathName === '/dashboard/farm' ? (
+          // Show Add button only if user has add permission (level 3 or 4)
+          canAddFarm(userAccess, currentRole) &&
+          buttonName && (
+            <Button
+              variant="contained"
+              onClick={handleClick}
+              sx={{
+                background: '#06A19B',
+                fontWeight: 600,
+                padding: '8px 20px',
+                width: 'fit-content',
+                textTransform: 'capitalize',
+                borderRadius: '8px',
+                textWrap: 'nowrap',
+                display: 'flex',
+                gap: 1,
+                alignItems: 'center',
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="1.5em"
+                height="1.5em"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="none"
+                  stroke="#fff"
+                  strokeLinecap="round"
+                  strokeWidth="2"
+                  d="M12 6v12m6-6H6"
+                />
+              </svg>
+              {buttonName}
+            </Button>
+          )
+        ) : pathName === '/dashboard/user' ? (
+          // Show Add button only if user has add permission (level 3 or 4)
+          canAddUsers(userAccess, currentRole, loggedUserData?.organisationType) &&
+          buttonName && (
             <Button
               variant="contained"
               onClick={handleClick}

@@ -6,7 +6,7 @@ import Select from '@mui/material/Select';
 
 import {
   OrganisationType,
-  PermissionType,
+  UserTypeByOrganisation,
 } from '@/app/_components/AddNewOrganisation';
 import MapComponent, { AddressInfo } from '@/app/_components/farm/MapComponent';
 import HatcheryForm from '@/app/_components/hatchery/HatcheryForm';
@@ -50,6 +50,15 @@ import { getCookie } from 'cookies-next';
 import Image from 'next/image';
 import FarmsInformation from './FarmsInformation';
 import { clientSecureFetch } from '@/app/_lib/clientSecureFetch';
+import {
+  MODULE_DISPLAY_ORDER,
+  ModuleAccessMap,
+  resolveModuleAccess,
+  getUserAccessConfig,
+  hasFullModuleAccess,
+  UserAccessConfig,
+} from '@/app/_lib/constants/userAccessMatrix';
+import { getOrganisationPermissionKey } from '@/app/_lib/utils/permissions/access';
 export const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
   clipPath: 'inset(50%)',
@@ -61,13 +70,28 @@ export const VisuallyHiddenInput = styled('input')({
   whiteSpace: 'nowrap',
   width: 1,
 });
+type AdvisorOption = {
+  id: number;
+  name: string;
+  email: string;
+  organisationName: string;
+  organisationType: string;
+};
+
+const ADVISOR_ACCESS_OPTIONS = [
+  { value: 3, label: 'Add, edit, view' },
+  { value: 2, label: 'Edit & view' },
+  { value: 1, label: 'View' },
+];
 type Iprops = {
   organisationId: string;
   organisations: SingleOrganisation[];
   userRole: string;
   loggedUser: SingleUser;
+  userAccess?: UserAccessConfig;
+  isViewOnly?: boolean;
 };
-const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
+const EditOrganisation = ({ organisationId, loggedUser, userRole, userAccess, isViewOnly = false }: Iprops) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [organisationData, setOrganisationData] = useState<OrganizationData>();
@@ -86,6 +110,9 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
   );
   const [inviteSent, setInviteSent] = useState<{ [key: number]: boolean }>({});
   const [inviteLoading, setInviteLoading] = useState(false);
+  const [advisorOptions, setAdvisorOptions] = useState<AdvisorOption[]>([]);
+  const [advisorLoading, setAdvisorLoading] = useState<boolean>(false);
+  const [organisationAdvisorUsers, setOrganisationAdvisorUsers] = useState<AdvisorOption[]>([]);
   // const handleInviteUser = (invite: boolean, index: number) => {
   //   if (!invite) {
   //     setInviteSent((prev) => {
@@ -134,9 +161,19 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
           role: '',
           email: '',
           phone: '',
+          userType: '',
           permission: '',
+          permissions: undefined,
+          userDefinition: '',
           invite: false,
         },
+      ],
+      allocatedAdvisors: [
+        {
+          advisorId: null,
+          advisorEmail: '',
+          accessLevel: 3
+        }
       ],
     },
   });
@@ -167,14 +204,26 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
   };
 
   const onSubmit: SubmitHandler<AddOrganizationFormInputs> = async (data) => {
+    // Prevent submission in view-only mode
+    if (isViewOnly) {
+      toast.error('You do not have permission to edit this organization.');
+      return;
+    }
+    
     // Prevent API call if one is already in progress
-    const hasAdmin = watch('contacts').some(
-      (contact) => contact.permission === 'ADMIN',
-    );
+    const hasAdmin = watch('contacts').some((contact) => {
+      const access = getUserAccessConfig(
+        watch('organisationType'),
+        contact.userType ?? contact.permission,
+      );
+      return hasFullModuleAccess(access);
+    });
 
     if (!hasAdmin) {
       toast.dismiss();
-      toast.error('At least one admin is required for this organisation.');
+      toast.error(
+        'At least one contact must have full (level 4) module access for this organisation.',
+      );
       return;
     }
     if (isApiCallInProgress) return;
@@ -198,13 +247,41 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
         };
       }
 
+      const contactsWithPermissions = data.contacts.map((contact) => {
+        const access = getUserAccessConfig(
+          data.organisationType,
+          contact.userType ?? contact.permission,
+        );
+
+        return {
+          ...contact,
+          permission: contact.userType ?? contact.permission,
+          inputRole: contact.role, // Save the role input value as inputRole
+          permissions: contact.permissions ?? access?.modules ?? {},
+          userDefinition: contact.userDefinition ?? access?.definition,
+        };
+      });
+
+      // Get advisor assignments from allocatedAdvisors
+      // Include advisors if organization type is NOT "Fish Producer" OR if user is SUPERADMIN
+      const advisorAssignments =
+        (data.organisationType !== 'Fish Producer' || userRole === 'SUPERADMIN')
+          ? (data.allocatedAdvisors
+              ?.filter((assignment) => assignment?.advisorId)
+              .map((assignment) => ({
+                advisorId: Number(assignment.advisorId),
+                accessLevel: Number(assignment.accessLevel ?? 0),
+              })) ?? [])
+          : [];
+
       const formData = new FormData();
       formData.append('name', String(data.organisationName));
       formData.append('invitedBy', String(loggedUser?.organisationId));
       formData.append('organisationCode', String(data.organisationCode));
       formData.append('organisationType', String(data.organisationType));
       formData.append('address', JSON.stringify(address));
-      formData.append('contacts', JSON.stringify(data.contacts));
+      formData.append('contacts', JSON.stringify(contactsWithPermissions));
+      formData.append('allocatedAdvisors', JSON.stringify(advisorAssignments));
       formData.append('imageUrl', String(profilePic));
       formData.append('invitedBy', String(loggedUser?.organisationId));
 
@@ -222,7 +299,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
 
       if (res.ok) {
         const updatedOrganisation = await res.json();
-        const contactsToInvite = data.contacts.filter((c) => c.invite);
+        const contactsToInvite = contactsWithPermissions.filter((c) => c.invite);
         if (contactsToInvite.length > 0) {
           const inviteRes = await clientSecureFetch('/api/invite/organisation', {
             method: 'POST',
@@ -256,6 +333,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
     control,
     name: 'contacts',
   });
+
   const AddContactField = () => {
     const conatcts = watch('contacts');
     if (conatcts) {
@@ -265,14 +343,18 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
         lastContact.name &&
         lastContact.role &&
         lastContact.email &&
-        lastContact.phone
+        lastContact.phone &&
+        (lastContact.userType || lastContact.permission)
       ) {
         append({
           name: '',
           role: '',
           email: '',
           phone: '',
+          userType: '',
           permission: '',
+          permissions: undefined,
+          userDefinition: '',
           invite: false,
           newInvite: false,
         });
@@ -286,10 +368,77 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
   const isContactComplete = (contact: any) => {
     return (
       contact.name?.trim() &&
-      contact.permission &&
+      (contact.userType || contact.permission) &&
       contact.role?.trim() &&
       contact.email?.trim() &&
       contact.phone?.trim()
+    );
+  };
+
+  // Removed AddAdvisorField - no longer needed
+
+  const handleAdvisorSelection = (
+    index: number,
+    advisorId: number | null,
+    onChange?: (value: number | null) => void,
+  ) => {
+    if (!advisorId) {
+      onChange?.(null);
+      setValue(`allocatedAdvisors.${index}.advisorEmail`, '', {
+        shouldDirty: true,
+        shouldTouch: true,
+      });
+      setValue(`allocatedAdvisors.${index}.advisorName`, '', {
+        shouldDirty: true,
+        shouldTouch: true,
+      });
+      return;
+    }
+
+    // Use organisationAdvisorUsers instead of advisorOptions
+    const selectedAdvisor = organisationAdvisorUsers.find(
+      (advisor) => advisor.id === advisorId,
+    );
+
+    if (!selectedAdvisor) {
+      toast.dismiss();
+      toast.error('Unable to find adviser details. Please try again.');
+      onChange?.(null);
+      return;
+    }
+
+    const currentAssignments = watch('allocatedAdvisors') ?? [];
+    if (
+      currentAssignments.some(
+        (assignment, assignmentIndex) =>
+          assignmentIndex !== index &&
+          Number(assignment?.advisorId) === selectedAdvisor.id,
+      )
+    ) {
+      toast.dismiss();
+      toast.error('This adviser is already allocated.');
+      onChange?.(null);
+      return;
+    }
+
+    onChange?.(selectedAdvisor.id);
+    setValue(
+      `allocatedAdvisors.${index}.advisorEmail`,
+      selectedAdvisor.email ?? '',
+      {
+        shouldDirty: true,
+        shouldTouch: true,
+        shouldValidate: true,
+      },
+    );
+    setValue(
+      `allocatedAdvisors.${index}.advisorName`,
+      selectedAdvisor.name ?? '',
+      {
+        shouldDirty: true,
+        shouldTouch: true,
+        shouldValidate: true,
+      },
     );
   };
 
@@ -333,7 +482,75 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
       setValue('province', String(organisationData.address?.province));
       setValue('postCode', String(organisationData.address?.postCode));
       setValue('country', organisationData?.address?.country);
-      setValue('contacts', organisationData?.contact);
+      if (organisationData?.contact) {
+        const mappedContacts = organisationData.contact.map((contact) => {
+          const linkedUser = organisationData.users?.find(
+            (user) => String(user.id) === String(contact.userId),
+          );
+          const userType =
+            contact.permission || contact.userType || linkedUser?.role || '';
+          const access = getUserAccessConfig(
+            organisationData.organisationType,
+            userType,
+          );
+          const rawPermissions = linkedUser?.permissions;
+          const permissions =
+            rawPermissions && typeof rawPermissions === 'object'
+              ? rawPermissions
+              : access?.modules ?? {};
+
+          return {
+            ...contact,
+            role: contact.inputRole || contact.role || '', // Use inputRole if available, fallback to role
+            inputRole: contact.inputRole || contact.role || '',
+            userType,
+            permission: userType,
+            permissions,
+            userDefinition: access?.definition,
+          };
+        });
+        setValue('contacts', mappedContacts as any);
+      }
+
+      // Extract advisor users from the organization
+      const advisorUsers = (organisationData?.users || []).filter((user) => {
+        const userContact = organisationData?.contact?.find(
+          (c) => String(c.userId) === String(user.id)
+        );
+        return (
+          user.role === 'Advisor: Technical services - adviser to Clients' ||
+          userContact?.permission === 'Advisor: Technical services - adviser to Clients' ||
+          userContact?.userType === 'Advisor: Technical services - adviser to Clients'
+        );
+      });
+
+
+      // Set advisor users for dropdown (only if not Fish Producer, or if SUPERADMIN)
+      if (organisationData?.organisationType !== 'Fish Producer' || userRole === 'SUPERADMIN') {
+        setOrganisationAdvisorUsers(
+          advisorUsers.map((user) => ({
+            id: user.id,
+            name: user.name || '',
+            email: user.email,
+            organisationName: organisationData?.name || '',
+            organisationType: organisationData?.organisationType || '',
+          }))
+        );
+        if (organisationData?.advisors?.length > 0) {
+          const adv = organisationData.advisors[0];
+
+          setValue("allocatedAdvisors.0.advisorId", adv.advisorId);
+          setValue("allocatedAdvisors.0.advisorEmail", adv.advisor?.email ?? "");
+          setValue("allocatedAdvisors.0.accessLevel", adv.accessLevel);
+        }
+      } else {
+        // Clear advisor data for Fish Producer (unless SUPERADMIN)
+        setOrganisationAdvisorUsers([]);
+        setValue("allocatedAdvisors.0.advisorId", null);
+        setValue("allocatedAdvisors.0.advisorEmail", "");
+        setValue("allocatedAdvisors.0.accessLevel", 3);
+      }
+
       setProfilePic(organisationData.imageUrl);
       setValue('organisationType', organisationData?.organisationType);
       if (
@@ -350,6 +567,32 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
       }
     }
   }, [organisationData]);
+
+  // No longer needed - we use organisationAdvisorUsers instead
+  // useEffect(() => {
+  //   const loadAdvisors = async () => {
+  //     try {
+  //       setAdvisorLoading(true);
+  //       const response = await clientSecureFetch('/api/advisors', {
+  //         method: 'GET',
+  //         cache: 'no-store',
+  //       });
+  //       const result = await response.json();
+  //       if (result?.status && Array.isArray(result.data)) {
+  //         setAdvisorOptions(result.data);
+  //       } else {
+  //         setAdvisorOptions([]);
+  //       }
+  //     } catch (error) {
+  //       console.error('Failed to load advisors', error);
+  //       setAdvisorOptions([]);
+  //     } finally {
+  //       setAdvisorLoading(false);
+  //     }
+  //   };
+
+  //   loadAdvisors();
+  // }, []);
 
   if (loading || inviteLoading) {
     return <Loader />;
@@ -649,6 +892,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                     type="text"
                     className="form-input"
                     focused
+                    InputProps={{ readOnly: isViewOnly }}
                     {...register('organisationName', {
                       required: true,
                       pattern: validationPattern.alphabetsNumbersAndSpacesPattern,
@@ -716,7 +960,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                     <TextField
                       label="Organisation Code *"
                       type="text"
-                      InputProps={{ readOnly: true }}
+                      InputProps={{ readOnly: isViewOnly || true }}
                       className="form-input"
                       {...register('organisationCode', {
                         required: true,
@@ -756,7 +1000,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                     id="demo-simple-select"
                     label="   Organisation Type *"
                     {...register('organisationType')}
-                    disabled
+                    disabled={isViewOnly || true}
                     value={selectedOrganisationType || ''}
                   // onChange={(e) => handleChange(e, item)}
                   >
@@ -827,6 +1071,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                       label="Address *"
                       type="text"
                       className="form-input"
+                      InputProps={{ readOnly: isViewOnly }}
                       {...register('address', {
                         required: true,
                         pattern: validationPattern.addressPattern,
@@ -873,6 +1118,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                       label="City *"
                       type="text"
                       className="form-input"
+                      InputProps={{ readOnly: isViewOnly }}
                       {...register('city', {
                         required: true,
                         validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
@@ -927,6 +1173,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                       label="Province *"
                       type="text"
                       className="form-input"
+                      InputProps={{ readOnly: isViewOnly }}
                       {...register('province', {
                         required: true,
                         pattern: validationPattern.alphabetsSpacesAndSpecialCharsPattern,
@@ -974,6 +1221,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                       label="Post Code *"
                       type="text"
                       className="form-input"
+                      InputProps={{ readOnly: isViewOnly }}
                       {...register('postCode', {
                         required: true,
                         pattern: validationPattern.postCodePattern,
@@ -1027,11 +1275,12 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                   }}
                 >
                   <Box width={'50%'}>
-                    <TextField
-                      label="Country *"
-                      type="text"
-                      className="form-input"
-                      {...register('country', {
+                <TextField
+                  label="Country *"
+                  type="text"
+                  className="form-input"
+                  InputProps={{ readOnly: isViewOnly }}
+                  {...register('country', {
                         required: true,
                         pattern: validationPattern.countryPattern,
                         validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
@@ -1091,6 +1340,15 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                   const isMarkedForInvite = liveContact.newInvite; // Toggled by user
                   const isDisabledForInvite = hasBeenInvited || !isContactComplete(liveContact);
                   const isSentIconVisible = hasBeenInvited || isMarkedForInvite;
+                  const organisationTypeValue = watch('organisationType');
+                  const availableUserTypes =
+                    organisationTypeValue
+                      ? UserTypeByOrganisation[organisationTypeValue] || []
+                      : [];
+                  const accessConfig = getUserAccessConfig(
+                    organisationTypeValue,
+                    liveContact?.userType ?? liveContact?.permission,
+                  );
                   return (
                     <Stack
                       key={item.id}
@@ -1122,6 +1380,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                           label="Name *"
                           type="text"
                           className="form-input"
+                          InputProps={{ readOnly: isViewOnly }}
                           {...register(`contacts.${index}.name` as const, {
                             required: true,
                             pattern: {
@@ -1144,6 +1403,31 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                         )}
 
                       </Box>
+                      <input
+                        type="hidden"
+                        {...register(`contacts.${index}.permission` as const)}
+                      />
+                      <input
+                        type="hidden"
+                        {...register(`contacts.${index}.userDefinition` as const)}
+                      />
+                      {/* {accessConfig?.definition && (
+                        <Box
+                          sx={{
+                            width: '100%',
+                            mt: 1,
+                            px: 1,
+                            py: 0.75,
+                            borderRadius: 1,
+                            bgcolor: '#F9FBFC',
+                            border: '1px solid #E3F2FD',
+                          }}
+                        >
+                          <Typography variant="caption" color="text.secondary">
+                            {accessConfig.definition}
+                          </Typography>
+                        </Box>
+                      )} */}
                       <Box
                         sx={{
                           width: {
@@ -1154,63 +1438,170 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                         }}
                       >
                         <FormControl className="form-input" fullWidth focused>
-                          <InputLabel id="demo-simple-select-label">
-                            Permission *
+                          <InputLabel id={`user-type-select-label-${index}`}>
+                            User Type *
                           </InputLabel>
                           <Controller
-                            name={`contacts.${index}.permission`}
+                            name={`contacts.${index}.userType`}
                             control={control}
                             rules={{
                               required: true,
-                              // validate: (value) => {
-                              //   if (value === "Admin") {
-                              //     watch("contacts").forEach((_, idx) => {
-                              //       clearErrors(`contacts.${idx}.role`);
-                              //     });
-                              //     return true;
-                              //   }
-                              //   const hasAdmin = watch("contacts").some(
-                              //     (contact) => contact.role === "Admin"
-                              //   );
-
-                              //   if (!hasAdmin) {
-                              //     return "Please add an admin first, then add a member.";
-                              //   }
-                              //   return true;
-                              // },
                             }}
                             render={({ field }) => (
                               <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                label="Permission *"
-                                {...field}
+                                labelId={`user-type-select-label-${index}`}
+                                id={`user-type-select-${index}`}
+                                label="User Type *"
+                                value={field.value ?? ''}
+                                onChange={(event) => {
+                                  field.onChange(event);
+                                  const selectedType = event.target.value as string;
+                                  setValue(
+                                    `contacts.${index}.permission`,
+                                    selectedType,
+                                  );
+                                  const derivedAccess = getUserAccessConfig(
+                                    organisationTypeValue,
+                                    selectedType,
+                                  );
+                                  setValue(
+                                    `contacts.${index}.permissions`,
+                                    derivedAccess?.modules ?? {},
+                                  );
+                                  setValue(
+                                    `contacts.${index}.userDefinition`,
+                                    derivedAccess?.definition ?? '',
+                                  );
+                                }}
+                                disabled={isViewOnly || !organisationTypeValue}
                               >
-                                {PermissionType.map((permission, i) => (
-                                  <MenuItem value={permission.value} key={i}>
-                                    {permission.label}
+                                {availableUserTypes.map((userType) => (
+                                  <MenuItem value={userType} key={userType}>
+                                    {userType}
                                   </MenuItem>
                                 ))}
                               </Select>
                             )}
                           />
                         </FormControl>
-                        {errors &&
-                          errors?.contacts &&
-                          errors?.contacts[index] &&
-                          errors?.contacts[index]?.permission &&
-                          errors?.contacts[index]?.permission.type ===
-                          'required' && (
-                            <Typography
-                              variant="body2"
-                              color="red"
-                              fontSize={13}
-                              mt={0.5}
-                            >
-                              {validationMessage.required}
-                            </Typography>
-                          )}
+                        {!organisationTypeValue && (
+                          <Typography
+                            variant="body2"
+                            color="orange"
+                            fontSize={13}
+                            mt={0.5}
+                          >
+                            Please select organisation type first
+                          </Typography>
+                        )}
+                        {errors?.contacts?.[index]?.userType && (
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          >
+                            {validationMessage.required}
+                          </Typography>
+                        )}
                       </Box>
+                      {/* {accessConfig && (
+                        <Box
+                          sx={{
+                            width: '100%',
+                            mt: 1,
+                          }}
+                        >
+                          <Typography
+                            variant="caption"
+                            fontWeight={600}
+                            color="text.secondary"
+                            sx={{ display: 'block', mb: 0.5 }}
+                          >
+                            Module access levels
+                          </Typography>
+                          <Grid container spacing={0.5}>
+                            {MODULE_DISPLAY_ORDER.map((section) => {
+                              if (section.children && section.children.length) {
+                                return section.children.map((child) => (
+                                  <Grid
+                                    item
+                                    xs={12}
+                                    sm={6}
+                                    key={`${section.key}-${child.key}`}
+                                  >
+                                    <Box
+                                      sx={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        bgcolor: '#F4F6F8',
+                                        borderRadius: 1,
+                                        px: 1,
+                                        py: 0.5,
+                                      }}
+                                    >
+                                      <Typography
+                                        variant="caption"
+                                        color="text.secondary"
+                                      >
+                                        {section.label} — {child.label}
+                                      </Typography>
+                                      <Typography
+                                        variant="caption"
+                                        fontWeight={600}
+                                      >
+                                        {resolveModuleAccess(
+                                          accessConfig,
+                                          section.key as keyof ModuleAccessMap,
+                                          child.key,
+                                        )}
+                                      </Typography>
+                                    </Box>
+                                  </Grid>
+                                ));
+                              }
+
+                              return (
+                                <Grid
+                                  item
+                                  xs={12}
+                                  sm={6}
+                                  key={String(section.key)}
+                                >
+                                  <Box
+                                    sx={{
+                                      display: 'flex',
+                                      justifyContent: 'space-between',
+                                      alignItems: 'center',
+                                      bgcolor: '#F4F6F8',
+                                      borderRadius: 1,
+                                      px: 1,
+                                      py: 0.5,
+                                    }}
+                                  >
+                                    <Typography
+                                      variant="caption"
+                                      color="text.secondary"
+                                    >
+                                      {section.label}
+                                    </Typography>
+                                    <Typography
+                                      variant="caption"
+                                      fontWeight={600}
+                                    >
+                                      {resolveModuleAccess(
+                                        accessConfig,
+                                        section.key as keyof ModuleAccessMap,
+                                      )}
+                                    </Typography>
+                                  </Box>
+                                </Grid>
+                              );
+                            })}
+                          </Grid>
+                        </Box>
+                      )} */}
                       <Box
                         sx={{
                           width: {
@@ -1224,6 +1615,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                           label="Role *"
                           type="text"
                           className="form-input"
+                          InputProps={{ readOnly: isViewOnly }}
                           {...register(`contacts.${index}.role` as const, {
                             required: true,
                             validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
@@ -1263,6 +1655,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                           label="Email *"
                           type="email"
                           className="form-input"
+                          InputProps={{ readOnly: isViewOnly }}
                           {...register(`contacts.${index}.email` as const, {
                             required: true,
                             pattern: validationPattern.emailPattern,
@@ -1346,6 +1739,7 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                           label="Phone *"
                           type="text"
                           className="form-input"
+                          InputProps={{ readOnly: isViewOnly }}
                           {...register(`contacts.${index}.phone` as const, {
                             required: true,
                             validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
@@ -1405,14 +1799,14 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                           src={isSentIconVisible ? sentEmailIcon : sendEmailIcon}
                           alt="Send Email Icon"
                           onClick={() => {
-                            if (!hasBeenInvited) {
+                            if (!isViewOnly && !hasBeenInvited) {
                               handleInviteUser(index);
                             }
                           }}
                           style={{
-                            opacity: isDisabledForInvite ? 0.4 : 1,
-                            cursor: isDisabledForInvite ? 'not-allowed' : 'pointer',
-                            pointerEvents: isDisabledForInvite ? 'none' : 'auto',
+                            opacity: (isViewOnly || isDisabledForInvite) ? 0.4 : 1,
+                            cursor: (isViewOnly || isDisabledForInvite) ? 'not-allowed' : 'pointer',
+                            pointerEvents: (isViewOnly || isDisabledForInvite) ? 'none' : 'auto',
                           }}
                         />
                       </Box>
@@ -1423,17 +1817,20 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                         alignItems={'center'}
                         width={150}
                         sx={{
-                          cursor: `  ${item.role !== 'Admin' ? 'pointer' : 'not-allowed'
-                            }`,
+                          cursor: (isViewOnly || hasFullModuleAccess(accessConfig))
+                            ? 'not-allowed'
+                            : 'pointer',
                           width: {
                             lg: 150,
                             xs: 'auto',
                           },
                           visibility: index === 0 ? 'hidden' : 'visible',
                         }}
-                        onClick={() =>
-                          item.permission !== 'ADMIN' && remove(index)
-                        }
+                        onClick={() => {
+                          if (!isViewOnly && !hasFullModuleAccess(accessConfig)) {
+                            remove(index);
+                          }
+                        }}
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -1444,10 +1841,11 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                           <g fill="none">
                             <path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
                             <path
-                              fill={`${item.permission !== 'ADMIN'
-                                ? '#ff0000'
-                                : '#808080'
-                                }`}
+                              fill={
+                                hasFullModuleAccess(accessConfig)
+                                  ? '#808080'
+                                  : '#ff0000'
+                              }
                               d="M14.28 2a2 2 0 0 1 1.897 1.368L16.72 5H20a1 1 0 1 1 0 2l-.003.071l-.867 12.143A3 3 0 0 1 16.138 22H7.862a3 3 0 0 1-2.992-2.786L4.003 7.07L4 7a1 1 0 0 1 0-2h3.28l.543-1.632A2 2 0 0 1 9.721 2zm3.717 5H6.003l.862 12.071a1 1 0 0 0 .997.929h8.276a1 1 0 0 0 .997-.929zM10 10a1 1 0 0 1 .993.883L11 11v5a1 1 0 0 1-1.993.117L9 16v-5a1 1 0 0 1 1-1m4 0a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0v-5a1 1 0 0 1 1-1m.28-6H9.72l-.333 1h5.226z"
                             />
                           </g>
@@ -1457,13 +1855,6 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                   );
                 })}
 
-
-                <Divider
-                  sx={{
-                    borderColor: '#979797',
-                    my: 1,
-                  }}
-                />
 
                 <Stack
                   p={1.5}
@@ -1478,47 +1869,241 @@ const EditOrganisation = ({ organisationId, loggedUser }: Iprops) => {
                   justifyContent={'center'}
                   gap={0.5}
                   border={'2px dashed #06a19b'}
-                  className="add-contact-btn"
-                  onClick={() => AddContactField()}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="1.4em"
-                    height="1.4em"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      fill="#06a19b"
-                      d="M12 4c4.411 0 8 3.589 8 8s-3.589 8-8 8s-8-3.589-8-8s3.589-8 8-8m0-2C6.477 2 2 6.477 2 12s4.477 10 10 10s10-4.477 10-10S17.523 2 12 2m5 9h-4V7h-2v4H7v2h4v4h2v-4h4z"
+              className="add-contact-btn"
+              onClick={() => !isViewOnly && AddContactField()}
+              sx={{
+                cursor: isViewOnly ? 'not-allowed' : 'pointer',
+                opacity: isViewOnly ? 0.5 : 1,
+                pointerEvents: isViewOnly ? 'none' : 'auto',
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="1.4em"
+                height="1.4em"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="#06a19b"
+                  d="M12 4c4.411 0 8 3.589 8 8s-3.589 8-8 8s-8-3.589-8-8s3.589-8 8-8m0-2C6.477 2 2 6.477 2 12s4.477 10 10 10s10-4.477 10-10S17.523 2 12 2m5 9h-4V7h-2v4H7v2h4v4h2v-4h4z"
+                />
+              </svg>
+              Add Contact
+            </Stack>
+                {/* Only show advisor section if organization type is NOT "Fish Producer" (or if user is SUPERADMIN) */}
+                {(selectedOrganisationType !== 'Fish Producer' || userRole === 'SUPERADMIN') && (
+                  <>
+                    <Divider
+                      sx={{
+                        borderColor: '#979797',
+                        my: 1,
+                      }}
                     />
-                  </svg>
-                  Add Contact
-                </Stack>
+                    <Typography
+                      variant="subtitle1"
+                      fontWeight={500}
+                      color="black"
+                      fontSize={16}
+                      marginTop={3}
+                      marginBottom={2}
+                    >
+                      Allocated adviser
+                    </Typography>
 
-                <Button
-                  type="submit"
-                  variant="contained"
-                  disabled={isApiCallInProgress}
-                  sx={{
-                    background: '#06A19B',
-                    fontWeight: 600,
-                    padding: '6px 16px',
-                    width: 'fit-content',
-                    textTransform: 'capitalize',
-                    borderRadius: '8px',
-                    marginLeft: 'auto',
-                    display: 'block',
-                    marginTop: 2,
-                  }}
-                >
-                  Save Changes
-                </Button>
+                    {/* Single adviser row */}
+                    <Stack
+                      display="flex"
+                      direction="row"
+                      sx={{
+                        width: '100%',
+                        marginBottom: 2,
+                        gap: 1.5,
+                        flexWrap: {
+                          lg: 'nowrap',
+                          xs: 'wrap',
+                        },
+                        justifyContent: {
+                          md: 'center',
+                        },
+                      }}
+                    >
+                      {/* Adviser dropdown */}
+                      <Box
+                        sx={{
+                          width: {
+                            lg: '100%',
+                            md: '48.4%',
+                            xs: '100%',
+                          },
+                        }}
+                      >
+                        <FormControl className="form-input" fullWidth focused>
+                          <InputLabel id={`advisor-select-label`}>
+                            Adviser *
+                          </InputLabel>
+                          <Controller
+                            name={`allocatedAdvisors.0.advisorId`}
+                            control={control}
+                            rules={{ required: userRole === 'SUPERADMIN' ? false : selectedOrganisationType !== 'Fish Producer' }}
+                            render={({ field }) => (
+                              <Select
+                                labelId="advisor-select-label"
+                                id="advisor-select"
+                                label="Adviser *"
+                                value={field.value ?? ''}
+                                onChange={(event) => {
+                                  const rawValue = event.target.value;
+                                  const value =
+                                    rawValue === '' ? null : Number(rawValue);
+
+                                  const selected = organisationAdvisorUsers.find(
+                                    (adv) => adv.id === value
+                                  );
+
+                                  field.onChange(value);
+
+                                  // Auto fill advisor details
+                                  setValue(
+                                    `allocatedAdvisors.0.advisorEmail`,
+                                    selected?.email ?? ''
+                                  );
+                                }}
+                                displayEmpty
+                                disabled={isViewOnly || advisorLoading}
+                              >
+                                <MenuItem value="">
+                                  <em>
+                                    {advisorLoading
+                                      ? 'Loading advisers...'
+                                      : 'Select adviser'}
+                                  </em>
+                                </MenuItem>
+
+                                {organisationAdvisorUsers.map((advisor) => (
+                                  <MenuItem value={advisor.id} key={advisor.id}>
+                                    {advisor.name || advisor.email}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            )}
+                          />
+                        </FormControl>
+                        {/* {errors?.allocatedAdvisors?.[0]?.advisorId && (
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          >
+                            Adviser selection is required
+                          </Typography>
+                        )} */}
+                      </Box>
+
+                      {/* Auto-filled email */}
+                      <Box
+                        sx={{
+                          width: {
+                            lg: '100%',
+                            md: '48.4%',
+                            xs: '100%',
+                          },
+                        }}
+                      >
+                        <TextField
+                          label="Email"
+                          type="text"
+                          className="form-input"
+                          value={watch(`allocatedAdvisors.0.advisorEmail`) ?? ''}
+                          InputProps={{ readOnly: true }}
+                          focused
+                          sx={{
+                            width: '100%',
+                          }}
+                        />
+                      </Box>
+
+                      {/* Access level */}
+                      <Box
+                        sx={{
+                          width: {
+                            lg: '100%',
+                            md: '48.4%',
+                            xs: '100%',
+                          },
+                        }}
+                      >
+                        <FormControl className="form-input" fullWidth focused>
+                          <InputLabel id={`advisor-access-select-label`}>
+                            Access level *
+                          </InputLabel>
+                          <Controller
+                            name={`allocatedAdvisors.0.accessLevel`}
+                            control={control}
+                            rules={{ required: userRole === 'SUPERADMIN' ? false : selectedOrganisationType !== 'Fish Producer' }}
+                            render={({ field }) => (
+                              <Select
+                                labelId="advisor-access-select-label"
+                                id="advisor-access-select"
+                                label="Access level *"
+                                value={field.value ?? ''}
+                                onChange={(event) =>
+                                  field.onChange(Number(event.target.value))
+                                }
+                                disabled={isViewOnly}
+                              >
+                                {ADVISOR_ACCESS_OPTIONS.map((option) => (
+                                  <MenuItem value={option.value} key={option.value}>
+                                    {option.label}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            )}
+                          />
+                        </FormControl>
+                        {errors?.allocatedAdvisors?.[0]?.accessLevel && (
+                          <Typography
+                            variant="body2"
+                            color="red"
+                            fontSize={13}
+                            mt={0.5}
+                          >
+                            Access level is required
+                          </Typography>
+                        )}
+                      </Box>
+                    </Stack>
+                  </>
+                )}
+                {/* Removed Add adviser button - advisors are selected from organization users */}
+                {!isViewOnly && (
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    disabled={isApiCallInProgress}
+                    sx={{
+                      background: '#06A19B',
+                      fontWeight: 600,
+                      padding: '6px 16px',
+                      width: 'fit-content',
+                      textTransform: 'capitalize',
+                      borderRadius: '8px',
+                      marginLeft: 'auto',
+                      display: 'block',
+                      marginTop: 2,
+                    }}
+                  >
+                    Save Changes
+                  </Button>
+                )}
               </form>
             </Grid>
           </Grid>
         </Stack>
       ) : (
         <FarmsInformation
+          userAccess={userAccess}
+          userRole={userRole}
           organisationData={organisationData}
           profilePic={profilePic ?? ''}
           altitude={altitude}

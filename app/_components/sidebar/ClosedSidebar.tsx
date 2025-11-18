@@ -15,6 +15,9 @@ import { sidebarAction } from '@/lib/features/sidebar/sidebarSlice';
 import Logo from '@/public/static/img/logo.svg';
 import { getCookie, setCookie } from 'cookies-next';
 import { LoggedUser } from '../AccountPopover';
+import { getUserAccessConfig } from '@/app/_lib/constants/userAccessMatrix';
+import { canViewFarm, canViewFeedPrediction, canViewFeedSupply, canViewFishSupply, canViewGrowthModel, canViewOrganisation, canViewProduction, canViewUsers } from '@/app/_lib/utils/permissions/access';
+import { clientSecureFetch } from '@/app/_lib/clientSecureFetch';
 
 function ClosedSidebar() {
   const router = useRouter();
@@ -22,7 +25,32 @@ function ClosedSidebar() {
   const pathName = usePathname();
   const [activePage, setActivePage] = useState<string>('');
   const [loggedUserData, setLoggedUserData] = useState<LoggedUser>();
-
+  const [userData, setUserData] = useState<LoggedUser>();
+  const [loading, setLoading] = useState<boolean>(false);
+  const loggedUserOrgType = loggedUserData?.organisationType || '';
+  const loggedUserType = loggedUserData?.role || '';
+  const userAccess = loggedUserData ? getUserAccessConfig(loggedUserOrgType, loggedUserType) : undefined;
+     console.log('loggedUserOrgType', loggedUserOrgType);
+     console.log('loggedUserType', loggedUserType);
+     console.log('userAccess', userAccess);
+  // Check permissions for each module (functions already handle SUPERADMIN)
+  const canViewFishSupplyModule = canViewFishSupply(userAccess, loggedUserType);
+  const canViewFarmModule = canViewFarm(userAccess, loggedUserType);
+  const canViewFeedSupplyModule = canViewFeedSupply(userAccess, loggedUserType);
+  const canViewProductionModule = canViewProduction(userAccess, loggedUserType);
+  const canViewFeedPredictionModule = canViewFeedPrediction(userAccess, loggedUserType);
+  const canViewOrganisationModule = canViewOrganisation(userAccess, undefined, loggedUserType);
+  const canViewUsersModule = canViewUsers(userAccess, loggedUserType);
+  const canViewGrowthModelModule = canViewGrowthModel(userAccess, loggedUserType);
+  console.log('canViewGrowthModelModule', canViewGrowthModelModule);
+  console.log('canViewFishSupplyModule', canViewFishSupplyModule);
+  console.log('canViewFarmModule', canViewFarmModule);
+  console.log('canViewFeedSupplyModule', canViewFeedSupplyModule);
+  console.log('canViewProductionModule', canViewProductionModule);
+  console.log('canViewFeedPredictionModule', canViewFeedPredictionModule);
+  console.log('canViewOrganisationModule', canViewOrganisationModule);
+  console.log('canViewUsersModule', canViewUsersModule);
+  console.log('canViewGrowthModelModule', canViewGrowthModelModule);
   const dispatch = useAppDispatch();
   useEffect(() => {
     if (pathName) {
@@ -34,6 +62,25 @@ function ClosedSidebar() {
       setLoggedUserData(JSON.parse(loggedUser));
     }
   }, [loggedUser]);
+  useEffect(() => {
+    if (!loggedUserData) return;
+    setLoading(true);
+    const getUser = async () => {
+      try {
+        const token = getCookie('auth-token');
+        const response = await clientSecureFetch(`/api/users/${loggedUserData.id}`, {
+          method: 'GET',
+        });
+        const data = await response.json();
+        setUserData(data.data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        setLoading(false);
+      }
+    };
+    getUser();
+  }, [loggedUserData]);
   return (
     <Stack
       className="sidebar"
@@ -139,7 +186,7 @@ function ClosedSidebar() {
               borderColor: 'rgba(6, 161, 155, 0.25)',
             }}
           />
-
+          {canViewFishSupplyModule && (
           <Link href={'/dashboard/fishSupply'} className="nav-links">
             <ListItem
               sx={{
@@ -196,7 +243,8 @@ function ClosedSidebar() {
               </ListItemButton>
             </ListItem>
           </Link>
-
+          )}
+          {canViewFarmModule && (
           <Link
             href={'/dashboard/farm'}
             className="nav-links"
@@ -249,7 +297,8 @@ function ClosedSidebar() {
               </ListItemButton>
             </ListItem>
           </Link>
-
+          )}
+          {canViewFeedSupplyModule && (
           <Link href={'/dashboard/feedSupply'} className="nav-links">
             <ListItem
               sx={{
@@ -299,7 +348,8 @@ function ClosedSidebar() {
               </ListItemButton>
             </ListItem>
           </Link>
-
+          )}
+    
           <Divider
             sx={{
               my: 1.5,
@@ -310,7 +360,7 @@ function ClosedSidebar() {
               borderColor: 'rgba(6, 161, 155, 0.25)',
             }}
           />
-
+          {canViewProductionModule && ( 
           <Link href={'/dashboard/production'} className="nav-links">
             <ListItem
               sx={{
@@ -374,6 +424,7 @@ function ClosedSidebar() {
               </ListItemButton>
             </ListItem>
           </Link>
+           )}
 
           {/* <Link
             href={"/dashboard/feedStore"}
@@ -428,7 +479,7 @@ function ClosedSidebar() {
               </ListItemButton>
             </ListItem>
           </Link> */}
-
+          {canViewFeedPredictionModule && (
           <Link href={'/dashboard/feedPrediction'} className="nav-links">
             <ListItem
               sx={{
@@ -486,7 +537,8 @@ function ClosedSidebar() {
               </ListItemButton>
             </ListItem>
           </Link>
-
+          )}
+          
           <Divider
             sx={{
               my: 1.5,
@@ -497,7 +549,7 @@ function ClosedSidebar() {
               borderColor: 'rgba(6, 161, 155, 0.25)',
             }}
           />
-
+          {canViewOrganisationModule && (
           <Link href={'/dashboard/organisation'} className="nav-links">
             <ListItem
               sx={{
@@ -548,7 +600,8 @@ function ClosedSidebar() {
               </ListItemButton>
             </ListItem>
           </Link>
-
+          )}
+          {canViewUsersModule && (
           <Link href={'/dashboard/user'} className="nav-links">
             <ListItem
               sx={{
@@ -596,7 +649,8 @@ function ClosedSidebar() {
               </ListItemButton>
             </ListItem>
           </Link>
-          {loggedUserData?.role === 'SUPERADMIN' && (
+          )}
+          {canViewGrowthModelModule && (
             <Link href={'/dashboard/growthModel'} className="nav-links">
               <ListItem
                 sx={{

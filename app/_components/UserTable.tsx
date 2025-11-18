@@ -33,10 +33,16 @@ import { useAppDispatch } from '@/lib/hooks';
 import { useAppSelector } from '@/lib/hooks';
 import { selectRole } from '@/lib/features/user/userSlice';
 import { clientSecureFetch } from '../_lib/clientSecureFetch';
+import { UserAccessConfig } from '../_lib/constants/userAccessMatrix';
+import { canEditUsers, canViewUsers, canDeleteUsers } from '../_lib/utils/permissions/access';
 
 interface Props {
   users: SingleUser[];
-  permissions: boolean;
+  userAccess?: UserAccessConfig;
+  userRole?: string;
+  userOrganisationType?: string;
+  canEdit?: boolean;
+  canView?: boolean;
 }
 
 type Order = 'asc' | 'desc';
@@ -59,7 +65,14 @@ export interface EnhancedTableHeadProps {
   usersTableHeadMember?: HeadCell[];
 }
 
-export default function UserTable({ users, permissions }: Props) {
+export default function UserTable({ 
+  users, 
+  userAccess, 
+  userRole, 
+  userOrganisationType,
+  canEdit,
+  canView 
+}: Props) {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const pathName = usePathname();
@@ -139,7 +152,7 @@ export default function UserTable({ users, permissions }: Props) {
     return (
       <TableHead>
         <TableRow>
-          {(role === 'SUPERADMIN' || permissions
+          {((role === 'SUPERADMIN' || canEdit || canView)
             ? usersTableHead
             : usersTableHeadMember
           ).map((headCell, idx, headCells) => (
@@ -215,12 +228,14 @@ export default function UserTable({ users, permissions }: Props) {
             if (user1.role < user2.role) return -1 * orderType;
             if (user1.role > user2.role) return 1 * orderType;
             return 0;
-          } else if (property === 'organisation') {
-            if (user1.organisation?.name < user2.organisation?.name)
-              return -1 * orderType;
-            if (user1.organisation?.name > user2.organisation?.name)
-              return 1 * orderType;
-            return 0;
+            } else if (property === 'organisation') {
+              const org1Name = (user1 as any)?.organisation?.name || '';
+              const org2Name = (user2 as any)?.organisation?.name || '';
+              if (org1Name < org2Name)
+                return -1 * orderType;
+              if (org1Name > org2Name)
+                return 1 * orderType;
+                return 0;
           } else if (property === 'createdAt') {
             if (user1.createdAt < user2.createdAt) return -1 * orderType;
             if (user1.createdAt > user2.createdAt) return 1 * orderType;
@@ -257,11 +272,13 @@ export default function UserTable({ users, permissions }: Props) {
               if (user1.role > user2.role) return 1 * orderType;
               return 0;
             } else if (data.column === 'organisation') {
-              if (user1.organisation?.name < user2.organisation?.name)
+              const org1Name = (user1 as any)?.organisation?.name || '';
+              const org2Name = (user2 as any)?.organisation?.name || '';
+              if (org1Name < org2Name)
                 return -1 * orderType;
-              if (user1.organisation?.name > user2.organisation?.name)
+              if (org1Name > org2Name)
                 return 1 * orderType;
-              return 0;
+                return 0;
             } else if (data.column === 'createdAt') {
               if (user1.createdAt < user2.createdAt) return -1 * orderType;
               if (user1.createdAt > user2.createdAt) return 1 * orderType;
@@ -419,11 +436,11 @@ export default function UserTable({ users, permissions }: Props) {
                         alignItems={'center'}
                         gap={'12px'}
                       >
-                        {user?.organisation?.imageUrl &&
-                        user?.organisation?.imageUrl !== 'null' &&
-                        user?.organisation?.imageUrl !== 'undefined' ? (
+                        {(user as any)?.organisation?.imageUrl &&
+                        (user as any)?.organisation?.imageUrl !== 'null' &&
+                        (user as any)?.organisation?.imageUrl !== 'undefined' ? (
                           <Image
-                            src={user.organisation.imageUrl}
+                            src={(user as any).organisation.imageUrl}
                             width={40}
                             height={40}
                             style={{
@@ -460,7 +477,7 @@ export default function UserTable({ users, permissions }: Props) {
                             </svg>
                           </Box>
                         )}
-                        {user?.organisation?.name ?? 'No Organisation'}
+                        {(user as any)?.organisation?.name ?? 'No Organisation'}
                       </Box>
                     </TableCell>
                     <TableCell
@@ -474,7 +491,7 @@ export default function UserTable({ users, permissions }: Props) {
                     >
                       {readableDate(user?.createdAt) ?? ''}
                     </TableCell>
-                    {(loginUser?.role === 'SUPERADMIN' || permissions) && (
+                    {(canEdit || canView) && (
                       <TableCell
                         sx={{
                           borderBottomColor: '#F5F6F8',
@@ -524,28 +541,32 @@ export default function UserTable({ users, permissions }: Props) {
                             left: '-10px',
                           }}
                         >
-                          <MenuItem onClick={handleEdit}>
-                            <Stack
-                              display="flex"
-                              gap={1.2}
-                              alignItems="center"
-                              direction="row"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="1em"
-                                height="1em"
-                                viewBox="0 0 24 24"
+                          {(canEdit || canView) && (
+                            <MenuItem onClick={handleEdit}>
+                              <Stack
+                                display="flex"
+                                gap={1.2}
+                                alignItems="center"
+                                direction="row"
                               >
-                                <path
-                                  fill="currentColor"
-                                  d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"
-                                />
-                              </svg>
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="1em"
+                                  height="1em"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    fill="currentColor"
+                                    d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"
+                                  />
+                                </svg>
 
-                              <Typography variant="subtitle2">Edit</Typography>
-                            </Stack>
-                          </MenuItem>
+                                <Typography variant="subtitle2">
+                                  {canEdit ? 'Edit' : 'View'}
+                                </Typography>
+                              </Stack>
+                            </MenuItem>
+                          )}
 
                           <Divider
                             sx={{
@@ -586,44 +607,45 @@ export default function UserTable({ users, permissions }: Props) {
                             </Stack>
                           </MenuItem>
 
-                          <Divider
-                            sx={{
-                              borderColor: '#9797971A',
-                              my: 0.5,
-                            }}
-                          />
-                          <MenuItem
-                            disabled={
-                              loginUser?.role === 'ADMIN' ? true : false
-                            }
-                            onClick={handleDeleteUser}
-                          >
-                            <Stack
-                              display="flex"
-                              gap={1.2}
-                              alignItems="center"
-                              direction="row"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="1em"
-                                height="1em"
-                                viewBox="0 0 24 24"
+                          {canDeleteUsers(userAccess, userRole, userOrganisationType) && (
+                            <>
+                              <Divider
+                                sx={{
+                                  borderColor: '#9797971A',
+                                  my: 0.5,
+                                }}
+                              />
+                              <MenuItem
+                                onClick={handleDeleteUser}
                               >
-                                <g fill="none">
-                                  <path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z"></path>
-                                  <path
-                                    fill="#ff0000"
-                                    d="M14.28 2a2 2 0 0 1 1.897 1.368L16.72 5H20a1 1 0 1 1 0 2l-.003.071l-.867 12.143A3 3 0 0 1 16.138 22H7.862a3 3 0 0 1-2.992-2.786L4.003 7.07L4 7a1 1 0 0 1 0-2h3.28l.543-1.632A2 2 0 0 1 9.721 2zm3.717 5H6.003l.862 12.071a1 1 0 0 0 .997.929h8.276a1 1 0 0 0 .997-.929zM10 10a1 1 0 0 1 .993.883L11 11v5a1 1 0 0 1-1.993.117L9 16v-5a1 1 0 0 1 1-1m4 0a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0v-5a1 1 0 0 1 1-1m.28-6H9.72l-.333 1h5.226z"
-                                  ></path>
-                                </g>
-                              </svg>
+                                <Stack
+                                  display="flex"
+                                  gap={1.2}
+                                  alignItems="center"
+                                  direction="row"
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="1em"
+                                    height="1em"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <g fill="none">
+                                      <path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z"></path>
+                                      <path
+                                        fill="#ff0000"
+                                        d="M14.28 2a2 2 0 0 1 1.897 1.368L16.72 5H20a1 1 0 1 1 0 2l-.003.071l-.867 12.143A3 3 0 0 1 16.138 22H7.862a3 3 0 0 1-2.992-2.786L4.003 7.07L4 7a1 1 0 0 1 0-2h3.28l.543-1.632A2 2 0 0 1 9.721 2zm3.717 5H6.003l.862 12.071a1 1 0 0 0 .997.929h8.276a1 1 0 0 0 .997-.929zM10 10a1 1 0 0 1 .993.883L11 11v5a1 1 0 0 1-1.993.117L9 16v-5a1 1 0 0 1 1-1m4 0a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0v-5a1 1 0 0 1 1-1m.28-6H9.72l-.333 1h5.226z"
+                                      ></path>
+                                    </g>
+                                  </svg>
 
-                              <Typography variant="subtitle2" color="#ff0000">
-                                Delete
-                              </Typography>
-                            </Stack>
-                          </MenuItem>
+                                  <Typography variant="subtitle2" color="#ff0000">
+                                    Delete
+                                  </Typography>
+                                </Stack>
+                              </MenuItem>
+                            </>
+                          )}
                         </Menu>
                       </TableCell>
                     )}

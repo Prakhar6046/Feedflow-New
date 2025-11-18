@@ -4,6 +4,7 @@ import { Prisma } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 
 type ProductionUnitInput = {
+  allocatedWorkers?: number[];
   name: string;
   type: string;
   productionSystem: string;
@@ -201,6 +202,39 @@ export async function POST(request: NextRequest) {
         },
       });
       newProductUnits.push(newUnit);
+
+      // Create worker assignments for this production unit
+      if (unit.allocatedWorkers && Array.isArray(unit.allocatedWorkers) && unit.allocatedWorkers.length > 0) {
+        await prisma.productionUnitWorker.createMany({
+          data: unit.allocatedWorkers.map((workerId: number) => ({
+            productionUnitId: newUnit.id,
+            userId: workerId,
+          })),
+          skipDuplicates: true,
+        });
+      }
+    }
+
+    // Create production entries for each production unit
+    for (const unit of newProductUnits) {
+      await prisma.production.create({
+        data: {
+          fishFarmId: farm.id,
+          productionUnitId: unit.id,
+          organisationId: organisationId || null,
+          biomass: null,
+          fishCount: null,
+          batchNumberId: null,
+          age: null,
+          meanLength: null,
+          meanWeight: null,
+          stockingDensityKG: null,
+          stockingDensityNM: null,
+          stockingLevel: null,
+          createdBy: null,
+          updatedBy: null,
+        },
+      });
     }
 
     // Create predicted water quality parameters

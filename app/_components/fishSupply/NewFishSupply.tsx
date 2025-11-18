@@ -31,12 +31,15 @@ import toast from 'react-hot-toast';
 import { getCookie } from 'cookies-next';
 import { Species } from '../feedSupply/NewFeedLibarary';
 import { clientSecureFetch } from '@/app/_lib/clientSecureFetch';
+import { UserAccessConfig } from '@/app/_lib/constants/userAccessMatrix';
 interface Props {
   isEdit?: boolean;
   fishSupplyId?: string;
   farms?: Farm[];
   organisations?: SingleOrganisation[];
   speciesList: Species[];
+  userAccess?: UserAccessConfig;
+  isViewOnly?: boolean;
 }
 interface FormInputs {
   organisation: string;
@@ -51,7 +54,7 @@ interface FormInputs {
   productionUnits: string;
   speciesId: string;
 }
-function NewFishSupply({ isEdit, fishSupplyId, farms, organisations, speciesList }: Props) {
+function NewFishSupply({ isEdit, fishSupplyId, farms, organisations, speciesList, userAccess, isViewOnly = false }: Props) {
   const router = useRouter();
   const userData: any = getCookie('logged-user');
   const token = getCookie('auth-token');
@@ -77,6 +80,12 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations, speciesList
     mode: 'onChange',
   });
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
+    // Prevent submission in view-only mode
+    if (isViewOnly) {
+      toast.error('You do not have permission to edit this fish supply.');
+      return;
+    }
+    
     // Prevent API call if one is already in progress
     if (isApiCallInProgress) return;
     setIsApiCallInProgress(true);
@@ -107,7 +116,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations, speciesList
       const payload = {
         hatchingDate: validHatchingDate,
         spawningDate: validSpawningDate,
-        organisation: Number(data.organisation),
+        organisation: data.organisation, // Hatchery name as string
         spawningNumber: Number(data.spawningNumber),
         productionUnits: data.productionUnits,
         speciesId: data.speciesId,
@@ -170,18 +179,20 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations, speciesList
 
   useEffect(() => {
     if (fishSupply) {
-      setValue('age', fishSupply?.age);
+      // Don't set age from saved value - it will be recalculated from hatching date
       setValue('broodstockFemale', fishSupply?.broodstockFemale);
       setValue('broodstockMale', fishSupply?.broodstockMale);
-      setValue('organisation', String(fishSupply?.organisation));
+      setValue('organisation', String(fishSupply?.organisation || ''));
       setValue('spawningDate', dayjs(fishSupply?.spawningDate));
-      setValue('hatchingDate', dayjs(fishSupply?.hatchingDate));      setValue('spawningNumber', String(fishSupply?.spawningNumber));
+      setValue('hatchingDate', dayjs(fishSupply?.hatchingDate));
+      setValue('spawningNumber', String(fishSupply?.spawningNumber));
       setValue('status', fishSupply?.status);
       setValue('fishFarmId', fishSupply?.fishFarmId);
       setValue('productionUnits', String(fishSupply?.productionUnits));
       setValue('speciesId', fishSupply?.speciesId || '');
+      // Age will be automatically calculated by the hatchingDate useEffect
     }
-  }, [fishSupply]);
+  }, [fishSupply, setValue]);
 
   useEffect(() => {
     if (userData && !isEdit) {
@@ -232,43 +243,27 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations, speciesList
         >
           <Grid item sm={6} xs={12}>
             <Box width={'100%'}>
-              <FormControl fullWidth className="form-input" focused>
-                <InputLabel id="demo-simple-select-label">
-                  Hatchery *
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  {...register('organisation', {
-                    required: true,
-                    onChange: (e) => {
-                      setValue('organisation', e.target.value);
-                    },
-                  })}
-                  value={watch('organisation') || ''}
-                  label="Hatchery *"
-                >
-                  {organisations?.map((organisation, i) => {
-                    return (
-                      <MenuItem value={String(organisation.id)} key={i}>
-                        {organisation.name}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-                {errors &&
-                  errors.organisation &&
-                  errors.organisation.type === 'required' && (
-                    <Typography
-                      variant="body2"
-                      color="red"
-                      fontSize={13}
-                      mt={0.5}
-                    >
-                      This field is required.
-                    </Typography>
-                  )}
-              </FormControl>
+              <TextField
+                label="Hatchery *"
+                type="text"
+                className="form-input"
+                fullWidth
+                focused
+                InputProps={{ readOnly: isViewOnly }}
+                {...register('organisation', {
+                  required: true,
+                  validate: (value) => value.trim() !== '' || 'Spaces only are not allowed',
+                })}
+                value={watch('organisation') || ''}
+              />
+
+              {errors.organisation && (
+                <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                  {errors.organisation.type === 'required' 
+                    ? validationMessage.required 
+                    : errors.organisation.message || 'This field is required.'}
+                </Typography>
+              )}
             </Box>
           </Grid>
 
@@ -282,6 +277,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations, speciesList
                 id="demo-simple-select"
                 label="Species *"
                 value={watch('speciesId') || ''}
+                disabled={isViewOnly}
                 {...register('speciesId', {
                   required: true,
                   onChange: (e) => {
@@ -324,6 +320,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations, speciesList
                 id="demo-simple-select"
                 label="Fish Producer *"
                 value={watch('fishFarmId') || ''}
+                disabled={isViewOnly}
                 {...register('fishFarmId', {
                   required: true,
                   onChange: (e) => {
@@ -366,10 +363,12 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations, speciesList
                       {...field}
                       label="Spawning Date * "
                       className="form-input"
+                      disabled={isViewOnly}
                       sx={{
                         width: '100%',
                       }}
                       onChange={(date) => {
+                        if (isViewOnly) return;
                         if (date && date.isValid()) {
                           field.onChange(date); // Set a valid Dayjs date
                           setValue('hatchingDate', date);
@@ -378,7 +377,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations, speciesList
                         }
                       }}
                       slotProps={{
-                        textField: { focused: true },
+                        textField: { focused: true, InputProps: { readOnly: isViewOnly } },
                       }}
                       value={field.value || null}
                     />
@@ -402,6 +401,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations, speciesList
             <Box width={'100%'}>
               <TextField
                 label="Spawning Number *"
+                InputProps={{ readOnly: isViewOnly }}
                 {...register('spawningNumber', {
                   required: true,
                   pattern: validationPattern.numbersWithDot,
@@ -460,6 +460,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations, speciesList
                 label="Broodstock (Male)"
                 type="text"
                 className="form-input"
+                InputProps={{ readOnly: isViewOnly }}
                 {...register('broodstockMale')}
                 focused
                 sx={{
@@ -475,6 +476,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations, speciesList
                 label="Broodstock (Female)"
                 type="text"
                 className="form-input"
+                InputProps={{ readOnly: isViewOnly }}
                 {...register('broodstockFemale')}
                 focused
                 sx={{
@@ -496,13 +498,15 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations, speciesList
                       {...field}
                       label="Hatching Date *"
                       className="form-input"
+                      disabled={isViewOnly}
                       sx={{
                         width: '100%',
                       }}
                       slotProps={{
-                        textField: { focused: true },
+                        textField: { focused: true, InputProps: { readOnly: isViewOnly } },
                       }}
                       onChange={(date) => {
+                        if (isViewOnly) return;
                         if (date && date.isValid()) {
                           field.onChange(date); // Explicitly update field when a date is selected
                         } else {
@@ -535,6 +539,7 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations, speciesList
                 id="demo-simple-select"
                 label="Status *"
                 value={watch('status') || ''}
+                disabled={isViewOnly}
                 {...register('status', {
                   required: true,
                   onChange: (e) => {
@@ -589,29 +594,31 @@ function NewFishSupply({ isEdit, fishSupplyId, farms, organisations, speciesList
           </Grid> */}
         </Grid>
 
-        <Button
-          type="submit"
-          variant="contained"
-          disabled={isApiCallInProgress}
-          sx={{
-            background: '#06A19B',
-            fontWeight: 600,
-            padding: '6px 16px',
-            width: 'fit-content',
-            textTransform: 'capitalize',
-            borderRadius: '8px',
-            marginLeft: 'auto',
-            display: 'block',
-            marginTop: 2,
-            mb: 5,
-            mr: {
-              md: 3,
-              xs: 2,
-            },
-          }}
+        {!isViewOnly && (
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={isApiCallInProgress}
+            sx={{
+              background: '#06A19B',
+              fontWeight: 600,
+              padding: '6px 16px',
+              width: 'fit-content',
+              textTransform: 'capitalize',
+              borderRadius: '8px',
+              marginLeft: 'auto',
+              display: 'block',
+              marginTop: 2,
+              mb: 5,
+              mr: {
+                md: 3,
+                xs: 2,
+              },
+            }}
         >
           {isEdit ? 'Save' : 'Add Fish Supply'}
         </Button>
+        )}
       </form>
     </Stack>
   );

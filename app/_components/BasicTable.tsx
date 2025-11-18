@@ -34,22 +34,38 @@ import {
   organisationTableHead,
   organisationTableHeadMember,
 } from '../_lib/utils/tableHeadData';
-import { SingleOrganisation } from '../_typeModels/Organization';
+import { SingleOrganisation, OrganizationContact } from '../_typeModels/Organization';
+import { SingleUser } from '../_typeModels/User';
 import { getCookie } from 'cookies-next';
 import DeleteConfirmation from './models/DeleteConfirmation';
 import { clientSecureFetch } from '../_lib/clientSecureFetch';
+import { UserAccessConfig } from '../_lib/constants/userAccessMatrix';
+import {
+  canEditOrganisation,
+  canViewOrganisation,
+  canDeleteOrganisation,
+  canAddOrganisation,
+  getOrganisationPermissionKey,
+} from '../_lib/utils/permissions/access';
 
 interface Props {
   organisations: SingleOrganisation[];
-  userRole: string;
+  userRole?: string;
   permissions: boolean;
+  userAccess?: UserAccessConfig;
+  loggedUserOrgType?: string;
 }
 
 export default function BasicTable({
   organisations,
   userRole,
   permissions,
+  userAccess,
+  loggedUserOrgType,
 }: Props) {
+  console.log('organisations in table:', organisations);
+  console.log('userRole in table:', userRole);
+  console.log('permissions in table:', permissions);
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
@@ -105,13 +121,34 @@ export default function BasicTable({
       }
     }
   };
+  // Helper function to get primary contact (Business manager, Feedflow Administrator, or SUPERADMIN)
+  const getPrimaryContact = (contacts?: OrganizationContact[]) => {
+    if (!contacts || contacts.length === 0) return null;
+    // Priority: SUPERADMIN > Business manager > Feedflow Administrator > first contact
+    return (
+      contacts.find((c) => c.permission === 'SUPERADMIN') ||
+      contacts.find((c) => c.permission === 'Business manager') ||
+      contacts.find((c) => c.permission === 'Feedflow Administrator (Admin)') ||
+      contacts[0]
+    );
+  };
+
+  // Helper function to get primary user (Business manager, Feedflow Administrator, or SUPERADMIN)
+  const getPrimaryUser = (users?: SingleUser[]) => {
+    if (!users || users.length === 0) return null;
+    // Priority: SUPERADMIN > Business manager > Feedflow Administrator > first user
+    return (
+      users.find((u) => u.role === 'SUPERADMIN') ||
+      users.find((u) => u.role === 'Business manager') ||
+      users.find((u) => u.role === 'Feedflow Administrator (Admin)') ||
+      users[0]
+    );
+  };
+
   const handleRestrictAccess = async () => {
     setAnchorEl(null);
 
     if (selectedOrganisation) {
-      const user = selectedOrganisation?.users?.find(
-        (user) => user.role === 'ADMIN' || user.role === 'SUPERADMIN',
-      );
       const token = getCookie('auth-token');
       const response = await clientSecureFetch('/api/users', {
         method: 'PATCH',
@@ -131,6 +168,7 @@ export default function BasicTable({
       }
     }
   };
+
   const handleDeleteOrganisation = async () => {
     if (!selectedOrganisation) return;
     try {
@@ -358,10 +396,10 @@ export default function BasicTable({
                   className={selectedView === 'all' ? 'active-tab' : ''}
                 />
                 <Tab
-                  label="Feed Suppliers"
-                  value="feedSuppliers"
+                  label="Feed Manufacturers"
+                  value="feedManufacturers"
                   className={
-                    selectedView === 'feedSuppliers' ? 'active-tab' : ''
+                    selectedView === 'feedManufacturers' ? 'active-tab' : ''
                   }
                 />
                 <Tab
@@ -473,11 +511,7 @@ export default function BasicTable({
                           pl: 0,
                         }}
                       >
-                        {organisation?.contact?.find(
-                          (contact) =>
-                            contact.permission === 'ADMIN' ||
-                            contact.permission === 'SUPERADMIN',
-                        )?.email ?? ''}
+                        {getPrimaryContact(organisation?.contact)?.email ?? ''}
                       </TableCell>
                       <TableCell
                         sx={{
@@ -488,11 +522,7 @@ export default function BasicTable({
                           pl: 0,
                         }}
                       >
-                        {organisation?.contact?.find(
-                          (contact) =>
-                            contact.permission === 'ADMIN' ||
-                            contact.permission === 'SUPERADMIN',
-                        )?.phone ?? ''}
+                        {getPrimaryContact(organisation?.contact)?.phone ?? ''}
                       </TableCell>
                       <TableCell
                         sx={{
@@ -503,11 +533,7 @@ export default function BasicTable({
                           pl: 0,
                         }}
                       >
-                        {organisation?.contact?.find(
-                          (contact) =>
-                            contact.permission === 'ADMIN' ||
-                            contact.permission === 'SUPERADMIN',
-                        )?.name ?? ''}
+                        {getPrimaryContact(organisation?.contact)?.name ?? ''}
                       </TableCell>
                       <TableCell
                         sx={{
@@ -518,10 +544,7 @@ export default function BasicTable({
                           pl: 0,
                         }}
                       >
-                        {organisation?.users?.find(
-                          (user) =>
-                            user.role === 'ADMIN' || user.role === 'SUPERADMIN',
-                        )?.access
+                        {getPrimaryUser(organisation?.users)?.access
                           ? 'True'
                           : 'False'}
                       </TableCell>
@@ -577,13 +600,16 @@ export default function BasicTable({
                           >
                             <MenuItem
                               onClick={handleEdit}
-                              disabled={
-                                userRole === 'SUPERADMIN'
-                                  ? false
-                                  : permissions
-                                    ? false
-                                    : true
-                              }
+                              disabled={false}
+                              sx={{
+                                display: canViewOrganisation(
+                                  userAccess,
+                                  getOrganisationPermissionKey(organisation.organisationType || ''),
+                                  userRole
+                                )
+                                  ? 'flex'
+                                  : 'none',
+                              }}
                             >
                               <Stack
                                 display="flex"
@@ -591,21 +617,45 @@ export default function BasicTable({
                                 alignItems="center"
                                 direction="row"
                               >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="1em"
-                                  height="1em"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    fill="currentColor"
-                                    d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"
-                                  />
-                                </svg>
-
-                                <Typography variant="subtitle2">
-                                  Edit
-                                </Typography>
+                                {canEditOrganisation(
+                                  userAccess,
+                                  getOrganisationPermissionKey(organisation.organisationType || ''),
+                                  userRole
+                                ) ? (
+                                  <>
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="1em"
+                                      height="1em"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        fill="currentColor"
+                                        d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"
+                                      />
+                                    </svg>
+                                    <Typography variant="subtitle2">
+                                      Edit
+                                    </Typography>
+                                  </>
+                                ) : (
+                                  <>
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="1em"
+                                      height="1em"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        fill="currentColor"
+                                        d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5M12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5s5 2.24 5 5s-2.24 5-5 5m0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3s3-1.34 3-3s-1.34-3-3-3"
+                                      />
+                                    </svg>
+                                    <Typography variant="subtitle2">
+                                      View
+                                    </Typography>
+                                  </>
+                                )}
                               </Stack>
                             </MenuItem>
                             <MenuItem
@@ -614,11 +664,23 @@ export default function BasicTable({
                                 selectedOrganisation?.users?.some(
                                   (user) => user.role === 'SUPERADMIN',
                                 ) ||
-                                selectedOrganisation?.users?.some(
-                                  (user) =>
-                                    user.role === 'ADMIN' && user.invite,
+                                getPrimaryUser(selectedOrganisation?.users)
+                                  ?.invite ||
+                                !canEditOrganisation(
+                                  userAccess,
+                                  getOrganisationPermissionKey(selectedOrganisation?.organisationType || ''),
+                                  userRole
                                 )
                               }
+                              sx={{
+                                display: canEditOrganisation(
+                                  userAccess,
+                                  getOrganisationPermissionKey(selectedOrganisation?.organisationType || ''),
+                                  userRole
+                                )
+                                  ? 'flex'
+                                  : 'none',
+                              }}
                             >
                               <Stack
                                 display="flex"
@@ -629,35 +691,30 @@ export default function BasicTable({
                                 <Image
                                   alt="user-block"
                                   src={
-                                    selectedOrganisation?.users?.find(
-                                      (val) =>
-                                        val.role === 'ADMIN' && val.access,
-                                    )
+                                    getPrimaryUser(selectedOrganisation?.users)
+                                      ?.access
                                       ? userUnBlock
                                       : userBlock
                                   }
                                 />
 
                                 <Typography variant="subtitle2">
-                                  {selectedOrganisation?.users?.find(
-                                    (val) => val.role === 'ADMIN' && val.access,
-                                  )
+                                  {getPrimaryUser(selectedOrganisation?.users)
+                                    ?.access
                                     ? 'Access Restricted'
                                     : 'Access Unrestrict'}
                                 </Typography>
                               </Stack>
                             </MenuItem>
-                            {userRole === 'SUPERADMIN' && (
+                            {(userRole === 'SUPERADMIN' || canAddOrganisation(userAccess)) && (
                               <MenuItem
                                 onClick={handleInviteOrganisation}
                                 disabled={
                                   selectedOrganisation?.users?.some(
                                     (user) => user.role === 'SUPERADMIN',
                                   ) ||
-                                  selectedOrganisation?.users?.some(
-                                    (user) =>
-                                      user.role === 'ADMIN' && user.invite,
-                                  )
+                                  getPrimaryUser(selectedOrganisation?.users)
+                                    ?.invite
                                 }
                               >
                                 <Stack
@@ -679,20 +736,28 @@ export default function BasicTable({
                                   </svg>
 
                                   <Typography variant="subtitle2">
-                                    {selectedOrganisation?.users?.find(
-                                      (val) =>
-                                        val.role === 'ADMIN' && val.invite,
-                                    )
+                                    {getPrimaryUser(selectedOrganisation?.users)
+                                      ?.invite
                                       ? 'Invited'
                                       : 'Invite'}
                                   </Typography>
                                 </Stack>
                               </MenuItem>
                             )}
-                            {userRole === 'SUPERADMIN' && (
+                            {canDeleteOrganisation(
+                              userAccess,
+                              getOrganisationPermissionKey(selectedOrganisation?.organisationType || ''),
+                              userRole
+                            ) && (
                               <MenuItem
                                 onClick={() => setOpenDeleteModal(true)}
-                                disabled={!(userRole === 'SUPERADMIN' || permissions)}
+                                disabled={
+                                  !canDeleteOrganisation(
+                                    userAccess,
+                                    getOrganisationPermissionKey(selectedOrganisation?.organisationType || ''),
+                                    userRole
+                                  )
+                                }
                               >
                                 <Stack
                                   display="flex"
@@ -748,3 +813,4 @@ export default function BasicTable({
     </>
   );
 }
+

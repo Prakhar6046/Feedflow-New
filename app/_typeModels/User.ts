@@ -13,11 +13,12 @@ export interface SingleUser {
   password: string;
   status: string;
   role: string;
+  inputRole?: string;
   createdAt: string;
-  organisationId: number;
+  organisationId: number; 
   invite: boolean;
   access: boolean;
-  organisation: Organisation;
+  organisationType: string;
   permissions: Permissions;
   userId?: number;
 }
@@ -36,21 +37,27 @@ export interface FarmPermissions {
 }
 
 export interface Permissions {
-  createUsers: boolean;
-  editUsers: boolean;
-  editAdminRights: boolean;
-  editOrganisation: boolean;
-  addFeedSupply: boolean;
-  editFeedSupply: boolean;
-  addFishProducers: boolean;
-  editFishProducers: boolean;
-  createFishSupply: boolean;
-  editFishSupply: boolean;
-  createFarms: boolean;
-  editFarms: boolean;
-  transferFishBetweenFarms: boolean;
-  farms?: FarmPermissions[];
+  setup: {
+    farm: number | number[];
+    feedSupply: number | number[];
+    fishSupply: number | number[];
+  };
+  users: {
+    fishProducers: number | number[];
+    feedManufacturers: number | number[];
+  };
+  manage: {
+    production: number | number[];
+    feedPrediction: number | number[];
+  };
+  feedLibrary: number | number[];
+  growthModels: number | number[];
+  organisations: {
+    fishProducers: number | number[];
+    feedManufacturers: number | number[];
+  };
 }
+
 export interface UserFormInputs {
   name: string;
   image: string;
@@ -60,6 +67,7 @@ export interface UserFormInputs {
   email: string;
   password: string;
   confirmPassword: string;
+  userType?: string; // User type based on organization type
   permissions?: Permissions;
 }
 export interface AddUserFormInputs {
@@ -117,7 +125,7 @@ export interface Contact {
   email: string;
   phone: string;
   role: string | null;
-  permission: string; // e.g. 'SUPERADMIN'
+  permission: string; 
   userId: number | null;
   createdAt: string;
   updatedAt: string;

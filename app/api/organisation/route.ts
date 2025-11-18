@@ -14,8 +14,8 @@ export const GET = async (request: NextRequest): Promise<NextResponse> => {
     const tabFilter =
       tab === 'fishProducers'
         ? 'Fish Producer'
-        : tab === 'feedSuppliers'
-          ? 'Feed Supplier'
+        : tab === 'feedManufacturers'
+          ? 'Feed manufacturer'
           : undefined;
 
     const baseWhereClause: Prisma.OrganisationWhereInput = {

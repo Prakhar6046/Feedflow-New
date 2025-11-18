@@ -24,8 +24,11 @@ import React, { useEffect, useState } from 'react';
 
 import { selectRole } from '@/lib/features/user/userSlice';
 import { useAppSelector } from '@/lib/hooks';
-import { getLocalItem } from '@/app/_lib/utils';
+import { getLocalItem, getDayMonthDifference } from '@/app/_lib/utils';
 import { Species } from '../feedSupply/NewFeedLibarary';
+import { UserAccessConfig } from '@/app/_lib/constants/userAccessMatrix';
+import { canEditFishSupply, canViewFishSupply, canDeleteFishSupply } from '@/app/_lib/utils/permissions/access';
+
 interface Props {
   tableData: {
     id: string;
@@ -36,6 +39,8 @@ interface Props {
   fishSupply?: FishSupply[];
   permisions: boolean;
   speciesList: Species[];
+  userAccess?: UserAccessConfig;
+  userRole?: string;
 }
 
 export default function FishSupplyTable({
@@ -43,7 +48,14 @@ export default function FishSupplyTable({
   fishSupply,
   permisions,
   speciesList,
+  userAccess,
+  userRole,
 }: Props) {
+  console.log('tableData in FishSupplyTable:', tableData);
+  console.log('fishSupply in FishSupplyTable:', fishSupply);
+  console.log('permisions in FishSupplyTable:', permisions);
+  console.log('speciesList in FishSupplyTable:', speciesList);
+  console.log(fishSupply);
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
@@ -113,20 +125,21 @@ export default function FishSupplyTable({
                   xs: idx === 0 ? 4 : 0,
                 },
               }}
+              title={headCell.label === 'Age' ? 'Format: Days/Months (e.g., 6/0 means 6 days, 0 months)' : undefined}
             >
               {idx === tableData.length - 1 ||
                 idx === 0 ||
                 idx === 1 ||
                 idx === 2 ||
                 idx === 5 ? (
-                headCell.label
+                headCell.label === 'Age' ? 'Age (Days/Months)' : headCell.label
               ) : (
                 <TableSortLabel
                   active={orderBy === headCell.id}
                   direction={orderBy === headCell.id ? order : 'asc'}
                   onClick={createSortHandler(headCell.id)}
                 >
-                  {headCell.label}
+                  {headCell.label === 'Age' ? 'Age (Days/Months)' : headCell.label}
                 </TableSortLabel>
               )}
             </TableCell>
@@ -161,16 +174,10 @@ export default function FishSupplyTable({
             if (fish1.hatchingDate > fish2.hatchingDate) return 1 * orderType;
             return 0;
           } else if (property === 'name') {
-            if (
-              fish1.creator?.hatchery[0]?.name <
-              fish2.creator?.hatchery[0]?.name
-            )
-              return -1 * orderType;
-            if (
-              fish1.creator?.hatchery[0]?.name >
-              fish2.creator?.hatchery[0]?.name
-            )
-              return 1 * orderType;
+            const hatchery1 = String(fish1.organisation || '').toLowerCase();
+            const hatchery2 = String(fish2.organisation || '').toLowerCase();
+            if (hatchery1 < hatchery2) return -1 * orderType;
+            if (hatchery1 > hatchery2) return 1 * orderType;
             return 0;
           } else if (property === 'fishFarm') {
             if (fish1.fishFarm < fish2.fishFarm) return -1 * orderType;
@@ -221,16 +228,10 @@ export default function FishSupplyTable({
               if (fish1.hatchingDate > fish2.hatchingDate) return 1 * orderType;
               return 0;
             } else if (data.column === 'name') {
-              if (
-                fish1.creator?.hatchery[0]?.name <
-                fish2.creator?.hatchery[0]?.name
-              )
-                return -1 * orderType;
-              if (
-                fish1.creator?.hatchery[0]?.name >
-                fish2.creator?.hatchery[0]?.name
-              )
-                return 1 * orderType;
+              const hatchery1 = String(fish1.organisation || '').toLowerCase();
+              const hatchery2 = String(fish2.organisation || '').toLowerCase();
+              if (hatchery1 < hatchery2) return -1 * orderType;
+              if (hatchery1 > hatchery2) return 1 * orderType;
               return 0;
             } else if (data.column === 'fishFarm') {
               if (fish1.fishFarm < fish2.fishFarm) return -1 * orderType;
@@ -299,6 +300,13 @@ export default function FishSupplyTable({
                   (specie) => specie.id === (fish.speciesId || fish.creator?.hatchery[0]?.fishSpecie)
                 )?.name || '';
 
+                // Calculate age dynamically from hatching date (not from stored age)
+                // Age = Today's date - Hatching date
+                const calculatedAge = fish.status === 'Harvested' 
+                  ? 'N/A' 
+                  : fish.hatchingDate 
+                    ? getDayMonthDifference(fish.hatchingDate)
+                    : 'N/A';
 
                 return (
                   <TableRow
@@ -448,7 +456,7 @@ export default function FishSupplyTable({
                         textWrap: 'nowrap',
                       }}
                     >
-                      {fish.status === 'Harvested' ? 'N/A' : fish.age}
+                      {calculatedAge}
                     </TableCell>{' '}
                     <TableCell
                       sx={{
@@ -459,7 +467,7 @@ export default function FishSupplyTable({
                         textWrap: 'nowrap',
                       }}
                     >
-                      {fish?.creator?.hatchery[0]?.name}
+                      {fish?.organisation ? String(fish.organisation) : 'N/A'}
                     </TableCell>{' '}
                     <TableCell
                       sx={{
@@ -533,28 +541,51 @@ export default function FishSupplyTable({
                             left: '-10px',
                           }}
                         >
-                          <MenuItem onClick={handleEdit}>
-                            <Stack
-                              display="flex"
-                              gap={1.2}
-                              alignItems="center"
-                              direction="row"
+                          {(canViewFishSupply(userAccess, userRole) || userRole === 'SUPERADMIN') && (
+                            <MenuItem 
+                              onClick={handleEdit}
+                              disabled={false}
                             >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="1em"
-                                height="1em"
-                                viewBox="0 0 24 24"
+                              <Stack
+                                display="flex"
+                                gap={1.2}
+                                alignItems="center"
+                                direction="row"
                               >
-                                <path
-                                  fill="currentColor"
-                                  d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"
-                                />
-                              </svg>
-
-                              <Typography variant="subtitle2">Edit</Typography>
-                            </Stack>
-                          </MenuItem>
+                                {canEditFishSupply(userAccess, userRole) || userRole === 'SUPERADMIN' ? (
+                                  <>
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="1em"
+                                      height="1em"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        fill="currentColor"
+                                        d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"
+                                      />
+                                    </svg>
+                                    <Typography variant="subtitle2">Edit</Typography>
+                                  </>
+                                ) : (
+                                  <>
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="1em"
+                                      height="1em"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        fill="currentColor"
+                                        d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5M12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5s5 2.24 5 5s-2.24 5-5 5m0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3s3-1.34 3-3s-1.34-3-3-3"
+                                      />
+                                    </svg>
+                                    <Typography variant="subtitle2">View</Typography>
+                                  </>
+                                )}
+                              </Stack>
+                            </MenuItem>
+                          )}
 
                           <Divider sx={{ borderColor: '#9797971A', my: 0.5 }} />
                         </Menu>

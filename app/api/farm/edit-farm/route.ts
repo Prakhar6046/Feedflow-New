@@ -246,6 +246,23 @@ export async function POST(req: NextRequest) {
       });
       newUnits.push(updatedUnit); // Store the updated or created production unit
 
+      // Update worker assignments for this production unit
+      // First, delete existing assignments
+      await prisma.productionUnitWorker.deleteMany({
+        where: { productionUnitId: updatedUnit.id },
+      });
+
+      // Then, create new assignments if provided
+      if (unit.allocatedWorkers && Array.isArray(unit.allocatedWorkers) && unit.allocatedWorkers.length > 0) {
+        await prisma.productionUnitWorker.createMany({
+          data: unit.allocatedWorkers.map((workerId: number) => ({
+            productionUnitId: updatedUnit.id,
+            userId: workerId,
+          })),
+          skipDuplicates: true,
+        });
+      }
+
       for (const existingPredictionUnit of body.productionParamtertsUnitsArray ||
         []) {
         if (unit.name === existingPredictionUnit.unitName) {

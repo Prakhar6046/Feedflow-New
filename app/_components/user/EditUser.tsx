@@ -7,17 +7,18 @@ import { SingleUser, UserFormInputs } from '@/app/_typeModels/User';
 import EyeClosed from '@/public/static/img/icons/ic-eye-closed.svg';
 import EyeOpened from '@/public/static/img/icons/ic-eye-open.svg';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { Box, Grid, Stack, TextField, Typography } from '@mui/material';
+import { Box, FormControl, Grid, InputLabel, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import UserPermission from './UserPermission';
 import { getCookie } from 'cookies-next';
 import { clientSecureFetch } from '@/app/_lib/clientSecureFetch';
+import { UserTypeByOrganisation } from '../AddNewOrganisation';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -33,8 +34,9 @@ const VisuallyHiddenInput = styled('input')({
 
 type Iprops = {
   userId: string;
+  isViewOnly?: boolean;
 };
-function EditUser({ userId }: Iprops) {
+function EditUser({ userId, isViewOnly = false }: Iprops) {
   const router = useRouter();
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
@@ -56,6 +58,12 @@ function EditUser({ userId }: Iprops) {
     formState: { errors },
   } = useForm<UserFormInputs>({ mode: 'onTouched' });
   const onSubmit: SubmitHandler<UserFormInputs> = async (data) => {
+    // Prevent submission in view-only mode
+    if (isViewOnly) {
+      toast.error('You do not have permission to edit this user.');
+      return;
+    }
+    
     // Prevent API call if one is already in progress
     if (isApiCallInProgress) return;
     setIsApiCallInProgress(true);
@@ -66,6 +74,7 @@ function EditUser({ userId }: Iprops) {
         organisationId: userData?.data?.organisationId,
         imageUrl: profilePic,
         permissions: data.permissions,
+        userType: data.userType || userData?.data?.role || '',
         password: '',
       };
 
@@ -112,21 +121,25 @@ function EditUser({ userId }: Iprops) {
       setValue('name', String(userData?.data?.name));
       setValue('image', String(userData?.data?.imageUrl));
       setValue('email', String(userData?.data?.email));
-      setValue('organisation', String(userData?.data?.organisation?.name));
+      setValue('organisation', String((userData?.data as any)?.organisation?.name || ''));
       setValue(
         'organisationType',
-        String(userData?.data?.organisation?.organisationType),
+        String((userData?.data as any)?.organisation?.organisationType || userData?.data?.organisationType || ''),
       );
       setValue('organisationId', userData?.data?.organisationId);
       setValue('permissions', userData?.data?.permissions);
+      // Set userType from role
+      setValue('userType', userData?.data?.role || '');
 
       setProfilePic(userData?.data?.imageUrl);
 
       // Prepare the data for useFieldArray, including the farm name
-      const farmPermissions = (userData?.data?.organisation?.Farm || []).map(
+      const farmPermissions = ((userData?.data as any)?.organisation?.Farm || []).map(
         (farm) => {
-          const found = userData?.data?.permissions?.farms?.find(
-            (p) => String(p.farmId) === String(farm.id),
+          const permissionsAny = userData?.data?.permissions as any;
+          const farmsArray = permissionsAny?.farms as any[] | undefined;
+          const found = farmsArray?.find(
+            (p: any) => String(p.farmId) === String(farm.id),
           );
           return {
             farmId: farm.id,
@@ -142,7 +155,9 @@ function EditUser({ userId }: Iprops) {
         },
       );
 
-      setValue('permissions.farms', farmPermissions);
+      if (farmPermissions.length > 0) {
+        setValue('permissions.farms' as any, farmPermissions);
+      }
 
       // Set non-farm permissions individually
       if (userData?.data?.permissions) {
@@ -403,7 +418,7 @@ function EditUser({ userId }: Iprops) {
                     validate: (value) =>
                       value.trim() !== '' || 'Name cannot be empty or just spaces.',
                   })}
-
+                  InputProps={{ readOnly: isViewOnly }}
                   focused
                   sx={{
                     width: '100%',
@@ -497,6 +512,46 @@ function EditUser({ userId }: Iprops) {
                   },
                 }}
               />
+              {watch('organisationType') && (
+                <FormControl fullWidth className="form-input" focused sx={{ mb: 2 }}>
+                  <InputLabel id="user-type-select-label">
+                    User Type *
+                  </InputLabel>
+                  <Controller
+                    name="userType"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <Select
+                        labelId="user-type-select-label"
+                        id="user-type-select"
+                        label="User Type *"
+                        value={field.value ?? ''}
+                        onChange={field.onChange}
+                        disabled={isViewOnly}
+                      >
+                        {(UserTypeByOrganisation[watch('organisationType') || ''] || []).map(
+                          (userType) => (
+                            <MenuItem value={userType} key={userType}>
+                              {userType}
+                            </MenuItem>
+                          )
+                        )}
+                      </Select>
+                    )}
+                  />
+                  {errors?.userType && (
+                    <Typography
+                      variant="body2"
+                      color="red"
+                      fontSize={13}
+                      mt={0.5}
+                    >
+                      This field is required.
+                    </Typography>
+                  )}
+                </FormControl>
+              )}
               {/* )} */}
               {/* <Divider
                 sx={{
@@ -533,6 +588,7 @@ function EditUser({ userId }: Iprops) {
                   {...register('password', {
                     pattern: validationPattern.passwordPattern,
                   })}
+                  InputProps={{ readOnly: isViewOnly }}
                   focused
                   sx={{
                     width: '100%',
@@ -584,6 +640,7 @@ function EditUser({ userId }: Iprops) {
                       value === getValues().password ||
                       'Confirm Password do not match!',
                   })}
+                  InputProps={{ readOnly: isViewOnly }}
                   focused
                   sx={{
                     width: '100%',
@@ -636,31 +693,33 @@ function EditUser({ userId }: Iprops) {
             </Grid>
           </Grid>
         </Stack>
-        <UserPermission
+        {/* <UserPermission
           control={control}
           oraginsationType={
-            userData?.data?.organisation?.organisationType ?? ''
+            (userData?.data as any)?.organisation?.organisationType ?? userData?.data?.organisationType ?? ''
           }
           userData={userData?.data?.role ?? ''}
-        />
-        <Button
-          type="submit"
-          variant="contained"
-          disabled={isApiCallInProgress}
-          sx={{
-            background: '#06A19B',
-            fontWeight: 600,
-            padding: '6px 16px',
-            width: 'fit-content',
-            textTransform: 'capitalize',
-            borderRadius: '8px',
-            marginLeft: 'auto',
-            display: 'block',
-            marginTop: 5,
-          }}
-        >
-          Save Changes
-        </Button>
+        /> */}
+        {!isViewOnly && (
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={isApiCallInProgress}
+            sx={{
+              background: '#06A19B',
+              fontWeight: 600,
+              padding: '6px 16px',
+              width: 'fit-content',
+              textTransform: 'capitalize',
+              borderRadius: '8px',
+              marginLeft: 'auto',
+              display: 'block',
+              marginTop: 5,
+            }}
+          >
+            Save Changes
+          </Button>
+        )}
       </form>
     </Stack>
   );

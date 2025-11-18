@@ -31,6 +31,7 @@ import { Species } from './feedSupply/NewFeedLibarary';
 import { OrganisationModelResponse } from '../_typeModels/growthModel';
 import { SingleUser } from '../_typeModels/User';
 import { clientSecureFetch } from '../_lib/clientSecureFetch';
+import { UserAccessConfig } from '../_lib/constants/userAccessMatrix';
 export interface productionSystem {
   id: string;
   name: string;
@@ -115,11 +116,15 @@ function GrowthModel({
   editMode = false,
   modelData = null,
   modelId = null,
+  userAccess,
+  isViewOnly = false,
 }: {
   farms: Farm[];
   editMode?: boolean;
   modelData?: OrganisationModelResponse;
   modelId?: string | null;
+  userAccess?: UserAccessConfig;
+  isViewOnly?: boolean;
 }) {
   const loggedUser: any = getCookie('logged-user');
   const router = useRouter();
@@ -562,6 +567,7 @@ function GrowthModel({
                         label="Name *"
                         type="text"
                         className="form-input"
+                        InputProps={{ readOnly: isViewOnly }}
                         focused
                         {...register('name', {
                           required: 'This field is required.',
@@ -599,11 +605,13 @@ function GrowthModel({
                         labelId="feed-supply-select-label5"
                         id="feed-supply-select5"
                         label="Species *"
+                        disabled={isViewOnly}
                         {...register('specie', {
                           required: true,
                         })}
                         value={species}
                         onChange={(e) => {
+                          if (isViewOnly) return;
                           setSpecies(e.target.value);
                           setValue('specie', e.target.value);
                           clearErrors('specie');
@@ -644,11 +652,13 @@ function GrowthModel({
                         labelId="feed-supply-select-label5"
                         id="feed-supply-select5"
                         label="Production Systems *"
+                        disabled={isViewOnly}
                         {...register('productionSystem', {
                           required: true,
                         })}
                         value={productionSystem}
                         onChange={(e) => {
+                          if (isViewOnly) return;
                           setProductionSystem(e.target.value);
                           setValue('productionSystem', e.target.value);
                           clearErrors('productionSystem');
@@ -686,8 +696,10 @@ function GrowthModel({
                           labelId="farm-multi-select-label"
                           label="Select Farms *"
                           multiple
+                          disabled={isViewOnly}
                           value={selectedFarmsForModel}
                           onChange={(e) => {
+                            if (isViewOnly) return;
                             const value = typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value;
                             setSelectedFarmsForModel(value as string[]);
                             // Clear error when user selects a farm
@@ -735,7 +747,9 @@ function GrowthModel({
                     <Checkbox
                       className="checkbox-style"
                       checked={setDefault}
+                      disabled={isViewOnly || !species || !productionSystem}
                       onChange={(e) => {
+                        if (isViewOnly) return;
                         const newValue = e.target.checked;
                         // If trying to set as default and there's already an existing default, show confirmation
                         if (newValue && hasExistingDefault && existingDefaultModel) {
@@ -745,7 +759,6 @@ function GrowthModel({
                           setSetDefault(newValue);
                         }
                       }}
-                      disabled={!species || !productionSystem}
                     />
                   }
                   label={checkboxLabel || ""}
@@ -818,11 +831,13 @@ function GrowthModel({
                         labelId="feed-supply-select-label5"
                         label="Model *"
                         id="feed-supply-select5"
+                        disabled={isViewOnly}
                         {...register('temperatureCoefficient', {
                           required: true,
                         })}
                         value={selectedModel}
                         onChange={(e) => {
+                          if (isViewOnly) return;
                           setValue(
                             'temperatureCoefficient',
                             e.target.value as CoefficientModel,
@@ -888,6 +903,7 @@ function GrowthModel({
                           type="number"
                           className="form-input"
                           focused
+                          InputProps={{ readOnly: isViewOnly }}
                           inputProps={{ step: 'any' }}
                           {...register(field, { required: true })}
                           error={!!errors[field]}
@@ -1029,23 +1045,25 @@ function GrowthModel({
                 alignItems={'end'}
                 marginBlock={'20px'}
               >
-                <Button
-                  type="submit"
-                  disabled={isApiCallInProgress}
-                  variant="contained"
-                  sx={{
-                    color: '#fff',
-                    background: '#06A19B',
-                    fontWeight: 600,
-                    padding: '6px 16px',
-                    width: 'fit-content',
-                    textTransform: 'capitalize',
-                    borderRadius: '8px',
-                    border: '1px solid #06A19B',
-                  }}
-                >
-                  Save
-                </Button>
+                {!isViewOnly && (
+                  <Button
+                    type="submit"
+                    disabled={isApiCallInProgress}
+                    variant="contained"
+                    sx={{
+                      color: '#fff',
+                      background: '#06A19B',
+                      fontWeight: 600,
+                      padding: '6px 16px',
+                      width: 'fit-content',
+                      textTransform: 'capitalize',
+                      borderRadius: '8px',
+                      border: '1px solid #06A19B',
+                    }}
+                  >
+                    Save
+                  </Button>
+                )}
               </Box>
             </form>
           </Stack>

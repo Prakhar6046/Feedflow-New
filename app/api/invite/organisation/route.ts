@@ -31,10 +31,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Normalize emails to lowercase to match how they're stored in the database
+    const normalizedEmails = users.map((user: any) => 
+      typeof user.email === 'string' ? user.email.toLowerCase().trim() : user.email
+    ).filter(Boolean);
+
     const createdUsers = await prisma.contact.findMany({
       where: {
+        organisationId: organisationId,
         email: {
-          in: users.map((user: any) => user.email),
+          in: normalizedEmails,
         },
       },
       select: {
@@ -47,7 +53,13 @@ export async function POST(req: NextRequest) {
     });
 
     if (createdUsers.length === 0) {
-      return NextResponse.json({ error: 'No users found' }, { status: 404 });
+      // If no users found, it might be because emails were already sent during organization creation
+      // Return success but with a warning message instead of an error
+      return NextResponse.json({ 
+        message: 'No users found to invite. They may have already been invited during organization creation.',
+        status: true,
+        warning: true
+      }, { status: 200 });
     }
 
     // Sending emails to all created users

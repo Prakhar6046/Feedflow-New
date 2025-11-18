@@ -73,6 +73,7 @@ export interface ProductionUnitsFormTypes {
     waterflowRate: string;
     id: number;
     unitId?: string;
+    allocatedWorkers?: number[]; // Array of user IDs for General workers (level 1 and 2)
   }[];
   area: string;
   depth: string;

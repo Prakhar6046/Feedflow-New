@@ -52,6 +52,7 @@ const FishManageHistoryTable: React.FC<Props> = ({
   productions,
   fishId,
 }) => {
+  console.log('productions', productions);
   const dispatch = useAppDispatch();
   const pathName = usePathname();
   const [order, setOrder] = useState('asc');
@@ -59,6 +60,7 @@ const FishManageHistoryTable: React.FC<Props> = ({
   const [tab, setTab] = useState<string>('list');
   const [fishHistoryData, setFishHistoryData] =
     useState<FishManageHistoryGroup>();
+    console.log('fishHistoryData', fishHistoryData);
   const [sortDataFromLocal, setSortDataFromLocal] = React.useState<any>('');
   const [isWaterSampleHistory, setIsWaterSampleHistory] =
     useState<boolean>(false);
@@ -162,6 +164,7 @@ const FishManageHistoryTable: React.FC<Props> = ({
     }, []);
     return filteredFarm[0] ?? null;
   }, [productions]);
+  console.log('groupedData', groupedData);
 
   const handleRequestSort = (
     _: React.MouseEvent<HTMLButtonElement> | null,

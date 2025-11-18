@@ -11,6 +11,18 @@ export const GET = async () => {
           include: {
             YearBasedPredicationProductionUnit: true,
             FeedProfileProductionUnit: true,
+            ProductionUnitWorker: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    role: true,
+                  },
+                },
+              },
+            },
           },
         },
         production: true,
@@ -44,8 +56,15 @@ export const GET = async () => {
           }),
         );
 
+        // Map production units to include allocatedWorkers array
+        const productionUnitsWithWorkers = farm.productionUnits.map((unit: any) => ({
+          ...unit,
+          allocatedWorkers: unit.ProductionUnitWorker?.map((pw: any) => pw.userId) || [],
+        }));
+
         return {
           ...farm,
+          productionUnits: productionUnitsWithWorkers,
           FishManageHistory: enrichedHistory,
         };
       }),

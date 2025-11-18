@@ -48,7 +48,7 @@ export default function Page() {
       if (response.ok && data.data.user) {
         const { organisation, ...userWithoutPassword } = data.data.user;
         delete userWithoutPassword.password;
-
+        
         setCookie(
           'logged-user',
           JSON.stringify({

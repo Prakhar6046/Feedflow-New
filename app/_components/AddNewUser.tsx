@@ -23,10 +23,13 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { SingleOrganisation } from '../_typeModels/Organization';
+import { UserTypeByOrganisation } from './AddNewOrganisation';
 import { UserFormInputs } from '../_typeModels/User';
 import { deleteImage, handleUpload } from '../_lib/utils';
 import UserPermission from './user/UserPermission';
 import { clientSecureFetch } from '../_lib/clientSecureFetch';
+import { Controller } from 'react-hook-form';
+import { getUserAccessConfig } from '../_lib/constants/userAccessMatrix';
 
 interface Props {
   organisations?: SingleOrganisation[];
@@ -46,6 +49,7 @@ const VisuallyHiddenInput = styled('input')({
 export default function AddNewUser({ organisations }: Props) {
   const router = useRouter();
   const [selectedOrganisation, setSelectedOrganisation] = useState<string>('');
+  const [selectedOrganisationType, setSelectedOrganisationType] = useState<string>('');
   const [profilePic, setProfilePic] = useState<string>();
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
@@ -115,11 +119,17 @@ export default function AddNewUser({ organisations }: Props) {
     setIsApiCallInProgress(true);
 
     try {
+      // Get access config for permissions
+      const userType = data.userType || '';
+      const accessConfig = getUserAccessConfig(selectedOrganisationType, userType);
+      
       const response = await clientSecureFetch('/api/add-new-user', {
         method: 'POST',
         body: JSON.stringify({
           ...data,
           image: profilePic || '',
+          userType: userType,
+          permissions: accessConfig?.modules ?? {},
         }),
       });
 
@@ -168,7 +178,20 @@ export default function AddNewUser({ organisations }: Props) {
 
   const handleChange = (event: SelectChangeEvent) => {
     clearErrors('organisationId');
-    setSelectedOrganisation(event.target.value as string);
+    const orgId = event.target.value as string;
+    setSelectedOrganisation(orgId);
+    
+    // Get organization type for user type dropdown
+    const selectedOrg = organisations?.find(
+      (org) => String(org.id) === String(orgId)
+    );
+    const orgType = selectedOrg?.organisationType || '';
+    setSelectedOrganisationType(orgType);
+    
+    // Reset userType when organization changes
+    if (control._formValues.userType) {
+      control._formValues.userType = '';
+    }
   };
 
   useEffect(() => {
@@ -485,6 +508,48 @@ export default function AddNewUser({ organisations }: Props) {
                       )}
                   </FormControl>
                 </Box>
+                {selectedOrganisation && selectedOrganisationType && (
+                  <Box mb={2} width={'100%'}>
+                    <FormControl fullWidth className="form-input" focused>
+                      <InputLabel id="user-type-select-label">
+                        User Type *
+                      </InputLabel>
+                      <Controller
+                        name="userType"
+                        control={control}
+                        rules={{ required: true }}
+                        render={({ field }) => (
+                          <Select
+                            labelId="user-type-select-label"
+                            id="user-type-select"
+                            label="User Type *"
+                            value={field.value ?? ''}
+                            onChange={field.onChange}
+                            disabled={!selectedOrganisationType}
+                          >
+                            {(UserTypeByOrganisation[selectedOrganisationType] || []).map(
+                              (userType) => (
+                                <MenuItem value={userType} key={userType}>
+                                  {userType}
+                                </MenuItem>
+                              )
+                            )}
+                          </Select>
+                        )}
+                      />
+                      {errors?.userType && (
+                        <Typography
+                          variant="body2"
+                          color="red"
+                          fontSize={13}
+                          mt={0.5}
+                        >
+                          This field is required.
+                        </Typography>
+                      )}
+                    </FormControl>
+                  </Box>
+                )}
               </Grid>
             </Grid>
           </Stack>

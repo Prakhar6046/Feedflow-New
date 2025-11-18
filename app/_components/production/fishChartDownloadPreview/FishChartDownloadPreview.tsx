@@ -48,6 +48,71 @@ function FishChartDownloadPreview({
     },
   ];
 
+  // Function to calculate average values per sampling event (date)
+  const calculateAveragePerSamplingEvent = (
+    yDataKey: string,
+    groupedData: FishManageHistoryGroup | undefined,
+    startDate: string | undefined,
+    endDate: string | undefined,
+  ): { dates: string[]; averages: number[] } => {
+    if (!groupedData?.units) {
+      return { dates: [], averages: [] };
+    }
+
+    // Collect all history entries with their dates
+    const allHistoryEntries: Array<{
+      date: string;
+      value: number;
+    }> = [];
+
+    groupedData.units.forEach((unit) => {
+      unit.fishManageHistory?.forEach((history: any) => {
+        if (history.createdAt) {
+          const date = new Date(history.createdAt);
+          date.setHours(0, 0, 0, 0);
+          const dateKey = date.toISOString();
+          const value = parseFloat(history[yDataKey]) || 0;
+
+          if (startDate && endDate) {
+            const startD = new Date(startDate);
+            startD.setHours(0, 0, 0, 0);
+            const endD = new Date(endDate);
+            endD.setHours(0, 0, 0, 0);
+            if (date >= startD && date <= endD) {
+              allHistoryEntries.push({ date: dateKey, value });
+            }
+          } else {
+            allHistoryEntries.push({ date: dateKey, value });
+          }
+        }
+      });
+    });
+
+    // Group by date and calculate averages
+    const dateGroups: Record<string, number[]> = {};
+    allHistoryEntries.forEach((entry) => {
+      if (!dateGroups[entry.date]) {
+        dateGroups[entry.date] = [];
+      }
+      dateGroups[entry.date].push(entry.value);
+    });
+
+    // Calculate averages for each date
+    const dates: string[] = [];
+    const averages: number[] = [];
+
+    Object.entries(dateGroups)
+      .sort(([a], [b]) => new Date(a).getTime() - new Date(b).getTime())
+      .forEach(([date, values]) => {
+        const avg =
+          values.reduce((sum, val) => sum + val, 0) / values.length;
+        dates.push(date);
+        averages.push(avg);
+      });
+
+    return { dates, averages };
+  };
+
   const downloadChartsAsPDF = async () => {
     setIsReportDownload(true);
     const pdf = new jsPDF({ orientation: 'landscape' });
@@ -272,20 +337,37 @@ function FishChartDownloadPreview({
               <div
                 style={{ width: '50%', marginBottom: '20px', display: 'flex' }}
               >
-                <FishChart
-                  key={key}
-                  xAxisData={chartData?.xAxisData}
-                  ydata={chartData?.groupedData.units.flatMap(
-                    (unit) =>
-                      unit.fishManageHistory?.map(
-                        (history: any) => history[yDataKey],
-                      ) || [],
-                  )}
-                  endDate={chartData?.endDate}
-                  startDate={chartData?.startDate}
-                  dateDiff={chartData?.dateDiff || 1}
-                  title={title}
-                />
+                {(() => {
+                  // Calculate average values per sampling event for this metric
+                  const { dates, averages } = calculateAveragePerSamplingEvent(
+                    yDataKey,
+                    chartData?.groupedData,
+                    chartData?.startDate,
+                    chartData?.endDate,
+                  );
+
+                  // Ensure xAxisData and averages are aligned
+                  const alignedData = chartData?.xAxisData?.map((date) => {
+                    // Normalize date to ISO string for comparison
+                    const dateObj = typeof date === 'string' ? new Date(date) : date;
+                    dateObj.setHours(0, 0, 0, 0);
+                    const dateKey = dateObj.toISOString();
+                    const dateIndex = dates.indexOf(dateKey);
+                    return dateIndex !== -1 ? String(averages[dateIndex]) : undefined;
+                  }) || [];
+
+                  return (
+                    <FishChart
+                      key={key}
+                      xAxisData={chartData?.xAxisData}
+                      ydata={alignedData}
+                      endDate={chartData?.endDate}
+                      startDate={chartData?.startDate}
+                      dateDiff={chartData?.dateDiff || 1}
+                      title={title}
+                    />
+                  );
+                })()}
               </div>
 
               <table
@@ -768,20 +850,37 @@ function FishChartDownloadPreview({
                             display: 'flex',
                           }}
                         >
-                          <FishChart
-                            key={key}
-                            xAxisData={chartData?.xAxisData}
-                            ydata={chartData?.groupedData.units.flatMap(
-                              (unit) =>
-                                unit.fishManageHistory?.map(
-                                  (history: any) => history[yDataKey],
-                                ) || [],
-                            )}
-                            endDate={chartData?.endDate}
-                            startDate={chartData?.startDate}
-                            dateDiff={chartData?.dateDiff || 1}
-                            title={title}
-                          />
+                          {(() => {
+                            // Calculate average values per sampling event for this metric
+                            const { dates, averages } = calculateAveragePerSamplingEvent(
+                              yDataKey,
+                              chartData?.groupedData,
+                              chartData?.startDate,
+                              chartData?.endDate,
+                            );
+
+                            // Ensure xAxisData and averages are aligned
+                            const alignedData = chartData?.xAxisData?.map((date) => {
+                              // Normalize date to ISO string for comparison
+                              const dateObj = typeof date === 'string' ? new Date(date) : date;
+                              dateObj.setHours(0, 0, 0, 0);
+                              const dateKey = dateObj.toISOString();
+                              const dateIndex = dates.indexOf(dateKey);
+                              return dateIndex !== -1 ? String(averages[dateIndex]) : undefined;
+                            }) || [];
+
+                            return (
+                              <FishChart
+                                key={key}
+                                xAxisData={chartData?.xAxisData}
+                                ydata={alignedData}
+                                endDate={chartData?.endDate}
+                                startDate={chartData?.startDate}
+                                dateDiff={chartData?.dateDiff || 1}
+                                title={title}
+                              />
+                            );
+                          })()}
                         </Box>
                       </Grid>
 

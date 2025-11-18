@@ -60,34 +60,127 @@ function FishHistoryCharts({
     },
   ];
 
+  // Function to get actual data points from history (like Excel charts)
+  const getActualDataPoints = (
+    yDataKey: string,
+  ): { dates: string[]; values: number[] } => {
+    if (!groupedData?.units) {
+      return { dates: [], values: [] };
+    }
+
+    // Collect all history entries with their dates and values
+    const allHistoryEntries: Array<{
+      date: string;
+      value: number;
+      field: string;
+    }> = [];
+
+    groupedData.units.forEach((unit) => {
+      unit.fishManageHistory?.forEach((history: any) => {
+        // Use currentDate from history (the actual event date), fallback to createdAt
+        const dateStr = history.currentDate || history.createdAt;
+        if (dateStr) {
+          // Parse date - handle MM/DD/YYYY format or ISO string
+          let date: Date;
+          if (dateStr.includes('/')) {
+            // MM/DD/YYYY format
+            const [month, day, year] = dateStr.split('/');
+            date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+          } else {
+            date = new Date(dateStr);
+          }
+          date.setHours(0, 0, 0, 0);
+          
+          // Get the value for this metric
+          const value = parseFloat(history[yDataKey]) || 0;
+          const field = history.field || '';
+
+          // Filter by date range if provided
+          if (startDate && endDate) {
+            const startD = new Date(startDate);
+            startD.setHours(0, 0, 0, 0);
+            const endD = new Date(endDate);
+            endD.setHours(0, 0, 0, 0);
+            if (date >= startD && date <= endD && value > 0) {
+              allHistoryEntries.push({ 
+                date: date.toISOString(), 
+                value,
+                field 
+              });
+            }
+          } else if (value > 0) {
+            allHistoryEntries.push({ 
+              date: date.toISOString(), 
+              value,
+              field 
+            });
+          }
+        }
+      });
+    });
+
+    // Sort by date chronologically
+    allHistoryEntries.sort((a, b) => 
+      new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
+
+    // Extract dates and values (one point per history entry, like Excel)
+    const dates: string[] = [];
+    const values: number[] = [];
+
+    allHistoryEntries.forEach((entry) => {
+      dates.push(entry.date);
+      values.push(entry.value);
+    });
+
+    return { dates, values };
+  };
+
   useEffect(() => {
     if (groupedData) {
-      const createdAtArray = groupedData.units.flatMap(
-        (unit) =>
-          unit.fishManageHistory?.map((history) => history.createdAt) || [],
+      // Get unique dates from all history entries using currentDate
+      const dateSet = new Set<string>();
+      groupedData.units.forEach((unit) => {
+        unit.fishManageHistory?.forEach((history: any) => {
+          // Use currentDate (actual event date) instead of createdAt
+          const dateStr = history.currentDate || history.createdAt;
+          if (dateStr) {
+            // Parse date - handle MM/DD/YYYY format or ISO string
+            let date: Date;
+            if (dateStr.includes('/')) {
+              // MM/DD/YYYY format
+              const [month, day, year] = dateStr.split('/');
+              date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+            } else {
+              date = new Date(dateStr);
+            }
+            date.setHours(0, 0, 0, 0);
+            const dateKey = date.toISOString();
+
+            if (startDate && endDate) {
+              const startD = new Date(startDate);
+              startD.setHours(0, 0, 0, 0);
+              const endD = new Date(endDate);
+              endD.setHours(0, 0, 0, 0);
+              if (date >= startD && date <= endD) {
+                dateSet.add(dateKey);
+              }
+            } else {
+              dateSet.add(dateKey);
+            }
+          }
+        });
+      });
+
+      const uniqueDates = Array.from(dateSet).sort(
+        (a, b) => new Date(a).getTime() - new Date(b).getTime(),
       );
 
       const diffInDays = dayjs(endDate).diff(dayjs(startDate), 'day');
       setDateDiff(diffInDays);
-      if (startDate && endDate && createdAtArray) {
-        const startD = new Date(startDate);
-        startD.setHours(0, 0, 0, 0);
-        const endD = new Date(endDate);
-        endD.setHours(0, 0, 0, 0);
-        const filteredTimestamps = createdAtArray?.filter((timestamp: any) => {
-          if (timestamp) {
-            const date = new Date(timestamp);
-            date.setHours(0, 0, 0, 0);
-            return date >= startD && date <= endD;
-          }
-        });
-
-        setXAxisData(filteredTimestamps);
-      } else {
-        setXAxisData(createdAtArray);
-      }
+      setXAxisData(uniqueDates);
     }
-  }, [productions, startDate, endDate]);
+  }, [groupedData, startDate, endDate]);
 
   const handleCheckboxChange = (key: string) => {
     setSelectedCharts((prev) =>
@@ -239,26 +332,37 @@ function FishHistoryCharts({
           },
         }}
       >
-        {chartOptions.map(({ key, yDataKey, title }) => (
-          <Grid item lg={6} xs={12} className="chart-container" key={key}>
-            {xAxisData?.length !== 0 && (
-              <FishChart
-                key={key}
-                xAxisData={xAxisData}
-                ydata={groupedData.units.flatMap(
-                  (unit) =>
-                    unit.fishManageHistory?.map(
-                      (history: any) => history[yDataKey],
-                    ) || [],
-                )}
-                endDate={endDate}
-                startDate={startDate}
-                dateDiff={dateDiff ? dateDiff : 1}
-                title={title}
-              />
-            )}
-          </Grid>
-        ))}
+        {chartOptions.map(({ key, yDataKey, title }) => {
+          // Get actual data points from history (like Excel - one point per event)
+          const { dates, values } = getActualDataPoints(yDataKey);
+
+          // Map actual values to xAxisData dates (show actual data points, not averages)
+          const alignedData = xAxisData.map((date) => {
+            // Normalize date to ISO string for comparison
+            const dateObj = typeof date === 'string' ? new Date(date) : date;
+            dateObj.setHours(0, 0, 0, 0);
+            const dateKey = dateObj.toISOString();
+            const dateIndex = dates.indexOf(dateKey);
+            // Return actual value if found, otherwise undefined (no data point for that date)
+            return dateIndex !== -1 ? String(values[dateIndex]) : undefined;
+          });
+
+          return (
+            <Grid item lg={6} xs={12} className="chart-container" key={key}>
+              {xAxisData?.length !== 0 && dates.length > 0 && (
+                <FishChart
+                  key={key}
+                  xAxisData={xAxisData}
+                  ydata={alignedData}
+                  endDate={endDate}
+                  startDate={startDate}
+                  dateDiff={dateDiff ? dateDiff : 1}
+                  title={title}
+                />
+              )}
+            </Grid>
+          );
+        })}
       </Grid>
     </div>
   );

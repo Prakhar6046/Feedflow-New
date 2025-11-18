@@ -30,6 +30,14 @@ const FeedPredictionTable = ({ farms, productions }: Props) => {
   const [speciesList, setSpeciesList] = useState<Species[]>([]);
   const token = getCookie('auth-token');
   const handleChange = (newValue: string) => {
+    // Reset Adhoc data when switching away from Adhoc tab
+    if (selectedFeeding === 'adhoc' && newValue !== 'adhoc') {
+      setAdHocData([]);
+    }
+    // Also reset when switching to Adhoc tab to ensure clean state
+    if (selectedFeeding !== 'adhoc' && newValue === 'adhoc') {
+      setAdHocData([]);
+    }
     setSelectedFeeding(newValue);
   };
   const groupedData: FarmGroup[] = productions?.reduce(
@@ -160,7 +168,7 @@ const FeedPredictionTable = ({ farms, productions }: Props) => {
       ) : selectedFeeding === 'feedingSummary' ? (
         <FeedingSummary />
       ) : (
-        <AdHoc data={adHocData} setData={setAdHocData} farms={farms} speciesList={speciesList} />
+        <AdHoc key={selectedFeeding} data={adHocData} setData={setAdHocData} farms={farms} speciesList={speciesList} />
       )}
     </>
   );

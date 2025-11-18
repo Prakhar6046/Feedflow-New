@@ -17,6 +17,8 @@ import { VisuallyHiddenInput } from './EditOrganisation';
 import EmptyFarm from './EmptyFarm';
 import { getCookie, setCookie } from 'cookies-next';
 import { SingleUser } from '@/app/_typeModels/User';
+import { UserAccessConfig } from '@/app/_lib/constants/userAccessMatrix';
+import { canEditFarm } from '@/app/_lib/utils/permissions/access';
 interface Props {
   organisationData?: OrganizationData;
   profilePic: string | any;
@@ -34,6 +36,8 @@ interface Props {
   trigger: any;
   watch: any;
   errors?: any;
+  userAccess?: UserAccessConfig;
+  userRole?: string;
 }
 const FarmsInformation = ({
   organisationData,
@@ -47,6 +51,8 @@ const FarmsInformation = ({
   trigger,
   watch,
   errors,
+  userAccess,
+  userRole,
 }: Props) => {
   const router = useRouter();
   const loggedUser: any = getCookie('logged-user');
@@ -412,7 +418,7 @@ const FarmsInformation = ({
                   flexDirection: 'row',
                 }}
               >
-                {user?.permissions?.editOrganisation && (
+                {canEditFarm(userAccess, userRole || String(user?.role)) && (
                   <Button
                     variant="contained"
                     onClick={() => {

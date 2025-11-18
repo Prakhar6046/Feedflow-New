@@ -99,21 +99,6 @@ export const POST = async (request: NextRequest) => {
       );
     }
 
-    const isHatcheryExist = await prisma.organisation.findUnique({
-      where: { id: body.organisation },
-      include: { hatchery: true },
-    });
-    if (!isHatcheryExist) {
-      return new NextResponse(
-        JSON.stringify({
-          message: 'Hatchery not found',
-          status: false,
-        }),
-        {
-          status: 404,
-        },
-      );
-    }
     const isFarmExist = await prisma.farm.findUnique({
       where: { id: body.fishFarmId },
       include: { productionUnits: true },
@@ -131,26 +116,17 @@ export const POST = async (request: NextRequest) => {
       );
     }
 
-    // Check if hatchery exists and has the required data
-    if (!isHatcheryExist.hatchery || isHatcheryExist.hatchery.length === 0) {
-      return new NextResponse(
-        JSON.stringify({
-          message: 'No hatchery found for this organisation',
-          status: false,
-        }),
-        {
-          status: 404,
-        },
-      );
-    }
-
-    const hatchery = isHatcheryExist.hatchery[0];
+    // organisation is now a string (hatchery name), not an ID
+    // Generate batch number using hatchery name and other data
+    const hatcheryName = String(body.organisation || '').trim();
+    const batchNumber = `${body.hatchingDate}-${hatcheryName.slice(0, 3).toUpperCase()}-${body.spawningNumber}-${species.name.slice(0, 1).toUpperCase()}`;
+    
     const fishSupplyData = {
       ...body,
-      createdBy: isHatcheryExist.id,
+      organisation: hatcheryName, // Store hatchery name as string
+      createdBy: Number(body.organisationId), // Use organisationId for createdBy
       organisationId: Number(body.organisationId),
-      batchNumber: `${body.hatchingDate}-${hatchery.code}-${body.spawningNumber
-        }-${hatchery.fishSpecie.slice(0, 1)}`,
+      batchNumber: batchNumber,
       speciesId: body.speciesId || null,
     };
     const newFishSupply = await prisma.fishSupply.create({

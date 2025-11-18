@@ -16,7 +16,11 @@ export const GET = async (request: NextRequest) => {
     const organisationId = searchParams.get('organisationId');
     const userId = searchParams.get('userId');
 
-    const fishSupply = await prisma.fishSupply.findMany({});
+    const fishSupply = await prisma.fishSupply.findMany({
+      include: {
+        species: true,
+      },
+    });
     return new NextResponse(
       JSON.stringify({
         status: true,

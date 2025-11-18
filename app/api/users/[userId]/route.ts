@@ -20,7 +20,7 @@ export const DELETE = async (_request: NextRequest, context: ContextParams) => {
 
   try {
     await prisma.$transaction([
-      prisma.contact.deleteMany({ where: { userId: Number(userId) } }),
+    
       prisma.farmManger.deleteMany({ where: { userId: Number(userId) } }),
       prisma.user.delete({ where: { id: Number(userId) } }),
     ]);
@@ -127,16 +127,11 @@ export async function PUT(req: NextRequest, context: { params: any }) {
         email: body.email,
         imageUrl: body.imageUrl,
         organisationId: Number(body.organisationId),
+        role: body.userType || userData.role || '',
         permissions: permissions ?? {},
       };
     }
-    await prisma.contact.update({
-      where: { userId: Number(userId), id: userData?.Contact[0].id },
-      data: {
-        name: body.name,
-        email: body.email,
-      },
-    });
+  
     await prisma.user.update({
       where: { id: Number(userId) },
       data: {

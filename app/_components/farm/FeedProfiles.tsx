@@ -22,10 +22,12 @@ import {
   FormControl,
   InputLabel,
   IconButton,
+  Alert,
 } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { MultiSelect } from 'primereact/multiselect';
+import toast from 'react-hot-toast';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import { Checklist, DoneAll } from '@mui/icons-material';
 
@@ -51,6 +53,7 @@ interface Props {
   editFarm?: Farm;
   feedStores: FeedProduct[];
   feedSuppliers: FeedSupplier[];
+  isViewOnly?: boolean;
 }
 export interface SupplierOptions {
   id: number;
@@ -69,6 +72,7 @@ const FeedProfiles = ({
   editFarm,
   feedStores,
   feedSuppliers,
+  isViewOnly = false,
 }: Props) => {
 
   const { control, handleSubmit, watch, setValue } = useForm<FormValues>();
@@ -80,12 +84,73 @@ const FeedProfiles = ({
   const [selectedSupplier, setSelectedSupplier] = useState<SupplierOptions[]>(
     [],
   );
+  const [gapError, setGapError] = useState<string>('');
   // Use the fixed fish sizes list - no dynamic extension
   const newfishSizes = useMemo(() => {
     return fishSizes;
   }, []);
 
+  // Validate that there are no gaps in feed profile selections
+  const validateFeedProfileGaps = (data: FormValues): { isValid: boolean; missingSizes: number[] } => {
+    // Get all selected fish sizes across all rows
+    const selectedSizes: number[] = [];
+    newfishSizes.forEach((size) => {
+      const rowName = `selection_${size}`;
+      const rowData = data[rowName];
+      // Check if this row has any feed selected
+      if (rowData && Array.isArray(rowData) && rowData.length > 0) {
+        // Check if there's at least one valid selection (starts with 'col')
+        const hasValidSelection = rowData.some((val) => /^col\d+_/.test(val));
+        if (hasValidSelection) {
+          selectedSizes.push(size);
+        }
+      }
+    });
+
+    if (selectedSizes.length === 0) {
+      return { isValid: true, missingSizes: [] }; // No selections is valid (user might not have selected anything yet)
+    }
+
+    // Sort selected sizes
+    selectedSizes.sort((a, b) => a - b);
+    const minSelected = selectedSizes[0];
+    const maxSelected = selectedSizes[selectedSizes.length - 1];
+
+    // Find gaps between min and max selected sizes in the fishSizes array
+    const missingSizes: number[] = [];
+    for (let i = 0; i < newfishSizes.length; i++) {
+      const size = newfishSizes[i];
+      // Check if this size is between min and max selected, but not itself selected
+      if (size >= minSelected && size <= maxSelected && !selectedSizes.includes(size)) {
+        missingSizes.push(size);
+      }
+    }
+
+    return {
+      isValid: missingSizes.length === 0,
+      missingSizes: missingSizes,
+    };
+  };
+
   const onSubmit: SubmitHandler<FormValues> = (data) => {
+    // Prevent submission in view-only mode
+  
+    // Clear previous error
+    setGapError('');
+
+    // Validate for gaps in feed profile selections
+    const validation = validateFeedProfileGaps(data);
+    if (!validation.isValid && validation.missingSizes.length > 0) {
+      // Format the missing sizes for display
+      const missingSizesText = validation.missingSizes
+        .map((size) => (size === 1001 ? '>1000' : size))
+        .join(', ');
+      setGapError(
+        `Please select feed profiles for fish size(s): ${missingSizesText} to fill the gap.`
+      );
+      return;
+    }
+
     // Build structured payload strictly from current form selections
     const payload: {
       supplierId: number;
@@ -162,6 +227,7 @@ const FeedProfiles = ({
                   <Radio
                     checked={isChecked}
                     onChange={() => {
+                      if (isViewOnly) return;
                       // If we know the store in this column, apply range-aware toggle
                       if (store) {
                         const clickedSize = Number(field.name.replace('selection_', ''));
@@ -182,6 +248,11 @@ const FeedProfiles = ({
                       }
                     }}
                     onClick={(e) => {
+                      if (isViewOnly) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return;
+                      }
                       if (!store) return;
                       const clickedSize = Number(field.name.replace('selection_', ''));
                       const existing = getSelectedSizesForStore(columnIndex, store.id);
@@ -199,6 +270,10 @@ const FeedProfiles = ({
                       toggleManualAtRow(columnIndex, store, clickedSize);
                       e.preventDefault();
                       e.stopPropagation();
+                    }}
+                    disabled={isViewOnly}
+                    sx={{
+                      cursor: isViewOnly ? 'not-allowed' : 'pointer',
                     }}
                   />
                 }
@@ -510,7 +585,11 @@ const FeedProfiles = ({
                 </InputLabel>
                 <MultiSelect
                   value={selectedSupplier}
-                  onChange={(e) => setSelectedSupplier(e.value)}
+                  onChange={(e) => {
+                    if (!isViewOnly) {
+                      setSelectedSupplier(e.value);
+                    }
+                  }}
                   selectAllLabel="Select All"
                   options={supplierOptions}
                   optionLabel="option"
@@ -528,6 +607,7 @@ const FeedProfiles = ({
                   }
                   maxSelectedLabels={3}
                   className="w-100 max-w-100 custom-select"
+                  disabled={isViewOnly}
                 />
               </FormControl>
             </Box>
@@ -637,7 +717,7 @@ const FeedProfiles = ({
                                         <br />
                                         ({store.minFishSizeG}-{store.maxFishSizeG})
                                       </Typography>
-
+                                      
                                       <IconButton
                                         size="small"
                                         onClick={() =>
@@ -647,12 +727,12 @@ const FeedProfiles = ({
                                             storeIndex,
                                           )
                                         }
-
+                                        disabled={isViewOnly}
                                         sx={
                                           isSelectedForStore
                                             ? {
-                                              background: '#06A19B',
-                                              color: '#fff',
+                                              background: '#06A19B !important',
+                                              color: '#fff !important',
                                               fontWeight: 600,
                                               padding: '8px',
                                               width: 'fit-content',
@@ -660,6 +740,7 @@ const FeedProfiles = ({
                                               borderRadius: '50px',
                                               transform: 'scale(0.75)',
                                               border: '1px solid #06A19B',
+
                                               '&:hover': {
                                                 background: '#06A19B',
                                                 color: '#fff',
@@ -736,6 +817,13 @@ const FeedProfiles = ({
               </Table>
             </TableContainer>
           </Paper>
+          {gapError && (
+            <Box mt={2}>
+              <Alert severity="error" onClose={() => setGapError('')}>
+                {gapError}
+              </Alert>
+            </Box>
+          )}
           <Box
             display={'flex'}
             justifyContent={'flex-end'}

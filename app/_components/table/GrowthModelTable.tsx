@@ -70,6 +70,9 @@ interface GrowthModel {
   };
 }
 
+import { UserAccessConfig } from '@/app/_lib/constants/userAccessMatrix';
+import { canEditGrowthModel, canViewGrowthModel, canDeleteGrowthModel } from '@/app/_lib/utils/permissions/access';
+
 interface Props {
   tableData: {
     id: string;
@@ -79,12 +82,16 @@ interface Props {
   }[];
   growthModels?: GrowthModel[];
   permisions: boolean;
+  userAccess?: UserAccessConfig;
+  userRole?: string;
 }
 
 export default function GrowthModelTable({
   tableData,
   growthModels,
   permisions,
+  userAccess,
+  userRole,
 }: Props) {
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -559,62 +566,91 @@ export default function GrowthModelTable({
               },
             }}
           >
-            <MenuItem
-              sx={{
-                px: 2,
-                py: 1,
-                '&:hover': {
-                  backgroundColor: '#F0F4FF',
-                  svg: { color: '#1E40AF' },
-                  '.edit-text': { color: '#1E40AF' },
-                },
-              }}
-              onClick={handleEdit} >
-              <Stack direction="row" spacing={1.5} alignItems="center">
-                <Box
-                  component="svg"
-                  width={16}
-                  height={16}
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  sx={{ color: '#060606ff' }}
-                >
-                  <path d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z" />
-                </Box>
-                <Typography sx={{ fontSize: '14px', color: '#080808ff' }}>
-                  Edit
-                </Typography>
-              </Stack>
-            </MenuItem>
+            {(canViewGrowthModel(userAccess, userRole) || userRole === 'SUPERADMIN') && (
+              <MenuItem
+                sx={{
+                  px: 2,
+                  py: 1,
+                  '&:hover': {
+                    backgroundColor: '#F0F4FF',
+                    svg: { color: '#1E40AF' },
+                    '.edit-text': { color: '#1E40AF' },
+                  },
+                }}
+                onClick={handleEdit}
+                disabled={false}
+              >
+                <Stack direction="row" spacing={1.5} alignItems="center">
+                  {canEditGrowthModel(userAccess, userRole) || userRole === 'SUPERADMIN' ? (
+                    <>
+                      <Box
+                        component="svg"
+                        width={16}
+                        height={16}
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        sx={{ color: '#060606ff' }}
+                      >
+                        <path d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z" />
+                      </Box>
+                      <Typography sx={{ fontSize: '14px', color: '#080808ff' }}>
+                        Edit
+                      </Typography>
+                    </>
+                  ) : (
+                    <>
+                      <Box
+                        component="svg"
+                        width={16}
+                        height={16}
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        sx={{ color: '#060606ff' }}
+                      >
+                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5M12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5s5 2.24 5 5s-2.24 5-5 5m0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3s3-1.34 3-3s-1.34-3-3-3" />
+                      </Box>
+                      <Typography sx={{ fontSize: '14px', color: '#080808ff' }}>
+                        View
+                      </Typography>
+                    </>
+                  )}
+                </Stack>
+              </MenuItem>
+            )}
 
-            <Divider />
-            <MenuItem
-              sx={{
-                px: 2,
-                py: 1,
-                '&:hover': {
-                  backgroundColor: '#FFF1F1',
-                  svg: { color: '#D32F2F' },
-                  '.delete-text': { color: '#D32F2F' },
-                },
-              }}
-              onClick={handleDelete}>
-              <Stack direction="row" spacing={1.5} alignItems="center">
-                <Box
-                  component="svg"
-                  width={16}
-                  height={16}
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  sx={{ color: '#ff0000', fontWeight: 600 }}
+            {canDeleteGrowthModel(userAccess, userRole) && (
+              <>
+                <Divider />
+                <MenuItem
+                  sx={{
+                    px: 2,
+                    py: 1,
+                    '&:hover': {
+                      backgroundColor: '#FFF1F1',
+                      svg: { color: '#D32F2F' },
+                      '.delete-text': { color: '#D32F2F' },
+                    },
+                  }}
+                  onClick={handleDelete}
                 >
-                  <path d="M7 21q-.825 0-1.412-.587T5 19V6q-.425 0-.712-.288T4 5q0-.425.288-.712T5 4h4q0-.425.288-.712T10 3h4q.425 0 .713.288T15 4h4q.425 0 .713.288T20 5q0 .425-.288.713T19 6v13q0 .825-.587 1.413T17 21zM7 6v13h10V6z" />
-                </Box>
-                <Typography sx={{ fontSize: '14px', fontWeight: 600, color: '#ff0000' }}>
-                  Delete
-                </Typography>
-              </Stack>
-            </MenuItem>
+                  <Stack direction="row" spacing={1.5} alignItems="center">
+                    <Box
+                      component="svg"
+                      width={16}
+                      height={16}
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      sx={{ color: '#ff0000', fontWeight: 600 }}
+                    >
+                      <path d="M7 21q-.825 0-1.412-.587T5 19V6q-.425 0-.712-.288T4 5q0-.425.288-.712T5 4h4q0-.425.288-.712T10 3h4q.425 0 .713.288T15 4h4q.425 0 .713.288T20 5q0 .425-.288.713T19 6v13q0 .825-.587 1.413T17 21zM7 6v13h10V6z" />
+                    </Box>
+                    <Typography sx={{ fontSize: '14px', fontWeight: 600, color: '#ff0000' }}>
+                      Delete
+                    </Typography>
+                  </Stack>
+                </MenuItem>
+              </>
+            )}
           </Menu>
         </Paper>
       )}

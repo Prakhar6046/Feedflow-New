@@ -550,50 +550,58 @@ const FeedUsageOutput: React.FC = () => {
           farmId: unit?.farm?.id || '',
           unitId: unit.id,
           unit: unit.productionUnit.name,
-          fishGrowthData: data?.species === 'Rainbow Trout'
-            ? calculateFishGrowthRainBowTrout(
-              gm,
-              Number(data?.fishWeight ?? 0),
-              data?.tempSelection === 'default'
-                ? Number(unit?.waterTemp ?? 25)
-                : Number(data?.temp ?? 25),
-              Number(unit.fishCount ?? 0),
-              Number(data.adjustmentFactor),
-              Number(diffInDays),
-              formattedDate,
-              data?.timeInterval ?? 1,
-              unit,
-              Number(data?.wasteFactor ?? 3),
-            )
-            : data?.species === 'African Catfish'
-              ? calculateFishGrowthAfricanCatfish(
+          fishGrowthData: (() => {
+            // Normalize species name for case-insensitive comparison
+            const normalizedSpeciesName = (data?.species || '').toLowerCase().trim();
+
+            if (normalizedSpeciesName === 'rainbow trout') {
+              return calculateFishGrowthRainBowTrout(
                 gm,
-                Number(data?.fishWeight ?? 0),
+                Number(data?.fishWeight),
                 data?.tempSelection === 'default'
-                  ? Number(unit?.waterTemp ?? 25)
-                  : Number(data?.temp ?? 25),
-                Number(unit.fishCount ?? 0),
+                  ? Number(unit?.waterTemp)
+                  : Number(data?.temp),
+                Number(unit.fishCount),
                 Number(data.adjustmentFactor),
                 Number(diffInDays),
                 formattedDate,
-                data?.timeInterval ?? 1,
+                data?.timeInterval,
                 unit,
-                Number(data?.wasteFactor ?? 3),
-              )
-              : calculateFishGrowthTilapia(
+                Number(data?.wasteFactor),
+              );
+            } else if (normalizedSpeciesName === 'african catfish') {
+              return calculateFishGrowthAfricanCatfish(
                 gm,
-                Number(data?.fishWeight ?? 0),
+                Number(data?.fishWeight),
                 data?.tempSelection === 'default'
-                  ? Number(unit?.waterTemp ?? 25)
-                  : Number(data?.temp ?? 25),
-                Number(unit.fishCount ?? 0),
+                  ? Number(unit?.waterTemp)
+                  : Number(data?.temp),
+                Number(unit.fishCount),
                 Number(data.adjustmentFactor),
                 Number(diffInDays),
                 formattedDate,
-                data?.timeInterval ?? 1,
+                data?.timeInterval,
                 unit,
-                Number(data?.wasteFactor ?? 3),
-              ),
+                Number(data?.wasteFactor),
+
+              );
+            } else {
+              return calculateFishGrowthTilapia(
+                gm,
+                Number(data?.fishWeight),
+                data?.tempSelection === 'default'
+                  ? Number(unit?.waterTemp)
+                  : Number(data?.temp),
+                Number(unit.fishCount),
+                Number(data.adjustmentFactor),
+                Number(diffInDays),
+                formattedDate,
+                data?.timeInterval,
+                unit,
+                Number(data?.wasteFactor),
+              );
+            }
+          })(),
         };
       }),
     );

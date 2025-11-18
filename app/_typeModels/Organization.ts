@@ -1,4 +1,6 @@
+import { ModuleAccessMap } from '../_lib/constants/userAccessMatrix';
 import { SingleUser } from './User';
+
 
 export interface OrganizationInitialState {
   isLoading: boolean;
@@ -53,6 +55,7 @@ export interface SingleOrganisation {
   contact?: OrganizationContact[];
   users?: SingleUser[];
   organisationType: string;
+  advisors?: OrganisationAdvisorLink[];
 }
 
 export interface AddOrganizationFormInputs {
@@ -69,17 +72,22 @@ export interface AddOrganizationFormInputs {
   contacts: {
     name: string;
     role: string;
+    inputRole?: string;
     email: string;
     phone: string;
-    permission: string;
+    userType: string;
+    permission?: string;
+    permissions?: ModuleAccessMap;
     invite?: boolean;
     newInvite?: boolean;
+    userDefinition?: string;
   }[];
 
   hatcheryName?: string;
   hatcheryCode?: string;
   fishSpecie?: string;
   hatcheryAltitude?: string;
+  allocatedAdvisors?: AdvisorFormInput[];
 }
 
 export interface OrganizationData {
@@ -96,8 +104,10 @@ export interface OrganizationData {
   addressId: string;
   address: Address;
   contact: Contact[];
+  users?: SingleUser[];
   hatchery: any[];
   Farm: Farm[];
+  advisors?: OrganisationAdvisorLink[];
 }
 
 export interface Address {
@@ -123,11 +133,32 @@ export interface Contact {
   phone: string;
   invite: boolean;
   role: string;
+  inputRole?: string;
   permission: string;
+  permissions?: ModuleAccessMap;
+  userType?: string;
+  userDefinition?: string;
   userId: string;
   createdAt: string;
   updatedAt: string;
   organisationId: number;
+}
+
+export interface OrganisationAdvisorLink {
+  id: string;
+  organisationId: number;
+  advisorId: number;
+  accessLevel: number;
+  advisor?: SingleUser;
+}
+
+export interface AdvisorFormInput {
+  advisorId: number | null;
+  accessLevel: number | null;
+  advisorEmail?: string;
+  advisorName?: string;
+  isFromContact?: boolean; // Flag to identify if advisor comes from contacts
+  contactIndex?: number; // Index of the contact in the contacts array
 }
 
 export interface Farm {

@@ -40,6 +40,15 @@ import MapComponent, { AddressInfo } from './farm/MapComponent';
 import HatcheryForm from './hatchery/HatcheryForm';
 import { getCookie } from 'cookies-next';
 import { clientSecureFetch } from '../_lib/clientSecureFetch';
+import {
+  MODULE_DISPLAY_ORDER,
+  ModuleAccessMap,
+  resolveModuleAccess,
+  getUserAccessConfig,
+  hasFullModuleAccess,
+  UserAccessConfig,
+} from '../_lib/constants/userAccessMatrix';
+import { canAddOrganisationOfType } from '../_lib/utils/permissions/access';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -53,23 +62,65 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
-export const OrganisationType = [
-  'Fish Producer',
-  'Hatchery',
-  'Feed Supplier',
-  'Testing Facility',
-  'Unspecified',
+type AdvisorOption = {
+  id: number | string; // Allow string for temporary IDs
+  name: string;
+  email: string;
+  organisationName: string;
+  organisationType: string;
+};
+
+const ADVISOR_ACCESS_OPTIONS = [
+  { value: 3, label: 'Add, edit, view' },
+  { value: 2, label: 'Edit & view' },
+  { value: 1, label: 'View' },
 ];
+
+export const OrganisationType = [
+  'Feed flow help desk',
+  'Feed manufacturer',
+  'Fish Producer',
+  'Third party advisors (external)',
+  // 'Fish supplier',
+];
+
+export const UserTypeByOrganisation: { [key: string]: string[] } = {
+  'Feed flow help desk': [
+    'Business manager',
+    'Feedflow Administrator (Admin)',
+    'Advisor: Technical services - adviser to Clients',
+  ],
+  'Feed manufacturer': [
+    'Business Manager',
+    'Feedflow administrator',
+    'Advisor: Technical services - adviser to Clients',
+  ],
+  'Fish Producer': [
+    'Business manager',
+    'Feedflow administrator',
+    'Operational manager',
+    'Farm manager',
+    'General worker (level 2)',
+    'General worker (level 1)',
+  ],
+  'Third party advisors (external)': [
+    'Business manager',
+    'Feedflow administrator',
+    'Advisor: Technical services - adviser to Clients',
+  ],
+  // 'Fish supplier': [
+  //   'Business manager',
+  //   'Feedflow administrator',
+  //   'Advisor: Technical services - adviser to Clients',
+  // ],
+};
+
 interface Props {
   organisations: SingleOrganisation[];
   type?: string;
   loggedUser: SingleUser;
   authToken: string;
 }
-export const PermissionType = [
-  { label: 'Admin', value: 'ADMIN' },
-  { label: 'No Admin', value: 'NONADMIN' },
-];
 const AddNewOrganisation = ({ type, loggedUser }: Props) => {
   const token = getCookie('auth-token');
 
@@ -84,6 +135,75 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
   const [useAddress, setUseAddress] = useState<boolean>(false);
   const [altitude, setAltitude] = useState<string>('');
   const [inviteSent, setInviteSent] = useState<{ [key: number]: boolean }>({});
+  const [advisorOptions, setAdvisorOptions] = useState<AdvisorOption[]>([]);
+  const [advisorLoading, setAdvisorLoading] = useState<boolean>(false);
+
+  // Get logged user's access configuration
+  const loggedUserOrgType = loggedUser?.organisationType || '';
+  const loggedUserType = loggedUser?.role || '';
+  const loggedUserAccess: UserAccessConfig | undefined = getUserAccessConfig(
+    loggedUserOrgType,
+    loggedUserType,
+  );
+
+  // Map organization type display names to permission keys
+  const getOrganisationPermissionKey = (orgType: string): 'feedManufacturers' | 'fishProducers' | null => {
+    if (orgType === 'Feed manufacturer') return 'feedManufacturers';
+    if (orgType === 'Fish Producer') return 'fishProducers';
+    return null;
+  };
+
+  // Check if user can add a specific organization type
+  const canAddOrganisationType = (orgType: string): boolean => {
+    // SUPERADMIN has full access
+    if (loggedUserType === 'SUPERADMIN') return true;
+    
+    if (!loggedUserAccess) return false;
+    const permissionKey = getOrganisationPermissionKey(orgType);
+    if (!permissionKey) return false;
+    return canAddOrganisationOfType(loggedUserAccess, permissionKey, loggedUserType);
+  };
+
+  // Filter available organization types based on user permissions
+  const getAvailableOrganisationTypes = (): string[] => {
+    // SUPERADMIN has full access to all organization types
+    if (loggedUserType === 'SUPERADMIN') {
+      return OrganisationType.filter(type => type !== 'Feed flow help desk'); // Exclude Feed flow help desk as it's typically not added by users
+    }
+    
+    if (!loggedUserAccess) return [];
+    
+    // Feed Flow Help Desk can add Feed Manufacturers and Fish Producers
+    if (loggedUserOrgType === 'Feed flow help desk') {
+      return ['Feed manufacturer', 'Fish Producer'];
+    }
+    
+    // Feed Manufacturer can add Fish Producers
+    if (loggedUserOrgType === 'Feed manufacturer') {
+      return ['Fish Producer'];
+    }
+    
+    // Fish Producer can add Fish Producers (level 2, but we'll allow it for now)
+    // Actually, according to the matrix, Fish Producer Business Manager has level 2 for fishProducers
+    // Level 2 means "View with limited edits", not "Add". So they shouldn't be able to add.
+    // But let's check the access level:
+    if (loggedUserOrgType === 'Fish Producer') {
+      const fishProducerAccess = resolveModuleAccess(
+        loggedUserAccess,
+        'organisations',
+        'fishProducers',
+      );
+      // Only allow if access level is 3 or higher (Add, edit, view)
+      if (fishProducerAccess >= 3) {
+        return ['Fish Producer'];
+      }
+    }
+    
+    // Third Party Advisors and Fish Suppliers have no add permissions
+    return [];
+  };
+
+  const availableOrgTypes = getAvailableOrganisationTypes();
   // const handleInviteUser = (invite: boolean, index: number) => {
   //   if (!invite) {
   //     setInviteSent((prev) => {
@@ -108,14 +228,21 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
     formState: { errors, isDirty, isValid },
   } = useForm<AddOrganizationFormInputs>({
     defaultValues: {
-      contacts: [{
-        name: '',
-        role: '',
-        email: '',
-        phone: '',
-        permission: '',
-        invite: false
-      }],
+      contacts: [
+        {
+          name: '',
+          role: '',
+          inputRole: '',
+          email: '',
+          phone: '',
+          userType: '',
+          permission: '',
+          permissions: undefined,
+          userDefinition: '',
+          invite: false,
+        },
+      ],
+      allocatedAdvisors: [],
     },
     mode: 'onChange',
   });
@@ -148,7 +275,7 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
   const isContactComplete = (contact: any) => {
     return (
       contact.name?.trim() &&
-      contact.permission &&
+      contact.userType && // Changed from permission
       contact.role?.trim() &&
       contact.email?.trim() &&
       contact.phone?.trim()
@@ -164,6 +291,16 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
   };
 
   const onSubmit: SubmitHandler<AddOrganizationFormInputs> = async (data) => {
+    console.log('data', data);
+    
+    // Check if user has permission to add this organization type
+    if (!canAddOrganisationType(data.organisationType)) {
+      toast.dismiss();
+      toast.error(
+        `You do not have permission to add ${data.organisationType} organizations.`,
+      );
+      return;
+    }
 
     // Check for duplicate contacts
     const contactEmails = data.contacts.map(c => c.email?.toLowerCase()).filter(Boolean);
@@ -173,13 +310,21 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
       return;
     }
 
-    const hasAdmin = data.contacts.some(
-      (contact) => contact.permission === 'ADMIN'
-    );
-
-    if (!hasAdmin) {
+    // Check if at least one admin is present
+    // Ensure at least one contact has full access (any module level 4)
+    const hasHighAccess = data.contacts.some((contact) => {
+      const access = getUserAccessConfig(
+        data.organisationType,
+        contact.userType,
+      );
+      return hasFullModuleAccess(access);
+    });
+   console.log('hasHighAccess', hasHighAccess);
+    if (!hasHighAccess) {
       toast.dismiss();
-      toast.error('At least one admin is required for this organisation.');
+      toast.error(
+        'At least one contact must have full (level 4) module access for this organisation.',
+      );
       return;
     }
 
@@ -190,9 +335,65 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
       if (data && loggedUser) {
         data.createdBy = loggedUser.organisationId;
 
+        // Map user types to include access level information
+        const contactsWithPermissions = data.contacts.map((contact) => {
+          const access = getUserAccessConfig(
+            data.organisationType,
+            contact.userType,
+          );
+
+          return {
+            ...contact,
+            permission: contact.userType,
+            inputRole: contact.role, // Save the role input value as inputRole
+            permissions: access?.modules ?? {},
+            userDefinition: access?.definition,
+          };
+        });
+
+        // Extract advisor contacts - these will be added to OrganisationAdvisor after users are created
+        const advisorContacts = contactsWithPermissions.filter(
+          (contact) => contact.userType === 'Advisor: Technical services - adviser to Clients'
+        );
+
+        // Get advisor assignments from allocatedAdvisors
+        // Map temporary IDs to emails for matching after users are created
+        const advisorAssignments = [];
+        const advisorContactsInfo = [];
+
+        for (const assignment of data.allocatedAdvisors || []) {
+          if (assignment?.advisorId) {
+            // Check if it's a temporary ID (from contacts being added)
+            const advisorIdStr = String(assignment.advisorId);
+            if (advisorIdStr.startsWith('temp-')) {
+              // Find the corresponding contact by index
+              const tempIndex = parseInt(advisorIdStr.replace('temp-', ''));
+              const contact = advisorContacts[tempIndex];
+              if (contact) {
+                advisorContactsInfo.push({
+                  email: contact.email,
+                  accessLevel: assignment.accessLevel ?? 3,
+                });
+              }
+            } else {
+              // Regular advisor ID (shouldn't happen in AddNewOrganisation, but handle it)
+              advisorAssignments.push({
+                advisorId: Number(assignment.advisorId),
+                accessLevel: Number(assignment.accessLevel ?? 0),
+              });
+            }
+          }
+        }
+
         const response = await clientSecureFetch('/api/add-organisation', {
           method: 'POST',
-          body: JSON.stringify({ ...data, imageUrl: profilePic }),
+          body: JSON.stringify({
+            ...data,
+            imageUrl: profilePic,
+            contacts: contactsWithPermissions,
+            allocatedAdvisors: advisorAssignments,
+            advisorContacts: advisorContactsInfo, // Pass advisor contacts separately
+          }),
         });
 
         const responseData = await response.json();
@@ -223,7 +424,16 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
 
           const inviteData = await inviteRes.json();
 
-          if (!inviteRes.ok || !inviteData.status) {
+          if (!inviteRes.ok) {
+            toast.error(inviteData.error || 'Failed to send invites');
+            return;
+          }
+          
+          // If there's a warning (e.g., users already invited), show info instead of error
+          if (inviteData.warning) {
+            console.log('Invite warning:', inviteData.message);
+            // Don't show error - emails were already sent during organization creation
+          } else if (!inviteData.status) {
             toast.error(inviteData.error || 'Failed to send invites');
             return;
           }
@@ -233,14 +443,20 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
         router.push('/dashboard/organisation');
         // Reset form with default values to ensure clean state
         reset({
-          contacts: [{
-            name: '',
-            role: '',
-            email: '',
-            phone: '',
-            permission: '',
-            invite: false
-          }]
+          contacts: [
+            {
+              name: '',
+              role: '',
+              email: '',
+              phone: '',
+              userType: '',
+              permission: '',
+              permissions: undefined,
+              userDefinition: '',
+              invite: false,
+            },
+          ],
+          allocatedAdvisors: [],
         });
       }
     } catch (error) {
@@ -256,6 +472,14 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
     control,
     name: 'contacts',
   });
+  const {
+    fields: advisorFields,
+    append: appendAdvisor,
+    remove: removeAdvisor,
+  } = useFieldArray({
+    control,
+    name: 'allocatedAdvisors',
+  });
 
   const AddContactField = () => {
 
@@ -270,16 +494,20 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
         lastContact.role?.trim() &&
         lastContact.email?.trim() &&
         lastContact.phone?.trim() &&
-        lastContact.permission
+        lastContact.userType // Changed from permission
       ) {
 
         append({
           name: '',
           role: '',
+          inputRole: '',
           email: '',
           phone: '',
+          userType: '',
           permission: '',
-          invite: false
+          permissions: undefined,
+          userDefinition: '',
+          invite: false,
         });
 
       } else {
@@ -293,9 +521,39 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
         role: '',
         email: '',
         phone: '',
+        userType: '',
         permission: '',
-        invite: false
+        permissions: undefined,
+        userDefinition: '',
+        invite: false,
       });
+    }
+  };
+
+  const AddAdvisorField = () => {
+    const currentAdvisors = watch('allocatedAdvisors') ?? [];
+    if (currentAdvisors.length === 0) {
+      appendAdvisor({
+        advisorId: null,
+        accessLevel: 3,
+        advisorEmail: '',
+        advisorName: '',
+      });
+      return;
+    }
+    const lastAdvisor = currentAdvisors[currentAdvisors.length - 1];
+    if (lastAdvisor?.advisorId && lastAdvisor?.accessLevel) {
+      appendAdvisor({
+        advisorId: null,
+        accessLevel: 3,
+        advisorEmail: '',
+        advisorName: '',
+      });
+    } else {
+      toast.dismiss();
+      toast.error(
+        'Please fill the previous adviser allocation before adding another.',
+      );
     }
   };
 
@@ -320,9 +578,14 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
 
   useEffect(() => {
     if (type === 'fishProducers') {
-      setValue('organisationType', 'Fish Producer');
+      // Only set if user has permission to add Fish Producer
+      if (canAddOrganisationType('Fish Producer')) {
+        setValue('organisationType', 'Fish Producer');
+      } else {
+        toast.error('You do not have permission to add Fish Producer organizations.');
+      }
     }
-  }, [type]);
+  }, [type, loggedUserAccess]);
 
   useEffect(() => {
     if (organisationCount) {
@@ -343,6 +606,110 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
 
     getORGCount();
   }, []);
+
+  useEffect(() => {
+    const loadAdvisors = async () => {
+      try {
+        setAdvisorLoading(true);
+        const response = await clientSecureFetch('/api/advisors', {
+          method: 'GET',
+          cache: 'no-store',
+        });
+        const result = await response.json();
+        if (result?.status && Array.isArray(result.data)) {
+          setAdvisorOptions(result.data);
+        } else {
+          setAdvisorOptions([]);
+        }
+      } catch (error) {
+        console.error('Failed to load advisors', error);
+        setAdvisorOptions([]);
+      } finally {
+        setAdvisorLoading(false);
+      }
+    };
+
+    loadAdvisors();
+  }, []);
+
+  // Extract advisor contacts to show in dropdown
+  const contacts = watch('contacts') || [];
+  const advisorContacts = contacts.filter(
+    (contact) => contact.userType === 'Advisor: Technical services - adviser to Clients'
+  );
+
+  // Initialize advisor options from contacts being added
+  useEffect(() => {
+    if (advisorContacts.length > 0) {
+      const advisorOptionsFromContacts = advisorContacts.map((contact, index) => ({
+        id: `temp-${index}`, // Temporary ID for contacts being added
+        name: contact.name || '',
+        email: contact.email || '',
+        organisationName: watch('organisationName') || '',
+        organisationType: watch('organisationType') || '',
+      }));
+      setAdvisorOptions(advisorOptionsFromContacts);
+    } else {
+      setAdvisorOptions([]);
+    }
+  }, [advisorContacts.length, watch('organisationName'), watch('organisationType')]);
+
+  const handleAdvisorSelection = (
+    index: number,
+    advisorId: string | number | null,
+    onChange?: (value: string | number | null) => void,
+  ) => {
+    const selectedAdvisor = advisorOptions.find(
+      (advisor) => String(advisor.id) === String(advisorId),
+    );
+
+    if (!advisorId || !selectedAdvisor) {
+      onChange?.(null);
+      setValue(`allocatedAdvisors.${index}.advisorEmail`, '', {
+        shouldDirty: true,
+        shouldTouch: true,
+      });
+      setValue(`allocatedAdvisors.${index}.advisorName`, '', {
+        shouldDirty: true,
+        shouldTouch: true,
+      });
+      return;
+    }
+
+    const currentAssignments = watch('allocatedAdvisors') ?? [];
+    if (
+      currentAssignments.some(
+        (assignment, assignmentIndex) =>
+          assignmentIndex !== index &&
+          String(assignment?.advisorId) === String(selectedAdvisor.id),
+      )
+    ) {
+      toast.dismiss();
+      toast.error('This adviser is already allocated.');
+      onChange?.(null);
+      return;
+    }
+
+    onChange?.(selectedAdvisor.id);
+    setValue(
+      `allocatedAdvisors.${index}.advisorEmail`,
+      selectedAdvisor.email ?? '',
+      {
+        shouldDirty: true,
+        shouldTouch: true,
+        shouldValidate: true,
+      },
+    );
+    setValue(
+      `allocatedAdvisors.${index}.advisorName`,
+      selectedAdvisor.name ?? '',
+      {
+        shouldDirty: true,
+        shouldTouch: true,
+        shouldValidate: true,
+      },
+    );
+  };
 
 
   return (
@@ -705,7 +1072,16 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
               <Controller
                 name={`organisationType`}
                 control={control}
-                rules={{ required: true }}
+                rules={{ 
+                  required: true,
+                  validate: (value) => {
+                    if (!value) return 'Organisation type is required';
+                    if (!canAddOrganisationType(value)) {
+                      return `You do not have permission to add ${value} organizations.`;
+                    }
+                    return true;
+                  }
+                }}
                 render={({ field }) => (
                   <Select
                     labelId="demo-simple-select-label"
@@ -713,20 +1089,32 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
                     label="Organisation Type *"
                     value={field.value ?? ''}
                     onChange={field.onChange}
-                    disabled={!!type}
+                    disabled={!!type || (availableOrgTypes.length === 0 && loggedUserType !== 'SUPERADMIN')}
                   >
-                    {OrganisationType.map((organisation, i) => (
-                      <MenuItem value={organisation} key={i}>
-                        {organisation}
+                    {(availableOrgTypes.length === 0 && loggedUserType !== 'SUPERADMIN') ? (
+                      <MenuItem value="" disabled>
+                        No organization types available. You do not have permission to add organizations.
                       </MenuItem>
-                    ))}
+                    ) : (
+                      availableOrgTypes.map((organisation, i) => (
+                        <MenuItem value={organisation} key={i}>
+                          {organisation}
+                        </MenuItem>
+                      ))
+                    )}
                   </Select>
                 )}
               />
 
               {errors && errors.organisationType && (
                 <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
-                  {validationMessage.required}
+                  {errors.organisationType.message || validationMessage.required}
+                </Typography>
+              )}
+              
+              {availableOrgTypes.length === 0 && loggedUserType !== 'SUPERADMIN' && (
+                <Typography variant="body2" color="orange" fontSize={13} mt={0.5}>
+                  You do not have permission to add organizations. Please contact your administrator.
                 </Typography>
               )}
             </FormControl>
@@ -1000,6 +1388,29 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
               </Box>
             </Stack>
 
+            {/* Show access level info for logged user */}
+            {/* {loggedUserAccess && (
+              <Box
+                sx={{
+                  mb: 2,
+                  p: 1.5,
+                  borderRadius: 1,
+                  bgcolor: '#F4F6F8',
+                  border: '1px solid #E3F2FD',
+                }}
+              >
+                <Typography variant="caption" fontWeight={600} color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
+                  Your Access Level
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  Organization Type: {loggedUserOrgType} | User Type: {loggedUserType}
+                </Typography>
+                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
+                  You can add: {availableOrgTypes.length > 0 ? availableOrgTypes.join(', ') : 'None (view only)'}
+                </Typography>
+              </Box>
+            )} */}
+
             <Typography
               variant="subtitle1"
               color="black"
@@ -1012,6 +1423,16 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
             {fields.map((item, index) => {
               const liveContact = watch(`contacts.${index}`);
               const isDisabled = !isContactComplete(liveContact);
+              const organisationType = watch('organisationType');
+              const availableUserTypes =
+                organisationType
+                  ? UserTypeByOrganisation[organisationType] || []
+                  : [];
+              const accessConfig = getUserAccessConfig(
+                organisationType,
+                liveContact?.userType,
+              );
+
               return (
                 <Stack
                   key={item.id}
@@ -1094,62 +1515,189 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
                     }}
                   >
                     <FormControl className="form-input" fullWidth focused>
-                      <InputLabel id="demo-simple-select-label">
-                        Permission *
+                      <InputLabel id={`user-type-select-label-${index}`}>
+                        User Type *
                       </InputLabel>
                       <Controller
-                        name={`contacts.${index}.permission`}
+                        name={`contacts.${index}.userType`}
                         control={control}
                         rules={{
-                          required: true,
-                          // validate: (value) => {
-                          //   if (value === "Admin") {
-                          //     watch("contacts").forEach((_, idx) => {
-                          //       clearErrors(`contacts.${idx}.role`);
-                          //     });
-                          //     return true;
-                          //   }
-                          //   const hasAdmin = watch("contacts").some(
-                          //     (contact) => contact.role === "Admin"
-                          //   );
-
-                          //   if (!hasAdmin) {
-                          //     return "Please add an admin first, then add a member.";
-                          //   }
-                          //   return true;
-                          // },
+                          required: 'User type is required',
                         }}
                         render={({ field }) => (
                           <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            label="Permission *"
-                            {...field}
+                            labelId={`user-type-select-label-${index}`}
+                            id={`user-type-select-${index}`}
+                            label="User Type *"
+                            value={field.value ?? ''}
+                            onChange={(event) => {
+                              field.onChange(event);
+                              const selectedType = event.target.value as string;
+                              const derivedAccess = getUserAccessConfig(
+                                organisationType,
+                                selectedType,
+                              );
+                              setValue(
+                                `contacts.${index}.permission`,
+                                selectedType,
+                              );
+                              setValue(
+                                `contacts.${index}.permissions`,
+                                derivedAccess?.modules ?? {},
+                              );
+                              setValue(
+                                `contacts.${index}.userDefinition`,
+                                derivedAccess?.definition ?? '',
+                              );
+                            }}
+                            disabled={!organisationType}
                           >
-                            {PermissionType.map((permission, i) => (
-                              <MenuItem value={permission.value} key={i}>
-                                {permission.label}
+                            {availableUserTypes.map((userType, i) => (
+                              <MenuItem value={userType} key={i}>
+                                {userType}
                               </MenuItem>
                             ))}
                           </Select>
                         )}
                       />
                     </FormControl>
+                    {!organisationType && (
+                      <Typography variant="body2" color="orange" fontSize={13} mt={0.5}>
+                        Please select organisation type first
+                      </Typography>
+                    )}
                     {errors &&
                       errors?.contacts &&
                       errors?.contacts[index] &&
-                      errors?.contacts[index]?.permission &&
-                      errors?.contacts[index]?.permission.type === 'required' && (
-                        <Typography
-                          variant="body2"
-                          color="red"
-                          fontSize={13}
-                          mt={0.5}
-                        >
+                      errors?.contacts[index]?.userType &&
+                      errors?.contacts[index]?.userType.type === 'required' && (
+                        <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
                           {validationMessage.required}
                         </Typography>
                       )}
                   </Box>
+                  <input
+                    type="hidden"
+                    {...register(`contacts.${index}.permission` as const)}
+                  />
+                  <input
+                    type="hidden"
+                    {...register(`contacts.${index}.userDefinition` as const)}
+                  />
+                  {/* {accessConfig?.definition && (
+                    <Box
+                      sx={{
+                        width: '100%',
+                        mt: 1,
+                        px: 1,
+                        py: 0.75,
+                        borderRadius: 1,
+                        bgcolor: '#F9FBFC',
+                        border: '1px solid #E3F2FD',
+                      }}
+                    >
+                      <Typography variant="caption" color="text.secondary">
+                        {accessConfig.definition}
+                      </Typography>
+                    </Box>
+                  )}
+                  {accessConfig && (
+                    <Box
+                      sx={{
+                        width: '100%',
+                        mt: 1,
+                      }}
+                    >
+                      <Typography
+                        variant="caption"
+                        fontWeight={600}
+                        color="text.secondary"
+                        sx={{ display: 'block', mb: 0.5 }}
+                      >
+                        Module access levels
+                      </Typography>
+                      <Grid container spacing={0.5}>
+                        {MODULE_DISPLAY_ORDER.map((section) => {
+                          if (section.children && section.children.length > 0) {
+                            return section.children.map((child) => (
+                              <Grid
+                                item
+                                xs={12}
+                                sm={6}
+                                key={`${section.key}-${child.key}`}
+                              >
+                                <Box
+                                  sx={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    bgcolor: '#F4F6F8',
+                                    borderRadius: 1,
+                                    px: 1,
+                                    py: 0.5,
+                                  }}
+                                >
+                                  <Typography
+                                    variant="caption"
+                                    color="text.secondary"
+                                  >
+                                    {section.label} — {child.label}
+                                  </Typography>
+                                  <Typography
+                                    variant="caption"
+                                    fontWeight={600}
+                                  >
+                                    {resolveModuleAccess(
+                                      accessConfig,
+                                      section.key as keyof ModuleAccessMap,
+                                      child.key,
+                                    )}
+                                  </Typography>
+                                </Box>
+                              </Grid>
+                            ));
+                          }
+
+                          return (
+                            <Grid
+                              item
+                              xs={12}
+                              sm={6}
+                              key={String(section.key)}
+                            >
+                              <Box
+                                sx={{
+                                  display: 'flex',
+                                  justifyContent: 'space-between',
+                                  alignItems: 'center',
+                                  bgcolor: '#F4F6F8',
+                                  borderRadius: 1,
+                                  px: 1,
+                                  py: 0.5,
+                                }}
+                              >
+                                <Typography
+                                  variant="caption"
+                                  color="text.secondary"
+                                >
+                                  {section.label}
+                                </Typography>
+                                <Typography
+                                  variant="caption"
+                                  fontWeight={600}
+                                >
+                                  {resolveModuleAccess(
+                                    accessConfig,
+                                    section.key as keyof ModuleAccessMap,
+                                  )}
+                                </Typography>
+                              </Box>
+                            </Grid>
+                          );
+                        })}
+                      </Grid>
+                    </Box>
+                  )} */}
                   <Box
                     sx={{
                       width: {
@@ -1362,21 +1910,22 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
                     </Box>
 
 
-                    <Box
-                      display={'flex'}
-                      justifyContent={'center'}
-                      alignItems={'center'}
-                      // width={150}
-                      sx={{
-                        visibility: index === 0 ? 'hidden' : '',
-                        cursor: 'pointer',
-                        // width: {
-                        //   lg: 150,
-                        //   xs: "auto",
-                        // },
-                      }}
-                      onClick={() => remove(index)}
-                    >
+                  <Box
+                    display={'flex'}
+                    justifyContent={'center'}
+                    alignItems={'center'}
+                    sx={{
+                      visibility: index === 0 ? 'hidden' : '',
+                      cursor: hasFullModuleAccess(accessConfig)
+                        ? 'not-allowed'
+                        : 'pointer',
+                    }}
+                    onClick={() => {
+                      if (!hasFullModuleAccess(accessConfig)) {
+                        remove(index);
+                      }
+                    }}
+                  >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="1.4em"
@@ -1386,7 +1935,11 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
                         <g fill="none">
                           <path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
                           <path
-                            fill="#ff0000"
+                            fill={
+                              hasFullModuleAccess(accessConfig)
+                                ? '#808080'
+                                : '#ff0000'
+                            }
                             d="M14.28 2a2 2 0 0 1 1.897 1.368L16.72 5H20a1 1 0 1 1 0 2l-.003.071l-.867 12.143A3 3 0 0 1 16.138 22H7.862a3 3 0 0 1-2.992-2.786L4.003 7.07L4 7a1 1 0 0 1 0-2h3.28l.543-1.632A2 2 0 0 1 9.721 2zm3.717 5H6.003l.862 12.071a1 1 0 0 0 .997.929h8.276a1 1 0 0 0 .997-.929zM10 10a1 1 0 0 1 .993.883L11 11v5a1 1 0 0 1-1.993.117L9 16v-5a1 1 0 0 1 1-1m4 0a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0v-5a1 1 0 0 1 1-1m.28-6H9.72l-.333 1h5.226z"
                           />
                         </g>
@@ -1396,13 +1949,7 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
                 </Stack>
               );
             })}
-
-            <Divider
-              sx={{
-                borderColor: '#979797',
-                my: 1,
-              }}
-            />
+      
             <Stack
               p={1.5}
               direction={'row'}
@@ -1432,13 +1979,250 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
               </svg>
               Add Contact
             </Stack>
+                       <Divider
+              sx={{
+                borderColor: '#979797',
+                my: 1,
+              }}
+            />
+            <Typography
+              variant="subtitle1"
+              color="black"
+              fontWeight={500}
+              marginTop={3}
+              marginBottom={2}
+            >
+              Allocated advisers
+            </Typography>
+
+            {advisorFields.length === 0 && (
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                mb={2}
+              >
+                No advisers allocated yet.
+              </Typography>
+            )}
+
+            {advisorFields.length === 0 && advisorContacts.length === 0 && (
+              <Typography variant="body2" color="text.secondary" mb={2}>
+                No advisor contacts added yet. Add advisor contacts in the Feedflow Managers section above.
+              </Typography>
+            )}
+
+            {advisorFields.map((item, index) => {
+              const assignment = watch(`allocatedAdvisors.${index}`);
+              
+              return (
+                <Stack
+                  key={item.id}
+                  display={'flex'}
+                  direction={'row'}
+                  sx={{
+                    width: '100%',
+                    marginBottom: 2,
+                    gap: 1.5,
+                    flexWrap: {
+                      lg: 'nowrap',
+                      xs: 'wrap',
+                    },
+                    justifyContent: {
+                      md: 'center',
+                    },
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: {
+                        lg: '100%',
+                        md: '48.4%',
+                        xs: '100%',
+                      },
+                    }}
+                  >
+                    <FormControl className="form-input" fullWidth focused>
+                      <InputLabel id={`advisor-select-label-${index}`}>
+                        Adviser *
+                      </InputLabel>
+                      <Controller
+                        name={`allocatedAdvisors.${index}.advisorId`}
+                        control={control}
+                        rules={{ required: true }}
+                        render={({ field }) => (
+                          <Select
+                            labelId={`advisor-select-label-${index}`}
+                            id={`advisor-select-${index}`}
+                            label="Adviser *"
+                            value={field.value ?? ''}
+                            onChange={(event) => {
+                              const rawValue = event.target.value;
+                              // Handle temporary IDs from contacts being added
+                              const value = rawValue === '' ? null : rawValue;
+                              handleAdvisorSelection(index, value, field.onChange);
+                            }}
+                            displayEmpty
+                            disabled={advisorLoading || advisorContacts.length === 0}
+                          >
+                            <MenuItem value="">
+                              <em>
+                                {advisorLoading
+                                  ? 'Loading advisers...'
+                                  : advisorContacts.length === 0
+                                    ? 'Add advisor contacts first'
+                                    : 'Select adviser'}
+                              </em>
+                            </MenuItem>
+                            {advisorOptions.map((advisor) => (
+                              <MenuItem value={advisor.id} key={advisor.id}>
+                                {advisor.name || advisor.email}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        )}
+                      />
+                    </FormControl>
+                    {errors?.allocatedAdvisors?.[index]?.advisorId && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.required}
+                      </Typography>
+                    )}
+                  </Box>
+
+                  <Box
+                    sx={{
+                      width: {
+                        lg: '100%',
+                        md: '48.4%',
+                        xs: '100%',
+                      },
+                    }}
+                  >
+                    <TextField
+                      label="Email"
+                      type="text"
+                      className="form-input"
+                      value={assignment?.advisorEmail ?? ''}
+                      InputProps={{ readOnly: true }}
+                      focused
+                      sx={{
+                        width: '100%',
+                      }}
+                    />
+                  </Box>
+
+                  <Box
+                    sx={{
+                      width: {
+                        lg: '100%',
+                        md: '48.4%',
+                        xs: '100%',
+                      },
+                    }}
+                  >
+                    <FormControl className="form-input" fullWidth focused>
+                      <InputLabel id={`advisor-access-select-label-${index}`}>
+                        Access level *
+                      </InputLabel>
+                      <Controller
+                        name={`allocatedAdvisors.${index}.accessLevel`}
+                        control={control}
+                        rules={{ required: true }}
+                        render={({ field }) => (
+                          <Select
+                            labelId={`advisor-access-select-label-${index}`}
+                            id={`advisor-access-select-${index}`}
+                            label="Access level *"
+                            value={field.value ?? ''}
+                            onChange={(event) =>
+                              field.onChange(Number(event.target.value))
+                            }
+                          >
+                            {ADVISOR_ACCESS_OPTIONS.map((option) => (
+                              <MenuItem value={option.value} key={option.value}>
+                                {option.label}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        )}
+                      />
+                    </FormControl>
+                    {errors?.allocatedAdvisors?.[index]?.accessLevel && (
+                      <Typography
+                        variant="body2"
+                        color="red"
+                        fontSize={13}
+                        mt={0.5}
+                      >
+                        {validationMessage.required}
+                      </Typography>
+                    )}
+                  </Box>
+
+                  <Box
+                    display={'flex'}
+                    justifyContent={'center'}
+                    alignItems={'center'}
+                    sx={{
+                      visibility: index === 0 ? 'hidden' : '',
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => removeAdvisor(index)}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="1.4em"
+                      height="1.4em"
+                      viewBox="0 0 24 24"
+                    >
+                      <g fill="none">
+                        <path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
+                        <path
+                          fill="#ff0000"
+                          d="M14.28 2a2 2 0 0 1 1.897 1.368L16.72 5H20a1 1 0 1 1 0 2l-.003.071l-.867 12.143A3 3 0 0 1 16.138 22H7.862a3 3 0 0 1-2.992-2.786L4.003 7.07L4 7a1 1 0 0 1 0-2h3.28l.543-1.632A2 2 0 0 1 9.721 2zm3.717 5H6.003l.862 12.071a1 1 0 0 0 .997.929h8.276a1 1 0 0 0 .997-.929zM10 10a1 1 0 0 1 .993.883L11 11v5a1 1 0 0 1-1.993.117L9 16v-5a1 1 0 0 1 1-1m4 0a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0v-5a1 1 0 0 1 1-1m.28-6H9.72l-.333 1h5.226z"
+                        />
+                      </g>
+                    </svg>
+                  </Box>
+                </Stack>
+              );
+            })}
+
+            {/* Removed Add adviser button - advisors are selected from contacts being added */}
+            {advisorFields.length === 0 && advisorContacts.length > 0 && (
+              <Button
+                variant="outlined"
+                onClick={() => {
+                  appendAdvisor({
+                    advisorId: null,
+                    accessLevel: 3,
+                    advisorEmail: '',
+                    advisorName: '',
+                  });
+                }}
+                sx={{
+                  borderColor: '#06a19b',
+                  color: '#06a19b',
+                  mt: 2,
+                }}
+              >
+                Add Adviser Selection
+              </Button>
+            )}
+
+       
 
             <Button
               type="submit"
-              disabled={isApiCallInProgress}
+              disabled={isApiCallInProgress || (availableOrgTypes.length === 0 && loggedUserType !== 'SUPERADMIN')}
               variant="contained"
               sx={{
-                background: '#06A19B',
+                background: (availableOrgTypes.length === 0 && loggedUserType !== 'SUPERADMIN') ? '#ccc' : '#06A19B',
                 fontWeight: 600,
                 padding: '6px 16px',
                 width: 'fit-content',
@@ -1447,9 +2231,15 @@ const AddNewOrganisation = ({ type, loggedUser }: Props) => {
                 marginLeft: 'auto',
                 display: 'block',
                 marginTop: 2,
+                '&:disabled': {
+                  background: '#ccc',
+                  color: '#666',
+                },
               }}
             >
-              Save New Organisation
+              {(availableOrgTypes.length === 0 && loggedUserType !== 'SUPERADMIN')
+                ? 'No Permission to Add Organizations' 
+                : 'Save New Organisation'}
             </Button>
           </form>
         </Grid>

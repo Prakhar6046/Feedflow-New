@@ -249,6 +249,7 @@ export const getProductions = async (payload: {
       cache: 'no-store',
     });
     revalidatePath(`/dashboard/farmManager`); 
+    console.log('Revalidated path for farmManager dashboard',res);
     return await res.json();
   } catch (error) {
     console.error('getProductions error:', error);

@@ -218,6 +218,17 @@ const NewFeedLibarary: NextPage<Props> = ({ feedSuppliers, speciesList }) => {
       }
     });
 
+    // Override with freshly calculated values to ensure accuracy
+    payload.carbohydratesGPerKg = carbohydrates;
+    payload.ge = calculateGE;
+    payload.digCP = calculateDigCP;
+    payload.digCF = calculateDigCF;
+    payload.digNFE = digNFE;
+    payload.deCP = deCP;
+    payload.deCF = deCF;
+    payload.deNFE = deNFE;
+    payload.de = de;
+
     return payload;
   };
 

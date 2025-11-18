@@ -13,6 +13,7 @@ import { FeedProduct } from '@/app/_typeModels/Feed';
 import { FeedSupplier } from '@/app/_typeModels/Organization';
 import { secureFetch } from '@/app/_lib/auth';
 import { getFarm } from '@/app/_lib/action';
+import { UserAccessConfig } from '@/app/_lib/constants/userAccessMatrix';
 
 const steps = [
   {
@@ -36,6 +37,8 @@ interface Props {
   isEdit?: boolean;
   feedstores: FeedProduct[];
   feedSuppliers: FeedSupplier[];
+  userAccess?: UserAccessConfig;
+  isViewOnly?: boolean;
 }
 const EditFarm = ({
   EditFarmData,
@@ -47,6 +50,8 @@ const EditFarm = ({
   isEdit,
   feedstores,
   feedSuppliers,
+  userAccess,
+  isViewOnly = false,
 }: Props) => {
   const token = getCookie('auth-token');
   const activeStepIndex = Number(getCookie('activeStep'));
@@ -145,6 +150,7 @@ useEffect(() => {
             editFarm={editFarm}
             farmMembers={farmMembers}
             farms={farms}
+            isViewOnly={isViewOnly}
           />
         )}
 
@@ -154,6 +160,7 @@ useEffect(() => {
             productionParaMeter={editFarm?.WaterQualityPredictedParameters}
             editFarm={editFarm}
             growthModels={growthModels}
+            isViewOnly={isViewOnly}
           />
         )}
         {activeStep === 2 && (
@@ -162,6 +169,7 @@ useEffect(() => {
             editFarm={editFarm}
             feedStores={feedstores}
             feedSuppliers={feedSuppliers}
+            isViewOnly={isViewOnly}
           />
         )}
         {activeStep === 3 && (
@@ -173,6 +181,7 @@ useEffect(() => {
             growthModels={growthModels}
             feedStores={feedstores}
             feedSuppliers={feedSuppliers}
+            isViewOnly={isViewOnly}
           />
         )}
       </Grid>

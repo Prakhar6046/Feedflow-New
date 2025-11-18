@@ -16,6 +16,7 @@ import { useAppDispatch } from '@/lib/hooks';
 import {
   Box,
   Button,
+  Chip,
   FormControl,
   InputLabel,
   MenuItem,
@@ -55,6 +56,7 @@ interface Props {
   isEdit?: boolean;
   feedStores: FeedProduct[];
   feedSuppliers: FeedSupplier[];
+  isViewOnly?: boolean;
 }
 
 const unitsTypes = [
@@ -72,6 +74,7 @@ const ProductionUnits: NextPage<Props> = ({
   productionParaMeter,
   feedStores,
   feedSuppliers,
+  isViewOnly = false,
 }) => {
   uuidv4();
   const dispatch = useAppDispatch();
@@ -94,6 +97,7 @@ const ProductionUnits: NextPage<Props> = ({
     () => productionSystemList.filter(sp => sp.isFeatured),
     [productionSystemList]
   );
+  const [generalWorkers, setGeneralWorkers] = useState<Array<{ id: number; name: string; email: string; role: string }>>([]);
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -163,11 +167,29 @@ const ProductionUnits: NextPage<Props> = ({
         const productionData = await productionRes.json();
         setProductionSystemList(productionData);
 
+        // Fetch general workers
+        const user: any = userData ? JSON.parse(userData) : null;
+        if (user?.organisationId) {
+          try {
+            const workersRes = await clientSecureFetch(
+              `/api/workers/general-workers?organisationId=${user.organisationId}`,
+              { method: 'GET' }
+            );
+            if (workersRes.ok) {
+              const workersData = await workersRes.json();
+              setGeneralWorkers(workersData.data || []);
+            }
+          } catch (error) {
+            console.error('Error fetching general workers:', error);
+          }
+        }
+
         // Once the data is fetched, set the form values
         if (editFarm?.productionUnits) {
           const unitsWithSystemId = editFarm.productionUnits.map((unit) => ({
             ...unit,
             productionSystem: unit.productionSystemId || '',
+            allocatedWorkers: (unit as any).allocatedWorkers || [],
           }));
           setValue('productionUnits', unitsWithSystemId);
         } else {
@@ -179,6 +201,7 @@ const ProductionUnits: NextPage<Props> = ({
               capacity: '',
               waterflowRate: '',
               id: Number(uuidv4()),
+              allocatedWorkers: [],
             },
           ]);
         }
@@ -213,6 +236,7 @@ const ProductionUnits: NextPage<Props> = ({
           productionSystem: '',
           waterflowRate: '',
           id: Number(uuidv4()),
+          allocatedWorkers: [],
         });
       } else {
         toast.dismiss();
@@ -246,6 +270,12 @@ const ProductionUnits: NextPage<Props> = ({
 
 
   const onSubmit: SubmitHandler<ProductionUnitsFormTypes> = async (data) => {
+    // Prevent submission in view-only mode
+    if (isViewOnly) {
+      toast.error('You do not have permission to edit this farm.');
+      return;
+    }
+    
     const farmData = getLocalItem('farmData');
     const farmPredictionValues = getLocalItem('productionParametes');
     const productionParamtertsUnitsArrayLocal = getLocalItem(
@@ -510,6 +540,7 @@ const ProductionUnits: NextPage<Props> = ({
           productionSystem: '',
           waterflowRate: '',
           id: Number(uuidv4()),
+          allocatedWorkers: [],
         },
       ]);
     } else {
@@ -643,6 +674,7 @@ const ProductionUnits: NextPage<Props> = ({
                               type="text"
                               focused
                               className="form-input"
+                              InputProps={{ readOnly: isViewOnly }}
                               sx={{
                                 width: '100%',
                                 minWidth: 150,
@@ -754,7 +786,12 @@ const ProductionUnits: NextPage<Props> = ({
                                   width: '100%',
                                 }}
                                 value={field.value || ''}
-                                onChange={(e) => field.onChange(e.target.value)}
+                                onChange={(e) => {
+                                  if (!isViewOnly) {
+                                    field.onChange(e.target.value);
+                                  }
+                                }}
+                                disabled={isViewOnly}
                               // labelId={`demo-simple-select-label-${index}`}
                               // id={`demo-simple-select-${index}`}
                               >
@@ -798,6 +835,7 @@ const ProductionUnits: NextPage<Props> = ({
                                   type="text"
                                   focused
                                   className="form-input capacity-input"
+                                  InputProps={{ readOnly: isViewOnly }}
                                   sx={{
                                     width: '100%',
                                     minWidth: 150,
@@ -841,9 +879,13 @@ const ProductionUnits: NextPage<Props> = ({
                               minWidth: 90,
                             }}
                             disabled={
-                              productionUnits[index].type ? false : true
+                              isViewOnly || (productionUnits[index].type ? false : true)
                             }
-                            onClick={() => handleCalculate(item, index)}
+                            onClick={() => {
+                              if (!isViewOnly) {
+                                handleCalculate(item, index);
+                              }
+                            }}
                           >
                             Calculate
                           </Button>
@@ -890,6 +932,7 @@ const ProductionUnits: NextPage<Props> = ({
                                   type="text"
                                   focused
                                   className="form-input"
+                                  InputProps={{ readOnly: isViewOnly }}
                                   sx={{
                                     width: '100%',
                                     minWidth: 150,
@@ -938,6 +981,72 @@ const ProductionUnits: NextPage<Props> = ({
                         )}
                       </TableCell>
                       <TableCell
+                        sx={{
+                          border: 0,
+                          pl: 0,
+                          pr: 1,
+                        }}
+                      >
+                        <FormControl
+                          className="form-input prod-unit"
+                          fullWidth
+                          focused
+                          sx={{
+                            minWidth: 200,
+                            width: '100%',
+                          }}
+                        >
+                          <InputLabel id={`allocated-workers-label-${index}`}>
+                            Allocated workers
+                          </InputLabel>
+                          <Controller
+                            name={`productionUnits.${index}.allocatedWorkers`}
+                            control={control}
+                            defaultValue={[]}
+                            render={({ field }) => (
+                              <Select
+                                labelId={`allocated-workers-label-${index}`}
+                                id={`allocated-workers-${index}`}
+                                multiple
+                                label="Allocated workers"
+                                value={field.value || []}
+                                onChange={(e) => {
+                                  field.onChange(e.target.value);
+                                }}
+                                renderValue={(selected: any) => (
+                                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                    {(selected as number[]).map((workerId) => {
+                                      const worker = generalWorkers.find((w) => w.id === workerId);
+                                      return worker ? (
+                                        <Chip
+                                          key={workerId}
+                                          label={worker.name}
+                                          size="small"
+                                          sx={{
+                                            height: 24,
+                                            fontSize: '0.75rem',
+                                          }}
+                                        />
+                                      ) : null;
+                                    })}
+                                  </Box>
+                                )}
+                                sx={{
+                                  minWidth: 200,
+                                  width: '100%',
+                                }}
+                              >
+                                {generalWorkers.map((worker) => (
+                                  <MenuItem key={worker.id} value={worker.id}>
+                                    {worker.name} ({worker.role})
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            )}
+                          />
+                        </FormControl>
+                      </TableCell>
+                      <TableCell
                         title="Water Quality Parameters"
                         sx={{
                           border: 0,
@@ -946,6 +1055,7 @@ const ProductionUnits: NextPage<Props> = ({
                           position: 'relative',
                         }}
                         onClick={() => {
+                          if (isViewOnly) return;
                           if (productionUnits[index]?.name) {
                             toast.dismiss();
                             setOpenUnitParametersModal(true);
@@ -954,6 +1064,10 @@ const ProductionUnits: NextPage<Props> = ({
                             toast.dismiss();
                             toast.error('Please enter unit name first');
                           }
+                        }}
+                        style={{
+                          cursor: isViewOnly ? 'not-allowed' : 'pointer',
+                          opacity: isViewOnly ? 0.5 : 1,
                         }}
                       >
                         <Box
@@ -1124,21 +1238,23 @@ const ProductionUnits: NextPage<Props> = ({
                 Previous
               </Button>
 
-              <Button
-                type="submit"
-                variant="contained"
-                disabled={isApiCallInProgress ? true : false}
-                sx={{
-                  background: '#06A19B',
-                  fontWeight: 600,
-                  padding: '6px 16px',
-                  width: 'fit-content',
-                  textTransform: 'capitalize',
-                  borderRadius: '8px',
-                }}
-              >
-                Save
-              </Button>
+              {!isViewOnly && (
+                <Button
+                  type="submit"
+                  variant="contained"
+                  disabled={isApiCallInProgress ? true : false}
+                  sx={{
+                    background: '#06A19B',
+                    fontWeight: 600,
+                    padding: '6px 16px',
+                    width: 'fit-content',
+                    textTransform: 'capitalize',
+                    borderRadius: '8px',
+                  }}
+                >
+                  Save
+                </Button>
+              )}
             </Box>
           </Box>
         </Box>
@@ -1161,6 +1277,7 @@ const ProductionUnits: NextPage<Props> = ({
         feedStores={feedStores}
         feedSuppliers={feedSuppliers}
         productionUnits={editFarm?.productionUnits}
+        isViewOnly={isViewOnly}
       />
       <CalculateVolume
         open={open}

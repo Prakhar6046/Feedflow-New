@@ -3,7 +3,7 @@ import { Farm } from './Farm';
 
 export interface FishSupply {
   id: number;
-  organisation: number;
+  organisation: string; // Changed from number to string (hatchery name)
   batchNumber: string;
   hatchingDate: Dayjs | any;
   spawningDate: Dayjs | any;

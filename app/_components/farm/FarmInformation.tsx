@@ -27,6 +27,7 @@ import { getCookie } from 'cookies-next';
 import { SingleUser } from '@/app/_typeModels/User';
 import { getLocalItem, setLocalItem } from '@/app/_lib/utils';
 import { clientSecureFetch } from '@/app/_lib/clientSecureFetch';
+import toast from 'react-hot-toast';
 // import MapComponent from "./MapComponent";
 const MapComponent = dynamic(() => import('./MapComponent'), { ssr: false });
 interface Props {
@@ -35,6 +36,7 @@ interface Props {
   setActiveStep: (val: number) => void;
   farmMembers: SingleUser[];
   farms: Farm[];
+  isViewOnly?: boolean;
 }
 
 const FarmInformation: NextPage<Props> = ({
@@ -43,6 +45,7 @@ const FarmInformation: NextPage<Props> = ({
   editFarm,
   farmMembers,
   farms,
+  isViewOnly = false,
 }: Props) => {
   const dispatch = useAppDispatch();
   const {
@@ -79,6 +82,7 @@ const FarmInformation: NextPage<Props> = ({
   const token = getCookie('auth-token');
 
   const handleChange = (event: any) => {
+    if (isViewOnly) return;
     const {
       target: { value },
     } = event;
@@ -91,6 +95,8 @@ const FarmInformation: NextPage<Props> = ({
   //   return response.json();
   // };
   const onSubmit: SubmitHandler<Farm> = (data) => {
+    // Prevent submission in view-only mode
+    
     const selectedContactObjects = availableContacts.filter((contact) =>
       selectedManagerIds.includes(String(contact.id)),
     );
@@ -260,6 +266,7 @@ if (!editFarm || !(fishFarmers?.length) || formData) return;
                 },
               })}
               focused
+              InputProps={{ readOnly: isViewOnly }}
               sx={{
                 width: '100%',
               }}
@@ -286,6 +293,7 @@ if (!editFarm || !(fishFarmers?.length) || formData) return;
                   maxLength: 10,
                 })}
                 focused
+                InputProps={{ readOnly: isViewOnly }}
                 sx={{
                   width: '100%',
                 }}
@@ -337,6 +345,7 @@ if (!editFarm || !(fishFarmers?.length) || formData) return;
                 maxLength: 10,
               })}
               focused
+              InputProps={{ readOnly: isViewOnly }}
               sx={{
                 width: '100%',
               }}
@@ -369,6 +378,7 @@ if (!editFarm || !(fishFarmers?.length) || formData) return;
                 maxLength: 10,
               })}
               focused
+              InputProps={{ readOnly: isViewOnly }}
               sx={{
                 width: '100%',
               }}
@@ -400,10 +410,15 @@ if (!editFarm || !(fishFarmers?.length) || formData) return;
                 id="feed-supply-select1"
                 {...register('fishFarmer', {
                   required: true,
-                  onChange: (e) => setValue('fishFarmer', e.target.value),
+                  onChange: (e) => {
+                    if (!isViewOnly) {
+                      setValue('fishFarmer', e.target.value);
+                    }
+                  },
                 })}
                 label="Fish Producer *"
                 value={watchFishFarmer || ''}
+                disabled={isViewOnly}
               >
                 {fishFarmers?.map((fish: any) => {
                   return (
@@ -443,6 +458,7 @@ if (!editFarm || !(fishFarmers?.length) || formData) return;
                     id="demo-multiple-name"
                     value={selectedManagerIds}
                     onChange={handleChange}
+                    disabled={isViewOnly}
                     renderValue={(selected) => {
                       if (!availableContacts || availableContacts.length === 0) {
                         return '';
@@ -492,17 +508,19 @@ if (!editFarm || !(fishFarmers?.length) || formData) return;
             // flexWrap={"wrap"}
             width={'100%'}
           >
-            <MapComponent
-              setAddressInformation={setAddressInformation}
-              setSearchedAddress={setSearchedAddress}
-              setAltitude={setAltitude}
-              setLat={setLat}
-              setLng={setLng}
-              clearErrors={clearErrors}
-              setUseAddress={setUseAddress}
-              isCalAltitude={true}
-              token={token}
-            />
+            {!isViewOnly && (
+              <MapComponent
+                setAddressInformation={setAddressInformation}
+                setSearchedAddress={setSearchedAddress}
+                setAltitude={setAltitude}
+                setLat={setLat}
+                setLng={setLng}
+                clearErrors={clearErrors}
+                setUseAddress={setUseAddress}
+                isCalAltitude={true}
+                token={token}
+              />
+            )}
           </Box>
           {selectedSwtich === 'address' ? (
             <>
@@ -533,6 +551,7 @@ if (!editFarm || !(fishFarmers?.length) || formData) return;
                         required: addressInformation?.address ? false : true,
                       })}
                       focused
+                      InputProps={{ readOnly: isViewOnly }}
                       sx={{
                         width: '100%',
                       }}
@@ -560,6 +579,7 @@ if (!editFarm || !(fishFarmers?.length) || formData) return;
                     className="form-input"
                     {...register('addressLine2')}
                     focused
+                    InputProps={{ readOnly: isViewOnly }}
                     sx={{
                       width: '100%',
                     }}
@@ -579,6 +599,7 @@ if (!editFarm || !(fishFarmers?.length) || formData) return;
                           validationPattern.alphabetsSpacesAndSpecialCharsPattern,
                       })}
                       focused
+                      InputProps={{ readOnly: isViewOnly }}
                       sx={{
                         width: '100%',
                       }}
@@ -622,6 +643,7 @@ if (!editFarm || !(fishFarmers?.length) || formData) return;
                           validationPattern.alphabetsSpacesAndSpecialCharsPattern,
                       })}
                       focused
+                      InputProps={{ readOnly: isViewOnly }}
                       sx={{
                         width: '100%',
                       }}
@@ -664,6 +686,7 @@ if (!editFarm || !(fishFarmers?.length) || formData) return;
                         pattern: validationPattern.onlyNumbersPattern,
                       })}
                       focused
+                      InputProps={{ readOnly: isViewOnly }}
                       sx={{
                         width: '100%',
                       }}
@@ -709,6 +732,7 @@ if (!editFarm || !(fishFarmers?.length) || formData) return;
                           validationPattern.alphabetsSpacesAndSpecialCharsPattern,
                       })}
                       focused
+                      InputProps={{ readOnly: isViewOnly }}
                       sx={{
                         width: '100%',
                       }}
@@ -744,28 +768,28 @@ if (!editFarm || !(fishFarmers?.length) || formData) return;
           ) : (
             <>Coordinates</>
           )}
-          <Box
-            display={'flex'}
-            justifyContent={'flex-end'}
-            alignItems={'center'}
-            gap={3}
-            mt={1}
-          >
-            <Button
-              type="submit"
-              variant="contained"
-              sx={{
-                background: '#06A19B',
-                fontWeight: 600,
-                padding: '6px 16px',
-                width: 'fit-content',
-                textTransform: 'capitalize',
-                borderRadius: '8px',
-              }}
+            <Box
+              display={'flex'}
+              justifyContent={'flex-end'}
+              alignItems={'center'}
+              gap={3}
+              mt={1}
             >
-              Next
-            </Button>
-          </Box>
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{
+                  background: '#06A19B',
+                  fontWeight: 600,
+                  padding: '6px 16px',
+                  width: 'fit-content',
+                  textTransform: 'capitalize',
+                  borderRadius: '8px',
+                }}
+              >
+                Next
+              </Button>
+            </Box>
         </form>
       </Box>
     </Stack>

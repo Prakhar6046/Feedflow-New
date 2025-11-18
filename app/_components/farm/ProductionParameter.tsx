@@ -18,6 +18,7 @@ import TableRow from '@mui/material/TableRow';
 import { getCookie } from 'cookies-next';
 import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 type WaterQualityKey =
   | 'Water Temperature °C'
   | 'Dissolved Oxygen (DO) mg/L'
@@ -37,6 +38,7 @@ interface Props {
   productionParaMeter?: ProductionParaMeterType[];
   editFarm?: Farm;
   growthModels: GrowthModel[];
+  isViewOnly?: boolean;
 }
 interface FormData {
   predictedValues: Record<string, Record<number, string>>;
@@ -48,6 +50,7 @@ export default function ProductionParaMeter({
   setActiveStep,
   productionParaMeter,
   editFarm,
+  isViewOnly = false,
 }: Props) {
   const isEditFarm = getCookie('isEditFarm');
 
@@ -70,6 +73,9 @@ export default function ProductionParaMeter({
     idealRange: watch('idealRange'),
   };
   const onSubmit: SubmitHandler<FormData> = (data) => {
+    // Prevent submission in view-only mode
+ 
+    
     let payload;
     if (
       isEditFarm === 'true' &&
@@ -325,6 +331,7 @@ export default function ProductionParaMeter({
                                   {...field}
                                   type="text"
                                   placeholder="0"
+                                  readOnly={isViewOnly}
                                   style={{
                                     maxWidth: '100px',
                                     padding: '4px 2px',
@@ -334,8 +341,11 @@ export default function ProductionParaMeter({
                                     fontWeight: '500',
                                     color: '#555555',
                                     position: 'sticky',
+                                    backgroundColor: isViewOnly ? '#f5f5f5' : 'transparent',
+                                    cursor: isViewOnly ? 'not-allowed' : 'text',
                                   }}
                                   onInput={(e) => {
+                                    if (isViewOnly) return;
                                     const value = e.currentTarget.value;
                                     const regex = /^-?\d*\.?\d*$/;
                                     if (!regex.test(value)) {
@@ -476,6 +486,7 @@ export default function ProductionParaMeter({
                                   type="text"
                                   {...field}
                                   placeholder="0"
+                                  readOnly={isViewOnly}
                                   style={{
                                     maxWidth: '90px',
                                     padding: '4px 2px',
@@ -485,8 +496,11 @@ export default function ProductionParaMeter({
                                     fontSize: '14px',
                                     fontWeight: '500',
                                     color: '#555555',
+                                    backgroundColor: isViewOnly ? '#f5f5f5' : 'transparent',
+                                    cursor: isViewOnly ? 'not-allowed' : 'text',
                                   }}
                                   onInput={(e) => {
+                                    if (isViewOnly) return;
                                     const value = e.currentTarget.value;
                                     const regex = /^-?\d*\.?\d*$/;
                                     if (!regex.test(value)) {

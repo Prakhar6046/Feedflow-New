@@ -9,6 +9,12 @@ import { saveAs } from 'file-saver';
 import dayjs from 'dayjs';
 import { OrganisationModelResponse } from '../_typeModels/growthModel';
 import { ProductionUnit } from '../_typeModels/Farm';
+import {
+  calculatefeedingRate as calculateTilapiaFeedingRate,
+  calculateNumberOfFish as calculateTilapiaNumberOfFish,
+  calculatefishSize as calculateTilapiaFishSize,
+  calculateGrowth as calculateTilapiaGrowth,
+} from './utils/tilapiaSpeciesFormula';
 export const readableDate = (date: string) => {
   return new Date(date).toLocaleString('en-US', {
     dateStyle: 'medium',
@@ -69,26 +75,44 @@ export function capitalizeFirstLetter(val: string) {
   return val.charAt(0).toUpperCase() + val.slice(1).toLowerCase();
 }
 export function getDayMonthDifference(targetDate: any) {
-  const currentDate: any = new Date();
-  const target: any = new Date(targetDate);
+  // Parse the target date using dayjs to handle MM/DD/YYYY format correctly
+  const target = dayjs(targetDate, 'MM/DD/YYYY');
+  const currentDate = dayjs();
 
-  // Calculate the total difference in time
-  const diffTime = target - currentDate;
+  // Validate that the date is valid
+  if (!target.isValid()) {
+    // Try parsing as ISO string or other formats
+    const fallbackDate = dayjs(targetDate);
+    if (!fallbackDate.isValid()) {
+      return '0/0'; // Return default if date is invalid
+    }
+    return calculateAgeDifference(fallbackDate, currentDate);
+  }
+
+  return calculateAgeDifference(target, currentDate);
+}
+
+function calculateAgeDifference(target: dayjs.Dayjs, current: dayjs.Dayjs) {
+  // Calculate the total difference in time (currentDate - targetDate for age)
+  const diffTime = current.valueOf() - target.valueOf();
 
   // Convert the difference to days
   const totalDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
-  let months = target.getMonth() - currentDate.getMonth();
-  let days = target.getDate() - currentDate.getDate();
+  // Calculate months difference
+  let months = current.month() - target.month();
+  let days = current.date() - target.date();
 
   // Adjust for the year difference
-  const yearDiff = target.getFullYear() - currentDate.getFullYear();
+  const yearDiff = current.year() - target.year();
   months += yearDiff * 12;
 
+  // Adjust if days are negative (e.g., if current day is less than target day)
   if (days < 0) {
     months -= 1;
-    const prevMonth = new Date(target.getFullYear(), target.getMonth(), 0);
-    days += prevMonth.getDate();
+    // Get the number of days in the previous month
+    const prevMonth = current.subtract(1, 'month');
+    days += prevMonth.daysInMonth();
   }
 
   return `${totalDays}/${months}`;
@@ -751,23 +775,23 @@ export const exportFeedPredictionToXlsx = async (
   const headers = headerData
     ? headerData
     : [
-        'Date',
-        'Days',
-        'Water Temp',
-        'Fish Weight (g)',
-        'Number of Fish',
-        'Biomass (kg)',
-        'Stocking Density',
-        'Stocking Density Kg/m3',
-        'Feed Phase',
-        'Feed Protein (%)',
-        'Feed DE (MJ/kg)',
-        'Feed Price ($)',
-        'Growth (g)',
-        'Est. FCR',
-        'Partitioned FCR',
-        'Feed Intake (g)',
-      ];
+      'Date',
+      'Days',
+      'Water Temp',
+      'Fish Weight (g)',
+      'Number of Fish',
+      'Biomass (kg)',
+      'Stocking Density',
+      'Stocking Density Kg/m3',
+      'Feed Phase',
+      'Feed Protein (%)',
+      'Feed DE (MJ/kg)',
+      'Feed Price ($)',
+      'Growth (g)',
+      'Est. FCR',
+      'Partitioned FCR',
+      'Feed Intake (g)',
+    ];
   // Add headers to the sheet
   worksheet.addRow(headers);
 
@@ -875,8 +899,23 @@ function calculateTemparatureCoefficientQuadratic(a, b, c, T) {
   return a * T ** 2 + b * T + c;
 }
 
-function calculateDENeedLinear(a, b, IBW, c) {
-  return a + b * Math.pow(IBW, c);
+// function calculateDENeedLinear(a, b, IBW, c) {
+//   console.log('a', a);
+//   console.log('b', b);
+//   console.log('IBW', IBW);
+//   console.log('c', c);
+//   const result = a + b * Math.pow(IBW, c);
+//   console.log('result', result);
+//   return a + b * Math.pow(IBW, c);
+// }
+function calculateDENeedLinear(a: number, b: number, T: number, c: number): number {
+  // Compute T^c using Math.pow()
+  const powered = Math.pow(T, c);
+
+  // Calculate result
+  const result = a + b * powered;
+
+  return result;
 }
 
 // function calculateDE(CP, ADC_CP, GE_CP, CF, ADC_CF, GE_CF, NFE, ADC_NFE, GE_NFE) {
@@ -886,15 +925,46 @@ function calculateDENeedLinear(a, b, IBW, c) {
 // }
 
 function calculateTheoreticalFeedConversionRatio(tDEN, DE, WF) {
-  return tDEN / (DE / WF);
+  if (DE === undefined || DE === null || DE === 0) {
+    console.error('[calculateTheoreticalFeedConversionRatio] ERROR: DE is invalid:', DE);
+    return NaN;
+  }
+  if (WF === undefined || WF === null || WF === 0) {
+    console.error('[calculateTheoreticalFeedConversionRatio] ERROR: WF is invalid:', WF);
+    return NaN;
+  }
+  const denominator = DE / WF;
+  if (denominator === 0 || isNaN(denominator)) {
+    console.error('[calculateTheoreticalFeedConversionRatio] ERROR: Denominator is invalid:', { DE, WF, denominator });
+    return NaN;
+  }
+  const result = tDEN / denominator;
+  if (isNaN(result)) {
+    console.error('[calculateTheoreticalFeedConversionRatio] ERROR: Result is NaN', { tDEN, DE, WF, denominator });
+  }
+  return result;
 }
 
 function calculatefeedIntakeFormula(IBW, TGC, T, tFCR) {
+  if (IBW === undefined || IBW === null || IBW === 0 || isNaN(IBW)) {
+    console.error('[calculatefeedIntakeFormula] ERROR: IBW is invalid:', IBW);
+    return NaN;
+  }
+  if (TGC === undefined || TGC === null || isNaN(TGC)) {
+    console.error('[calculatefeedIntakeFormula] ERROR: TGC is invalid:', TGC);
+    return NaN;
+  }
+  if (tFCR === undefined || tFCR === null || isNaN(tFCR)) {
+    console.error('[calculatefeedIntakeFormula] ERROR: tFCR is invalid:', tFCR);
+    return NaN;
+  }
   const rootIBW = Math.pow(IBW, 1 / 3);
   const tgcComponent = TGC * T;
   const growthComponent = Math.pow(rootIBW + tgcComponent, 3) / IBW - 1;
   const feedingRate = Math.max(0, growthComponent * tFCR * 100);
-
+  if (isNaN(feedingRate)) {
+    console.error('[calculatefeedIntakeFormula] ERROR: Result is NaN', { rootIBW, tgcComponent, growthComponent, tFCR });
+  }
   return feedingRate;
 }
 
@@ -934,56 +1004,6 @@ function computeTGCFromModel(model, temperature) {
   }
   return 0;
 }
-function getFeedTypeForFishSize(feedLinks: any[], fishSize: number): string {
-  // First try feedLinks if available
-  if (feedLinks && feedLinks.length > 0) {
-    // Try to find an exact match
-    const exactMatch = feedLinks.find(
-      (link) => fishSize >= link.minFishSize && fishSize <= link.maxFishSize,
-    );
-    if (exactMatch) {
-      return exactMatch?.feedStore?.productName || '-';
-    }
-
-    // If no exact match, find the next feed that can be used (where fishSize < minFishSize)
-    const nextFeed = feedLinks
-      .filter((link) => fishSize < link.minFishSize)
-      .sort((a, b) => a.minFishSize - b.minFishSize)[0]; // Get the next smallest minFishSize
-    
-    if (nextFeed) {
-      return nextFeed?.feedStore?.productName || '-';
-    }
-
-    // If no next feed, find the last/previous feed available (where fishSize > maxFishSize)
-    const previousFeed = feedLinks
-      .filter((link) => fishSize > link.maxFishSize)
-      .sort((a, b) => b.maxFishSize - a.maxFishSize)[0]; // Get the largest maxFishSize
-    
-    if (previousFeed) {
-      return previousFeed?.feedStore?.productName || '-';
-    }
-  }
-
-  // If no feedLinks available or no match found, try using stored default feeds from localStorage
-  try {
-    const defaultFeeds = getLocalItem('defaultFeedsCache');
-    if (defaultFeeds && Array.isArray(defaultFeeds)) {
-      // Find feed where fishSize falls within the minFishSizeG to maxFishSizeG range
-      const matchingFeed = defaultFeeds.find(
-        (feed: any) => fishSize >= feed.minFishSizeG && fishSize <= feed.maxFishSizeG
-      );
-      
-      if (matchingFeed) {
-        return matchingFeed.productName || '-';
-      }
-    }
-  } catch (e) {
-    // Fail silently and return '-' if default feeds cache is not available
-  }
-
-  return '-';
-}
-
 function getFeedDataForFishSize(feedLinks: any[], fishSize: number): any {
   if (!feedLinks || feedLinks.length === 0) {
     return null;
@@ -993,7 +1013,7 @@ function getFeedDataForFishSize(feedLinks: any[], fishSize: number): any {
   const exactMatch = feedLinks.find(
     (link) => fishSize >= link.minFishSize && fishSize <= link.maxFishSize,
   );
-  
+
   if (exactMatch?.feedStore) {
     return exactMatch.feedStore;
   }
@@ -1002,7 +1022,7 @@ function getFeedDataForFishSize(feedLinks: any[], fishSize: number): any {
   const nextFeed = feedLinks
     .filter((link) => fishSize < link.minFishSize)
     .sort((a, b) => a.minFishSize - b.minFishSize)[0];
-  
+
   if (nextFeed?.feedStore) {
     return nextFeed.feedStore;
   }
@@ -1011,9 +1031,54 @@ function getFeedDataForFishSize(feedLinks: any[], fishSize: number): any {
   const previousFeed = feedLinks
     .filter((link) => fishSize > link.maxFishSize)
     .sort((a, b) => b.maxFishSize - a.maxFishSize)[0];
-  
+
   if (previousFeed?.feedStore) {
     return previousFeed.feedStore;
+  }
+
+  return null;
+}
+
+// Helper function to get feed data from default feeds (for Ad-hoc mode)
+function getFeedDataFromDefaultFeeds(defaultFeeds: any[], fishSize: number, supplierId?: string): any {
+  if (!defaultFeeds || defaultFeeds.length === 0) {
+    return null;
+  }
+
+  // Filter by supplier if provided
+  let relevantFeeds = defaultFeeds;
+  if (supplierId) {
+    relevantFeeds = defaultFeeds.filter((feed: any) => {
+      const suppliers = feed.ProductSupplier || [];
+      return suppliers.some((id: any) => String(id) === String(supplierId));
+    });
+  }
+
+  // Try to find exact match
+  const exactMatch = relevantFeeds.find(
+    (feed) => fishSize >= feed.minFishSizeG && fishSize <= feed.maxFishSizeG
+  );
+
+  if (exactMatch) {
+    return exactMatch;
+  }
+
+  // Find next feed (for fish smaller than min size)
+  const nextFeed = relevantFeeds
+    .filter((feed) => fishSize < feed.minFishSizeG)
+    .sort((a, b) => a.minFishSizeG - b.minFishSizeG)[0];
+
+  if (nextFeed) {
+    return nextFeed;
+  }
+
+  // Find previous feed (for fish larger than max size)
+  const previousFeed = relevantFeeds
+    .filter((feed) => fishSize > feed.maxFishSizeG)
+    .sort((a, b) => b.maxFishSizeG - a.maxFishSizeG)[0];
+
+  if (previousFeed) {
+    return previousFeed;
   }
 
   return null;
@@ -1030,6 +1095,9 @@ export function calculateFishGrowthTilapia(
   timeInterval: number,
   selectedFarm?: FarmGroupUnit,
   wasteFactor?: number,
+  defaultFeeds?: any[],
+  supplierId?: string,
+  mortalityRate?: number,
 ) {
   // Get feedLinks from farm/unit if available, otherwise use empty array
   const feedLinks =
@@ -1045,15 +1113,22 @@ export function calculateFishGrowthTilapia(
     // Get nutritional values from feedStore, not from growth model
     // Default values if no feed data available
     const getFeedValues = (fishSize: number) => {
-      const feedData = getFeedDataForFishSize(feedLinks, fishSize);
+      // First try farm feed links (for Feeding Plan)
+      let feedData = getFeedDataForFishSize(feedLinks, fishSize);
+
+      // If no farm data, try default feeds (for Ad-hoc)
+      if (!feedData && defaultFeeds && defaultFeeds.length > 0) {
+        feedData = getFeedDataFromDefaultFeeds(defaultFeeds, fishSize, supplierId);
+      }
+
       return {
-        de: feedData?.de || 13.47,
-        feedProtein: feedData?.crudeProteinGPerKg || 400,
-        feedPrice: feedData?.feedCost || 32,
+        de: feedData?.de, // Default DE value when feed data is missing
+        feedProtein: feedData?.crudeProteinGPerKg,
+        feedPrice: feedData?.feedCost,
         feedName: feedData?.productName || '-',
       };
     };
-    
+
     let tgcA = selectedGrowthModel.models.tgcA;
     let tgcB = selectedGrowthModel.models.tgcB;
     let tgcC = selectedGrowthModel.models.tgcC;
@@ -1088,26 +1163,15 @@ export function calculateFishGrowthTilapia(
     // Get initial feed values
     const initialFeedValues = getFeedValues(IBW);
     let WF = wasteFactor; // Use passed waste factor
-    
+
     let tDEN = calculateDENeedLinear(
       selectedGrowthModel.models.tFCRa,
       selectedGrowthModel.models.tFCRb,
-      IBW,
+      T,
       selectedGrowthModel.models.tFCRc,
     );
 
     let tFCR = calculateTheoreticalFeedConversionRatio(tDEN, initialFeedValues.de, WF);
-
-    function calculateNoOfFish(
-      initialSizeK4: number,
-      growthRateL4: number,
-      timeH5: number,
-    ) {
-      const growthMultiplier = growthRateL4 / 100 + 1;
-      const growthComponent = Math.pow(growthMultiplier, timeH5) - 1;
-      const fishSize = initialSizeK4 * (1 - growthComponent);
-      return fishSize;
-    }
     // Fish size will be computed via unified formula
     // function calculateFeedingRate(
     //   fishSize: number,
@@ -1126,80 +1190,124 @@ export function calculateFishGrowthTilapia(
     //   return feedingRate;
     // }
 
-    function calculateFW(
-      IBW: number,
-      b: number,
-      TGC: number,
-      tValues: number[],
-      dValues: number[],
-    ) {
-      if (tValues.length !== dValues.length) {
-        throw new Error('tValues and dValues must have the same length');
-      }
-
-      // Compute summation of t * d
-      const sum_td = tValues.reduce(
-        (sum, t, index) => sum + t * dValues[index],
-        0,
-      );
-
-      // Apply the formula
-      return Math.pow(Math.pow(IBW, b) + (TGC / 100) * sum_td, 1 / b);
-    }
-
     function calculateEstFCR(fishSize: number, feedValues: any): any {
-      const numerator = (0.009 * fishSize + 12.45) * 1.03;
-      const result = numerator / feedValues.de;
+      if (!feedValues || feedValues.de === undefined || feedValues.de === null || feedValues.de === 0) {
+        console.error('[Tilapia calculateEstFCR] ERROR: feedValues.de is invalid:', feedValues?.de);
+        return NaN;
+      }
+      const numerator = (0.009 * fishSize + 12.45);
+      const denominator = feedValues.de / 1.03;
+      const result = numerator / denominator;
       const finalResult = Number(result.toFixed(2));
+      if (isNaN(finalResult)) {
+        console.error('[Tilapia calculateEstFCR] ERROR: Result is NaN', { numerator, de: feedValues.de, result });
+      }
       return finalResult;
     }
 
-    function calculateGrowth(newFishSize: number, prevFishSize: number) {
-      return newFishSize - prevFishSize;
-    }
-
-    // Unified growth calculation: FBW - IBW (Final Body Weight - Initial Body Weight)
-    function calculateGrowthUnified(FBW: number, IBW: number) {
-      return FBW - IBW;
-    }
 
     function calculateDate(date: string, day: number) {
       return dayjs(date, 'YYYY-MM-DD').add(day, 'day').format('DD-MM-YYYY');
     }
 
     const maxPeriod = Math.min(period, 365);
+    const effectiveMortalityRate = mortalityRate ?? 0.05;
+    // Add initial day (day 0) row to reflect starting fish size
+
     for (let day = 1; day <= maxPeriod; day += 1) {
-      const oldFishSize = prevFishSize;
+      const currentIBW = prevFishSize;
+      const stepDays = timeInterval || 1;
 
-      const FBW = calculateFW(prevWeight, 0.35, 0.16, [T], [7]);
+      if (day !== 1) {
+        const updatedFishCount = calculateTilapiaNumberOfFish(
+          prevNumberOfFish,
+          effectiveMortalityRate,
+          stepDays,
+        );
+        if (
+          Number.isFinite(updatedFishCount) &&
+          !Number.isNaN(updatedFishCount)
+        ) {
+          prevNumberOfFish = updatedFishCount;
+        }
+      }
 
-      prevNumberOfFish =
-        day !== 1
-          ? calculateNoOfFish(prevNumberOfFish, 0.05, 7)
-          : prevNumberOfFish;
-      
       const currentFeedValues = getFeedValues(prevFishSize);
+
+      if (!currentFeedValues || currentFeedValues.de === undefined || currentFeedValues.de === null) {
+        console.error(`[Tilapia Day ${day}] ERROR: Missing feed DE value`, currentFeedValues);
+      }
       const estfcr = calculateEstFCR(prevFishSize, currentFeedValues);
       // Use unified fish size formula with TGC from model and provided time interval
       const TGCForStep = computeTGCFromModel(selectedGrowthModel.models, T);
-      const stepDays = timeInterval || 1;
-      prevFishSize =
-        day === 1
-          ? prevFishSize
-          : calculateFishSizeUnified(prevFishSize, TGCForStep, T, stepDays);
 
-      // Use unified feeding rate formula
-      let prevFeedingRate = parseFloat(
-        String(calculatefeedIntakeFormula(IBW, TGCForStep, T, tFCR)),
+      if (isNaN(TGCForStep)) {
+        console.error(`[Tilapia Day ${day}] ERROR: TGCForStep is NaN`);
+      }
+      let computedFishSize = calculateTilapiaFishSize(
+        prevFishSize,
+        T,
+        stepDays,
       );
-      let prevFeedIntake = ((prevFeedingRate * prevFishSize) / 100).toFixed(3);
+      if (
+        !Number.isFinite(computedFishSize) ||
+        Number.isNaN(computedFishSize) ||
+        computedFishSize <= 0
+      ) {
+        computedFishSize = calculateFishSizeUnified(
+          prevFishSize,
+          TGCForStep,
+          T,
+          stepDays,
+        );
+      }
+      if (
+        !Number.isFinite(computedFishSize) ||
+        Number.isNaN(computedFishSize) ||
+        computedFishSize <= 0
+      ) {
+        computedFishSize = prevFishSize;
+      }
+      const nextFishSize = Number(computedFishSize);
+      // Always compute day-over-day growth, including day 1
+      const dailyGrowth = calculateTilapiaGrowth(nextFishSize, prevFishSize);
+      const safeDailyGrowth = Number.isFinite(dailyGrowth)
+        ? dailyGrowth
+        : nextFishSize - prevFishSize;
+      if (isNaN(tFCR)) {
+        console.error(`[Tilapia Day ${day}] ERROR: tFCR is NaN`, { tDEN, DE: initialFeedValues.de, WF });
+      }
+      const tilapiaFeedingRate = calculateTilapiaFeedingRate(
+        nextFishSize,
+        T,
+        currentFeedValues.de,
+      );
 
-      // Use unified growth formula: FBW - IBW
-      const currentFBW = prevFishSize; // Current fish size is the FBW
-      prevGrowth =
-        day === 1
-          ? calculateGrowthUnified(currentFBW, IBW).toFixed(3)
-          : calculateGrowthUnified(currentFBW, IBW).toFixed(3);
+      // Use only tilapia-specific feeding rate; do not fall back
+      let feedingRateRaw = tilapiaFeedingRate;
+      // Guard against invalid/negative results
+      feedingRateRaw = Math.max(0, Number(feedingRateRaw));
+      let prevFeedingRate = parseFloat(String(feedingRateRaw));
+      if (isNaN(prevFeedingRate)) {
+        console.error(`[Tilapia Day ${day}] ERROR: prevFeedingRate is NaN`, { IBW: currentIBW, TGCForStep, T, tFCR, feedingRateRaw });
+      }
+      let prevFeedIntake = ((prevFeedingRate * nextFishSize) / 100).toFixed(3);
+      if (isNaN(parseFloat(prevFeedIntake))) {
+        console.error(`[Tilapia Day ${day}] ERROR: prevFeedIntake is NaN`, { prevFeedingRate, prevFishSize });
+      }
+
+      // DAILY growth should be nextFishSize - prevFishSize (not cumulative)
+      const dailyGrowthForDisplay = calculateTilapiaGrowth(
+        nextFishSize,
+        prevFishSize,
+      );
+      const safeDailyGrowthForDisplay = Number.isFinite(dailyGrowthForDisplay)
+        ? dailyGrowthForDisplay
+        : nextFishSize - prevFishSize;
+      prevGrowth = Number(safeDailyGrowthForDisplay).toFixed(3);
+
+      // Display fish size at the start of the day/interval (matches Excel)
+      const displayedFishSize = prevFishSize;
 
       const newRow = {
         date: calculateDate(startDate, day),
@@ -1207,10 +1315,15 @@ export function calculateFishGrowthTilapia(
         averageProjectedTemp: T,
         numberOfFish: Number(prevNumberOfFish.toFixed(2)),
         expectedWaste,
-        fishSize: prevFishSize.toFixed(3),
+        fishSize: displayedFishSize.toFixed(3),
         growth: prevGrowth,
         feedType: currentFeedValues.feedName,
-        feedSize: prevWeight >= 50 ? '#3' : prevWeight >= 25 ? '#2' : '#1',
+        feedSize:
+          displayedFishSize >= 50
+            ? '#3'
+            : displayedFishSize >= 25
+              ? '#2'
+              : '#1',
         feedProtein: currentFeedValues.feedProtein,
         feedDE: currentFeedValues.de,
         feedPrice: currentFeedValues.feedPrice,
@@ -1222,14 +1335,12 @@ export function calculateFishGrowthTilapia(
       };
       // Store new data
       newData.push(newRow);
-      prevFishSize = Number(prevFishSize.toFixed(3));
+      prevFishSize = Number(nextFishSize.toFixed(3));
       prevGrowth = prevGrowth;
-      prevWeight = FBW;
+      prevWeight = nextFishSize;
       prevFeedIntake = prevFeedIntake;
       prevFeedingRate = prevFeedingRate;
     }
-    const dayGap = console.log(newData);
-
     return newData;
   }
 
@@ -1246,8 +1357,14 @@ export function calculateFishGrowthRainBowTrout(
   timeInterval: number,
   selectedFarm?: FarmGroupUnit,
   wasteFactor?: number,
+  defaultFeeds?: any[],
+  supplierId?: string,
+  mortalityRate?: number,
 ) {
-  // Resolve feed profile links for the selected production unit, if available
+
+  // Resolve feed profile 
+  //links for the selected production unit, if available
+
   const feedLinks =
     selectedFarm?.productionUnit.FeedProfileProductionUnit?.[0]?.feedProfile
       ?.feedLinks || [];
@@ -1257,10 +1374,21 @@ export function calculateFishGrowthRainBowTrout(
   let prevNumberOfFish = numberOfFishs;
   let prevFishSize: number = IBW;
   let prevGrowth: number | string = 0;
-  
+
   // Get nutritional values from feedStore, not from growth model
   const getFeedValues = (fishSize: number) => {
-    const feedData = getFeedDataForFishSize(feedLinks, fishSize);
+    // First try farm feed links (for Feeding Plan)
+    let feedData = getFeedDataForFishSize(feedLinks, fishSize);
+
+    // If no farm data, try default feeds (for Ad-hoc)
+    if (!feedData && defaultFeeds && defaultFeeds.length > 0) {
+      feedData = getFeedDataFromDefaultFeeds(defaultFeeds, fishSize, supplierId);
+    }
+
+    if (!feedData) {
+      console.warn('[RainbowTrout getFeedValues] WARNING: No feed data found, using hardcoded defaults');
+    }
+
     return {
       de: feedData?.de || 13.47,
       feedProtein: feedData?.crudeProteinGPerKg || 400,
@@ -1268,15 +1396,16 @@ export function calculateFishGrowthRainBowTrout(
       feedName: feedData?.productName || '-',
     };
   };
-  
+
   const newData = [];
   let WF = wasteFactor; // Use passed waste factor
-  
+
   function calculateNoOfFish(
     initialSizeK4: number,
     growthRateL4: number,
     timeH5: number,
   ) {
+
     // Rainbow trout formula: K4*(1-(POWER(L4/100+1,H5)-1))
     const fishSize =
       initialSizeK4 * (2 - Math.pow(growthRateL4 / 100 + 1, timeH5));
@@ -1292,6 +1421,51 @@ export function calculateFishGrowthRainBowTrout(
     T: number,
     tFCR: number,
   ) => calculatefeedIntakeFormula(IBW, TGC, T, tFCR);
+  // Excel-equivalent Rainbow Trout feeding rate (% of body weight per day)
+  function calculateRainbowTroutFeedingRateExcel(
+    fishSizeG: number,
+    temperatureC: number,
+    deMJPerKg: number,
+  ): number {
+    // Next fish size using Excel polynomial (1-day step)
+    const nextSize = calculateRainbowTroutFishSizeExcel(
+      fishSizeG,
+      temperatureC,
+    );
+    // Relative growth component
+    const growthComponent = nextSize / fishSizeG - 1;
+    // Est. FCR as per Excel (-28.29 + 38.95*M^0.01903) / (DE / 1.03)
+    const estFcrNumerator = -28.29 + 38.95 * Math.pow(fishSizeG, 0.01903);
+    const estFcrDenominator = deMJPerKg / 1.03;
+    if (!isFinite(estFcrDenominator) || estFcrDenominator === 0) return NaN;
+    const estFcr = estFcrNumerator / estFcrDenominator;
+    const feedingRatePercent = growthComponent * estFcr * 100;
+    return feedingRatePercent;
+  }
+
+  // Excel-equivalent Rainbow Trout fish size update
+  // Formula derived from sheet:
+  // new = ( current^(1/3) + ( 4.283547943*T^(1/8) - 2.919678112*T^(1/4) + 0.4443081526*T^(1/2) - 0.011762442*T - 1.805789941 ) * T * stepDaysFactor )^3
+  // We multiply by time interval (days) to support arbitrary steps; set to 1 for daily.
+  function calculateRainbowTroutFishSizeExcel(currentWeight, temperature) {
+    const rootCurrent = Math.pow(currentWeight, 1 / 3);
+    const t = temperature;
+
+    const poly =
+      4.283547943 * Math.pow(t, 0.125) -
+      2.919678112 * Math.pow(t, 0.25) +
+      0.4443081526 * Math.pow(t, 0.5) -
+      0.011762442 * t -
+      1.805789941;
+
+    // Excel multiplies poly by temperature
+    const increment = poly * t;
+
+    const next = Math.pow(rootCurrent + increment, 3);
+    return next;
+  }
+
+
 
   function calculateFW(
     IBW: number,
@@ -1315,21 +1489,25 @@ export function calculateFishGrowthRainBowTrout(
   }
 
   function calculateEstFCR(fishSize: number, feedValues: any, e10: number): number {
+    if (!feedValues || feedValues.de === undefined || feedValues.de === null || feedValues.de === 0) {
+      console.error('[RainbowTrout calculateEstFCR] ERROR: feedValues.de is invalid:', feedValues?.de);
+      return NaN;
+    }
     const numerator = 38.95 * Math.pow(fishSize, 0.01903) - 28.29;
     const denominator = feedValues.de / (1 + e10);
+    if (denominator === 0 || isNaN(denominator)) {
+      console.error('[RainbowTrout calculateEstFCR] ERROR: Denominator is invalid:', { de: feedValues.de, e10, denominator });
+      return NaN;
+    }
     const result = numerator / denominator;
-
-    return Number(result.toFixed(2));
+    const finalResult = Number(result.toFixed(2));
+    if (isNaN(finalResult)) {
+      console.error('[RainbowTrout calculateEstFCR] ERROR: Result is NaN', { numerator, denominator, result });
+    }
+    return finalResult;
   }
 
-  function calculateGrowth(newFishSize: number, prevFishSize: number) {
-    return newFishSize - prevFishSize;
-  }
 
-  // Unified growth calculation: FBW - IBW (Final Body Weight - Initial Body Weight)
-  function calculateGrowthUnified(FBW: number, IBW: number) {
-    return FBW - IBW;
-  }
 
   function calculateDate(date: string, day: number) {
     return dayjs(date, 'YYYY-MM-DD').add(day, 'day').format('DD-MM-YYYY');
@@ -1338,62 +1516,57 @@ export function calculateFishGrowthRainBowTrout(
   for (let day = 1; day <= period; day += 1) {
     const oldFishSize = prevFishSize;
 
+    // Update IBW to current fish size for proper feeding rate calculation
+    const currentIBW = prevFishSize;
+
     const FBW = calculateFW(prevWeight, 0.35, 0.16, [T], [7]);
 
     prevNumberOfFish =
       day !== 1
-        ? calculateNoOfFish(prevNumberOfFish, 0.05, 1)
+        ? calculateNoOfFish(prevNumberOfFish, mortalityRate, 1)
         : prevNumberOfFish;
-    
+
     const currentFeedValues = getFeedValues(prevFishSize);
+    if (!currentFeedValues || currentFeedValues.de === undefined || currentFeedValues.de === null) {
+      console.error(`[RainbowTrout Day ${day}] ERROR: Missing feed DE value`, currentFeedValues);
+    }
     const estfcr = calculateEstFCR(prevFishSize, currentFeedValues, 0.03);
     // Use unified fish size formula
     const TGCForStep = computeTGCFromModel(selectedGrowthModel.models, T);
-    const stepDays = timeInterval || 1;
-    prevFishSize =
-      day === 1
-        ? prevFishSize
-        : calculateFishSizeUnified(prevFishSize, TGCForStep, T, stepDays);
-
-    // Compute TGC and tFCR similarly to Tilapia branch
-    let TGC = 0;
-    if (
-      (selectedGrowthModel.models.temperatureCoefficient as string) ===
-      'Logarithmic'
-    ) {
-      TGC = calculateTemparatureCoefficientLogarithmic(
-        selectedGrowthModel.models.tgcA,
-        selectedGrowthModel.models.tgcB,
-        selectedGrowthModel.models.tgcC,
-        T,
-      );
-    } else if (
-      (selectedGrowthModel.models.temperatureCoefficient as string) ===
-      'Polynomial'
-    ) {
-      TGC = calculateTemparatureCoefficientPolynomial(
-        selectedGrowthModel.models.tgcA,
-        selectedGrowthModel.models.tgcB,
-        selectedGrowthModel.models.tgcC,
-        selectedGrowthModel.models.tgcD,
-        selectedGrowthModel.models.tgcE,
-        T,
-      );
-    } else if (
-      (selectedGrowthModel.models.temperatureCoefficient as string) ===
-      'Quadratic'
-    ) {
-      TGC = calculateTemparatureCoefficientQuadratic(
-        selectedGrowthModel.models.tgcA,
-        selectedGrowthModel.models.tgcB,
-        selectedGrowthModel.models.tgcC,
-        T,
-      );
+    if (isNaN(TGCForStep)) {
+      console.error(`[RainbowTrout Day ${day}] ERROR: TGCForStep is NaN`);
     }
+    const stepDays = timeInterval || 1;
+    // Always compute next fish size (including day 1), but display start-of-day weight
+    let rtComputedNext = calculateRainbowTroutFishSizeExcel(
+      prevFishSize,
+      T,
+    );
+    if (
+      !Number.isFinite(rtComputedNext) ||
+      Number.isNaN(rtComputedNext) ||
+      rtComputedNext <= 0
+    ) {
+      rtComputedNext = calculateFishSizeUnified(prevFishSize, TGCForStep, T, stepDays);
+    }
+    let rtNextFishSize = Number(rtComputedNext);
+    // If Excel-derived next size does not increase, fall back to unified; if still not increasing, hold size
+    if (rtNextFishSize <= prevFishSize) {
+      const unifiedNext = calculateFishSizeUnified(prevFishSize, TGCForStep, T, stepDays);
+      if (Number.isFinite(unifiedNext) && !Number.isNaN(unifiedNext) && unifiedNext > prevFishSize) {
+        rtNextFishSize = Number(unifiedNext);
+      } else {
+        rtNextFishSize = prevFishSize;
+      }
+    }
+
+    // Use TGCForStep instead of recalculating TGC
+    const TGC = TGCForStep;
+
     const tDEN = calculateDENeedLinear(
       selectedGrowthModel.models.tFCRa,
       selectedGrowthModel.models.tFCRb,
-      IBW,
+      T,
       selectedGrowthModel.models.tFCRc,
     );
     const tFCR = calculateTheoreticalFeedConversionRatio(
@@ -1401,16 +1574,32 @@ export function calculateFishGrowthRainBowTrout(
       currentFeedValues.de,
       WF,
     );
-    let prevFeedingRate = parseFloat(
-      String(calcUnifiedFeedingRate(IBW, TGC, T, tFCR)),
+    if (isNaN(tFCR)) {
+      console.error(`[RainbowTrout Day ${day}] ERROR: tFCR is NaN`, { tDEN, DE: currentFeedValues.de, WF });
+    }
+    // Prefer Excel feeding rate; if invalid, fall back to unified
+    let feedingRateRaw = calculateRainbowTroutFeedingRateExcel(
+      currentIBW,
+      T,
+      currentFeedValues.de,
     );
+    // Prevent negative feeding rates
+    feedingRateRaw = Math.max(0, Number(feedingRateRaw));
+    // Prevent negative feeding rates
+    feedingRateRaw = Math.max(0, Number(feedingRateRaw));
+  
+    let prevFeedingRate = parseFloat(String(feedingRateRaw));
+    if (isNaN(prevFeedingRate)) {
+      console.error(`[RainbowTrout Day ${day}] ERROR: prevFeedingRate is NaN`, { IBW: currentIBW, TGC, T, tFCR, feedingRateRaw });
+    }
     let prevFeedIntake = ((prevFeedingRate * prevFishSize) / 100).toFixed(3);
+    if (isNaN(parseFloat(prevFeedIntake))) {
+      console.error(`[RainbowTrout Day ${day}] ERROR: prevFeedIntake is NaN`, { prevFeedingRate, prevFishSize });
+    }
 
+    // Growth is always next - prev (including day 1)
     const currentFBW = prevFishSize;
-    prevGrowth =
-      day === 1
-        ? calculateGrowthUnified(currentFBW, IBW).toFixed(3)
-        : calculateGrowthUnified(currentFBW, IBW).toFixed(3);
+    prevGrowth = (rtNextFishSize - currentFBW).toFixed(3);
 
     const newRow = {
       date: calculateDate(startDate, day),
@@ -1418,6 +1607,7 @@ export function calculateFishGrowthRainBowTrout(
       averageProjectedTemp: T,
       numberOfFish: prevNumberOfFish.toFixed(2),
       expectedWaste,
+      // Show start-of-day fish size (matches Excel)
       fishSize: prevFishSize.toFixed(3),
       growth: prevGrowth,
       // Use production-unit feed profile if available; otherwise '-' fallback
@@ -1435,7 +1625,8 @@ export function calculateFishGrowthRainBowTrout(
 
     // Store new data
     newData.push(newRow);
-    prevFishSize = Number(prevFishSize.toFixed(3));
+    // Carry forward the computed next size
+    prevFishSize = Number(rtNextFishSize.toFixed(3));
     prevGrowth = prevGrowth;
     prevWeight = FBW;
     prevFeedIntake = prevFeedIntake;
@@ -1455,6 +1646,9 @@ export function calculateFishGrowthAfricanCatfish(
   timeInterval: number,
   selectedFarm?: FarmGroupUnit,
   wasteFactor?: number,
+  defaultFeeds?: any[],
+  supplierId?: string,
+  mortalityRate?: number,
 ) {
   // Resolve feed profile links for the selected production unit, if available
   const feedLinks =
@@ -1466,10 +1660,17 @@ export function calculateFishGrowthAfricanCatfish(
   let prevNumberOfFish: number = numberOfFishs;
   let prevFishSize: any = IBW;
   let prevGrowth: number | string = 0;
-  
+
   // Get nutritional values from feedStore, not from growth model
   const getFeedValues = (fishSize: number) => {
-    const feedData = getFeedDataForFishSize(feedLinks, fishSize);
+    // First try farm feed links (for Feeding Plan)
+    let feedData = getFeedDataForFishSize(feedLinks, fishSize);
+
+    // If no farm data, try default feeds (for Ad-hoc)
+    if (!feedData && defaultFeeds && defaultFeeds.length > 0) {
+      feedData = getFeedDataFromDefaultFeeds(defaultFeeds, fishSize, supplierId);
+    }
+
     return {
       de: feedData?.de || 13.47,
       feedProtein: feedData?.crudeProteinGPerKg || 400,
@@ -1477,10 +1678,10 @@ export function calculateFishGrowthAfricanCatfish(
       feedName: feedData?.productName || '-',
     };
   };
-  
+
   const newData = [];
   let WF = wasteFactor; // Use passed waste factor
-  
+
   function calculateNoOfFish(
     initialSizeK4: number,
     growthRateL4: number,
@@ -1522,85 +1723,98 @@ export function calculateFishGrowthAfricanCatfish(
   }
 
   function calculateEstFCR(fishSize: number, feedValues: any): number {
+    if (!feedValues || feedValues.de === undefined || feedValues.de === null || feedValues.de === 0) {
+      console.error('[AfricanCatfish calculateEstFCR] ERROR: feedValues.de is invalid:', feedValues?.de);
+      return NaN;
+    }
     const numerator = 9.794 * Math.pow(fishSize, 0.0726);
     const denominator = feedValues.de / 1.03;
-
+    if (denominator === 0 || isNaN(denominator)) {
+      console.error('[AfricanCatfish calculateEstFCR] ERROR: Denominator is invalid:', { de: feedValues.de, denominator });
+      return NaN;
+    }
     const result = numerator / denominator;
-
-    return Number(result.toFixed(2));
+    const finalResult = Number(result.toFixed(2));
+    if (isNaN(finalResult)) {
+      console.error('[AfricanCatfish calculateEstFCR] ERROR: Result is NaN', { numerator, denominator, result });
+    }
+    return finalResult;
   }
 
-  function calculateGrowth(newFishSize: number, prevFishSize: number) {
-    return newFishSize - prevFishSize;
-  }
-
-  function calculateGrowthUnified(FBW: number, IBW: number) {
-    return FBW - IBW;
-  }
 
   function calculateDate(date: string, day: number) {
     return dayjs(date, 'YYYY-MM-DD').add(day, 'day').format('DD-MM-YYYY');
   }
+  function calculateAfricanCatfishFishSizeExcel(
+    currentWeight,
+    temperature
+  ) {
+    const rootCurrent = Math.pow(currentWeight, 1 / 3);
+    const t = temperature;
+    const poly =
+      (-0.00001496 * Math.pow(t, 2) + 0.0008244 * t - 0.009494) * t;
 
+    const next = Math.pow(rootCurrent + poly, 3);
+    return next;
+  }
+
+  function calculateAfricanCatfishFeedingRateExcel(
+    fishSizeG: number,
+    temperatureC: number,
+    deMJPerKg: number,
+    wasteFactorFraction?: number,
+  ): number {
+
+    const nextSize = calculateAfricanCatfishFishSizeExcel(
+      fishSizeG,
+      temperatureC
+    );
+
+    const growthComponent = nextSize / fishSizeG - 1;
+
+    const wasteFactor = 1 + (wasteFactorFraction ?? 0.03);
+    const denominator = deMJPerKg * wasteFactor; 
+
+    if (!isFinite(denominator) || denominator === 0) return NaN;
+    const conversionEnergyComponent = (9.794 * Math.pow(fishSizeG, 0.0726)) / denominator;
+
+    const feedingRate = growthComponent * conversionEnergyComponent * 100;
+
+    return feedingRate;
+  }
   for (let day = 1; day <= period; day += 1) {
     const oldFishSize = prevFishSize;
+    const Days = timeInterval || 1;
+
+    const currentIBW = prevFishSize;
 
     const FBW = calculateFW(prevWeight, 0.35, 0.16, [T], [7]);
 
     prevNumberOfFish =
       day !== 1
-        ? calculateNoOfFish(prevNumberOfFish, 0.05, 1)
+        ? calculateNoOfFish(prevNumberOfFish, mortalityRate, Days)
         : prevNumberOfFish;
-    
-    const currentFeedValues = getFeedValues(prevFishSize);
-    const estfcr = calculateEstFCR(prevFishSize, currentFeedValues);
-    // Use unified fish size formula
-    const TGCForStep = computeTGCFromModel(selectedGrowthModel.models, T);
-    const stepDays = timeInterval || 1;
-    prevFishSize =
-      day === 1
-        ? prevFishSize
-        : calculateFishSizeUnified(prevFishSize, TGCForStep, T, stepDays);
 
-    // Compute TGC and tFCR similarly to Tilapia branch
-    let TGC = 0;
-    if (
-      (selectedGrowthModel.models.temperatureCoefficient as string) ===
-      'Logarithmic'
-    ) {
-      TGC = calculateTemparatureCoefficientLogarithmic(
-        selectedGrowthModel.models.tgcA,
-        selectedGrowthModel.models.tgcB,
-        selectedGrowthModel.models.tgcC,
-        T,
-      );
-    } else if (
-      (selectedGrowthModel.models.temperatureCoefficient as string) ===
-      'Polynomial'
-    ) {
-      TGC = calculateTemparatureCoefficientPolynomial(
-        selectedGrowthModel.models.tgcA,
-        selectedGrowthModel.models.tgcB,
-        selectedGrowthModel.models.tgcC,
-        selectedGrowthModel.models.tgcD,
-        selectedGrowthModel.models.tgcE,
-        T,
-      );
-    } else if (
-      (selectedGrowthModel.models.temperatureCoefficient as string) ===
-      'Quadratic'
-    ) {
-      TGC = calculateTemparatureCoefficientQuadratic(
-        selectedGrowthModel.models.tgcA,
-        selectedGrowthModel.models.tgcB,
-        selectedGrowthModel.models.tgcC,
-        T,
-      );
+    const currentFeedValues = getFeedValues(prevFishSize);
+    if (!currentFeedValues || currentFeedValues.de === undefined || currentFeedValues.de === null) {
+      console.error(`[AfricanCatfish Day ${day}] ERROR: Missing feed DE value`, currentFeedValues);
     }
+    const estfcr = calculateEstFCR(prevFishSize, currentFeedValues);
+    const TGCForStep = computeTGCFromModel(selectedGrowthModel.models, T);
+  
+    if (isNaN(TGCForStep)) {
+      console.error(`[AfricanCatfish Day ${day}] ERROR: TGCForStep is NaN`);
+    }
+    const stepDays = timeInterval || 1;
+    let ccComputedNext = calculateFishSizeUnified(prevFishSize, TGCForStep, T, stepDays);
+    const ccNextFishSize = Number(ccComputedNext);
+
+    const TGC = TGCForStep;
+
     const tDEN = calculateDENeedLinear(
       selectedGrowthModel.models.tFCRa,
       selectedGrowthModel.models.tFCRb,
-      IBW,
+      T,
       selectedGrowthModel.models.tFCRc,
     );
     const tFCR = calculateTheoreticalFeedConversionRatio(
@@ -1608,17 +1822,31 @@ export function calculateFishGrowthAfricanCatfish(
       currentFeedValues.de,
       WF,
     );
-    let prevFeedingRate = parseFloat(
-      String(calcUnifiedFeedingRate(IBW, TGC, T, tFCR)),
+    if (isNaN(tFCR)) {
+      console.error(`[AfricanCatfish Day ${day}] ERROR: tFCR is NaN`, { tDEN, DE: currentFeedValues.de, WF });
+    }
+    // Prefer Excel-based feeding rate; fall back to unified if invalid
+    let feedingRateRaw = calculateAfricanCatfishFeedingRateExcel(
+      currentIBW,
+      T,
+      currentFeedValues.de,
+      WF,
     );
-
+    if (!Number.isFinite(feedingRateRaw)) {
+      feedingRateRaw = calcUnifiedFeedingRate(currentIBW, TGC, T, tFCR);
+    }
+  
+    let prevFeedingRate = parseFloat(String(feedingRateRaw));
+    if (isNaN(prevFeedingRate)) {
+      console.error(`[AfricanCatfish Day ${day}] ERROR: prevFeedingRate is NaN`, { IBW: currentIBW, TGC, T, tFCR, feedingRateRaw });
+    }
     let prevFeedIntake = ((prevFeedingRate * prevFishSize) / 100).toFixed(3);
+    if (isNaN(parseFloat(prevFeedIntake))) {
+      console.error(`[AfricanCatfish Day ${day}] ERROR: prevFeedIntake is NaN`, { prevFeedingRate, prevFishSize });
+    }
 
     const currentFBW = prevFishSize;
-    prevGrowth =
-      day === 1
-        ? calculateGrowthUnified(currentFBW, IBW).toFixed(3)
-        : calculateGrowthUnified(currentFBW, IBW).toFixed(3);
+    prevGrowth = (ccNextFishSize - currentFBW).toFixed(3);
 
     const newRow = {
       date: calculateDate(startDate, day),
@@ -1626,6 +1854,7 @@ export function calculateFishGrowthAfricanCatfish(
       averageProjectedTemp: T,
       numberOfFish: Number(prevNumberOfFish.toFixed(2)),
       expectedWaste,
+      // Show start-of-day fish size (matches Excel)
       fishSize: prevFishSize.toFixed(3),
       growth: prevGrowth,
       // Use production-unit feed profile if available; otherwise '-' fallback
@@ -1643,7 +1872,8 @@ export function calculateFishGrowthAfricanCatfish(
 
     // Store new data
     newData.push(newRow);
-    prevFishSize = Number(prevFishSize.toFixed(3));
+    // Carry forward computed next size
+    prevFishSize = Number(ccNextFishSize.toFixed(3));
     prevGrowth = prevGrowth;
     prevWeight = FBW;
     prevFeedIntake = prevFeedIntake;

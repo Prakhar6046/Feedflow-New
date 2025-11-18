@@ -15,35 +15,30 @@ enum UserStatus {
   SUSPENDED
 }
 
-enum UserRole {
-  SUPERADMIN
-  ADMIN
-  MEMBER
-  FARMMANAGER
-  NONADMIN
-}
-
 model User {
-  id             Int          @id @default(autoincrement())
-  name           String?
-  email          String       @unique
-  password       String?
-  status         UserStatus   @default(ACTIVE)
-  role           UserRole     @default(MEMBER)
-  image          String?
-  imageUrl       String?
-  updatedBy      String?
-  createdBy      String?
-  organisationId Int
-  organisation   Organisation @relation(fields: [organisationId], references: [id], onUpdate: Cascade)
-  invite         Boolean      @default(false)
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  Farm           Farm[]
-  FarmManger     FarmManger[]
-  access         Boolean      @default(true)
-  permissions    Json         @default("{}")
-  Contact        Contact[]
+  id                 Int                   @id @default(autoincrement())
+  name               String?
+  email              String                @unique
+  password           String?
+  status             UserStatus            @default(ACTIVE)
+  role               String?
+  inputRole          String?
+  image              String?
+  imageUrl           String?
+  updatedBy          String?
+  createdBy          String?
+  organisationId     Int
+  organisation       Organisation          @relation(fields: [organisationId], references: [id], onUpdate: Cascade)
+  invite             Boolean               @default(false)
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
+  Farm               Farm[]
+  FarmManger         FarmManger[]
+  access             Boolean               @default(true)
+  permissions        Json                  @default("{}")
+  Contact            Contact[]
+  advisorAssignments OrganisationAdvisor[] @relation("AdvisorUser")
+  ProductionUnitWorker ProductionUnitWorker[]
 }
 
 model Organisation {
@@ -76,7 +71,8 @@ model Organisation {
   Farm              Farm[]              @relation("OwnerFarms")
 
   // Farms where this organisation is the fish farmer
-  FishFarms Farm[] @relation("FishFarmerOrg")
+  FishFarms Farm[]                @relation("FishFarmerOrg")
+  advisors  OrganisationAdvisor[]
 
   @@index([createdAt])
   @@index([updatedAt])
@@ -137,7 +133,9 @@ model Contact {
   email          String?
   phone          String?
   role           String?
-  permission     UserRole      @default(NONADMIN)
+  inputRole      String?
+  permission     String?
+  permissions    Json          @default("{}")
   userId         Int           @default(1)
   user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt      DateTime      @default(now())
@@ -148,6 +146,21 @@ model Contact {
 
   @@index([createdAt])
   @@index([updatedAt])
+}
+
+model OrganisationAdvisor {
+  id             String   @id @default(cuid())
+  organisationId Int
+  advisorId      Int
+  accessLevel    Int
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organisation Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  advisor      User         @relation("AdvisorUser", fields: [advisorId], references: [id], onDelete: Cascade)
+
+  @@unique([organisationId, advisorId])
+  @@index([advisorId])
 }
 
 model Farm {
@@ -322,7 +335,24 @@ model ProductionUnit {
   FishManageHistory                  FishManageHistory[]
   YearBasedPredicationProductionUnit YearBasedPredicationProductionUnit[]
   FeedProfileProductionUnit          FeedProfileProductionUnit[]
+  ProductionUnitWorker               ProductionUnitWorker[]
 
+  @@index([createdAt])
+  @@index([updatedAt])
+}
+
+model ProductionUnitWorker {
+  id               Int            @id @default(autoincrement())
+  productionUnitId String
+  productionUnit   ProductionUnit @relation(fields: [productionUnitId], references: [id], onDelete: Cascade)
+  userId           Int
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  @@unique([productionUnitId, userId])
+  @@index([productionUnitId])
+  @@index([userId])
   @@index([createdAt])
   @@index([updatedAt])
 }
@@ -383,7 +413,7 @@ model Hatchery {
 model FishSupply {
   id                Int                 @id @default(autoincrement())
   batchNumber       String              @default("BB1")
-  organisation      Int
+  organisation      String
   hatchingDate      String
   spawningDate      String
   spawningNumber    Int
@@ -487,6 +517,7 @@ model production {
   biomass                   String?
   fishCount                 String?
   batchNumberId             Int?
+  batchIds                  Json?                       @default("[]")
   age                       String?
   meanLength                String?
   meanWeight                String?
@@ -536,12 +567,12 @@ model FarmManger {
 }
 
 model Model {
-  id                 Int               @id @default(autoincrement())
-  name               String?
-  specieId           String?
-  specie             Species?          @relation(fields: [specieId], references: [id])
-  productionSystemId String?
-  productionSystem   ProductionSystem? @relation(fields: [productionSystemId], references: [id])
+  id                     Int                    @id @default(autoincrement())
+  name                   String?
+  specieId               String?
+  specie                 Species?               @relation(fields: [specieId], references: [id])
+  productionSystemId     String?
+  productionSystem       ProductionSystem?      @relation(fields: [productionSystemId], references: [id])
   temperatureCoefficient String?
   tgcA                   Float?
   tgcB                   Float?
@@ -598,36 +629,36 @@ model GrowthModelFarm {
 // }
 
 model FeedStore {
-  id                    String @id @default(uuid())
-  ProductSupplier       Json   @default("[]")
-  brandName             String @default("SAF 6000")
-  productName           String @default("Tilapia starter #0")
-  productFormat         String @default("Mash")
-  particleSize          String @default("#0")
-  minFishSizeG          Float  @default(0.5)
-  maxFishSizeG          Float  @default(1.0)
-  nutritionalClass      String @default("Complete and balanced")
-  nutritionalPurpose    String @default("Primary feed source")
-  suitableSpecies       String @default("Tilapia")
-  suitabilityAnimalSize String @default("")
-  productionIntensity   String @default("Intensive")
-  suitabilityUnit       String @default("Hatchery")
-  feedingPhase          String @default("Pre-starter")
-  lifeStage             String @default("Fry")
-  shelfLifeMonths       Float  @default(12)
-  feedCost              Float  @default(32)
-  feedIngredients       String @default("Animal proteins, Plant proteins, Cereals and cereal derivates, Approved vitamins and minerals, Acidulants, Clay-minerals, Amino-acids, Botanical extracts")
-  moistureGPerKg        Float  @default(120)
-  crudeProteinGPerKg    Float  @default(400)
-  crudeFatGPerKg        Float  @default(50)
-  crudeFiberGPerKg      Float  @default(40)
-  crudeAshGPerKg        Float  @default(80)
-  nfe                   Int?   @default(310)
-  calciumGPerKg         Int?   @default(30)
-  phosphorusGPerKg      Int?   @default(7)
-  carbohydratesGPerKg   Int?   @default(310)
+  id                    String  @id @default(uuid())
+  ProductSupplier       Json    @default("[]")
+  brandName             String  @default("SAF 6000")
+  productName           String  @default("Tilapia starter #0")
+  productFormat         String  @default("Mash")
+  particleSize          String  @default("#0")
+  minFishSizeG          Float   @default(0.5)
+  maxFishSizeG          Float   @default(1.0)
+  nutritionalClass      String  @default("Complete and balanced")
+  nutritionalPurpose    String  @default("Primary feed source")
+  suitableSpecies       String  @default("Tilapia")
+  suitabilityAnimalSize String  @default("")
+  productionIntensity   String  @default("Intensive")
+  suitabilityUnit       String  @default("Hatchery")
+  feedingPhase          String  @default("Pre-starter")
+  lifeStage             String  @default("Fry")
+  shelfLifeMonths       Float   @default(12)
+  feedCost              Float   @default(32)
+  feedIngredients       String  @default("Animal proteins, Plant proteins, Cereals and cereal derivates, Approved vitamins and minerals, Acidulants, Clay-minerals, Amino-acids, Botanical extracts")
+  moistureGPerKg        Float   @default(120)
+  crudeProteinGPerKg    Float   @default(400)
+  crudeFatGPerKg        Float   @default(50)
+  crudeFiberGPerKg      Float   @default(40)
+  crudeAshGPerKg        Float   @default(80)
+  nfe                   Int?    @default(310)
+  calciumGPerKg         Int?    @default(30)
+  phosphorusGPerKg      Int?    @default(7)
+  carbohydratesGPerKg   Int?    @default(310)
   metabolizableEnergy   Int
-  feedingGuide          String @default("Feed according to the feedflow guide or as directed by a fish nutritionist")
+  feedingGuide          String  @default("Feed according to the feedflow guide or as directed by a fish nutritionist")
   isDefault             Boolean @default(false)
 
   geCoeffCP       Float

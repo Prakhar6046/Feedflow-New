@@ -107,7 +107,18 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
           selectedIds.includes(Number(supplierId)),
         ),
       );
-      setFeedStores(filteredStores);
+      // Sort by supplier, then by minFishSizeG (range)
+      const sorted = filteredStores.sort((a, b) => {
+        // First sort by supplier (use first supplier ID)
+        const aSupplierId = Number(a?.ProductSupplier?.[0] || 0);
+        const bSupplierId = Number(b?.ProductSupplier?.[0] || 0);
+        if (aSupplierId !== bSupplierId) {
+          return aSupplierId - bSupplierId;
+        }
+        // Then sort by minFishSizeG within same supplier
+        return (a?.minFishSizeG || 0) - (b?.minFishSizeG || 0);
+      });
+      setFeedStores(sorted);
     } else {
       setFeedStores([]);
     }
@@ -122,39 +133,7 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
       setSelectedSupplier(options);
     }
   }, [feedSuppliers]);
-  if (!feedStores || feedStores.length === 0) {
-    return (
-      <Box
-        sx={{
-          height: 'Object-fit',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          flexDirection: 'column',
-          p: 10,
-          backgroundColor: '#FAFAFA',
-          borderRadius: 2,
-          border: '1px solid #e0e0e0',
-        }}
-      >
-        <Typography
-          sx={{ textAlign: 'center' }}
-          variant="h6"
-          color="text.secondary"
-          gutterBottom
-        >
-          No Feed Data Available
-        </Typography>
-        <Typography
-          sx={{ textAlign: 'center' }}
-          variant="body1"
-          color="text.secondary"
-        >
-          Please add feed products to view and manage them here.
-        </Typography>
-      </Box>
-    );
-  }
+  
   return (
     <Stack>
       <Box>
@@ -214,17 +193,51 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
           mt: 3,
         }}
       >
-        <Grid
-          container
-          spacing={2}
-          sx={{
-            flexWrap: 'nowrap',
-            minWidth: 1000,
-            pb: '16px',
-          }}
-        >
-          {feedStores?.length ? (
-            feedStores?.map((supply) => {
+        {!feedStores || feedStores.length === 0 ? (
+          <Box
+            sx={{
+              height: 'Object-fit',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              flexDirection: 'column',
+              p: 10,
+              backgroundColor: '#FAFAFA',
+              borderRadius: 2,
+              border: '1px solid #e0e0e0',
+            }}
+          >
+            <Typography
+              sx={{ textAlign: 'center' }}
+              variant="h6"
+              color="text.secondary"
+              gutterBottom
+            >
+              {selectedSupplier?.length === 0
+                ? 'Please select at least one feed supplier to view feeds'
+                : 'No Feed Data Available'}
+            </Typography>
+            <Typography
+              sx={{ textAlign: 'center' }}
+              variant="body1"
+              color="text.secondary"
+            >
+              {selectedSupplier?.length === 0
+                ? 'Select feed suppliers from the dropdown above to filter and view available feeds.'
+                : 'Please add feed products to view and manage them here.'}
+            </Typography>
+          </Box>
+        ) : (
+          <Grid
+            container
+            spacing={2}
+            sx={{
+              flexWrap: 'nowrap',
+              minWidth: 1000,
+              pb: '16px',
+            }}
+          >
+            {feedStores?.map((supply) => {
               const supplierName = feedSuppliers?.find((supplier) =>
                 supply?.ProductSupplier?.map(String).includes(
                   String(supplier?.id),
@@ -838,11 +851,9 @@ const FeedSelection = ({ data, feedSuppliers }: Iprops) => {
                   </Box>
                 </Grid>
               );
-            })
-          ) : (
-            <>No data found</>
-          )}
-        </Grid>
+            })}
+          </Grid>
+        )}
       </Box>
     </Stack>
   );

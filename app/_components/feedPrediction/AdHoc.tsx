@@ -70,6 +70,7 @@ interface FormInputs {
   timeInterval: number;
   species: string;
   productionSystem: string;
+  feedSupplier: string;
   mortalityRate?: number;
   wasteFactor?: number;
 }
@@ -108,6 +109,7 @@ export interface FishFeedingData {
   partitionedFCR: number;
   mortalityRate?: number;
   wasteFactor?: number;
+  biomass?: number | string; // Optional field for Feeding Plan
 }
 type Iprops = {
   data: FishFeedingData[];
@@ -148,6 +150,7 @@ function AdHoc({ data, setData }: Iprops) {
   const [productionSystemList, setProductionSystemList] = useState<
     productionSystem[]
   >([]);
+  const [feedSuppliers, setFeedSuppliers] = useState<any[]>([]);
   const featuredproductionSystemList = productionSystemList.filter(
     (item) => item.isFeatured,
   );
@@ -174,6 +177,22 @@ function AdHoc({ data, setData }: Iprops) {
         console.error('Error parsing user data:', error);
       }
     }
+  }, []);
+
+  // Fetch feed suppliers
+  useEffect(() => {
+    const fetchFeedSuppliers = async () => {
+      try {
+        const res = await clientSecureFetch('/api/organisation/feedSuppliers');
+        if (res.ok) {
+          const data = await res.json();
+          setFeedSuppliers(data.data || []);
+        }
+      } catch (error) {
+        console.error('Error fetching feed suppliers:', error);
+      }
+    };
+    fetchFeedSuppliers();
   }, []);
 
   // Fetch and cache default feeds for Adhoc prediction
@@ -309,13 +328,23 @@ function AdHoc({ data, setData }: Iprops) {
     productionSystemList,
   ]);
 
-  // Helper function to get feed product name based on fish size from default feeds
-  const getFeedTypeForAdhoc = (fishSize: number): string => {
+  // Helper function to get feed product name based on fish size, supplier, and default feeds
+  const getFeedTypeForAdhoc = (fishSize: number, selectedSupplierId: string): string => {
     try {
       const defaultFeeds = getLocalItem('defaultFeedsCache');
-      if (defaultFeeds && Array.isArray(defaultFeeds)) {
+      if (defaultFeeds && Array.isArray(defaultFeeds) && selectedSupplierId) {
+        // Filter feeds by selected supplier and isDefault = true
+        const supplierFeeds = defaultFeeds.filter((feed: any) => {
+          // Check if feed belongs to selected supplier
+          const feedSuppliers = feed.ProductSupplier || [];
+          const hasSupplier = feedSuppliers.some((supplierId: any) => 
+            String(supplierId) === String(selectedSupplierId)
+          );
+          return hasSupplier && feed.isDefault === true;
+        });
+        
         // Find feed where fishSize falls within the minFishSizeG to maxFishSizeG range
-        const matchingFeed = defaultFeeds.find(
+        const matchingFeed = supplierFeeds.find(
           (feed: any) => fishSize >= feed.minFishSizeG && fishSize <= feed.maxFishSizeG
         );
         
@@ -351,12 +380,26 @@ function AdHoc({ data, setData }: Iprops) {
       return;
     }
 
+    if (!data.feedSupplier) {
+      toast.error('Please select a feed supplier.');
+      setData([]);
+      return;
+    }
+
     if (data) {
       const mortalityRate = Number(data.mortalityRate ?? 0.05);
       const wasteFactor = Number(data.wasteFactor ?? 3);
+      
+      
+      // Get default feeds from cache for Ad-hoc calculations
+      const defaultFeeds = getLocalItem('defaultFeedsCache') || [];
+      
       let calculatedData: FishFeedingData[];
       
-      if (speciesName === 'Rainbow Trout') {
+      // Normalize species name for case-insensitive comparison
+      const normalizedSpeciesName = speciesName.toLowerCase().trim();
+      
+      if (normalizedSpeciesName === 'rainbow trout') {
         calculatedData = calculateFishGrowthRainBowTrout(
           selectedGrowthModel,
           Number(data.fishWeight),
@@ -368,8 +411,11 @@ function AdHoc({ data, setData }: Iprops) {
           data?.timeInterval,
           undefined,
           wasteFactor,
+          defaultFeeds,
+          data.feedSupplier,
+          data.mortalityRate,
         );
-      } else if (speciesName === 'African Catfish') {
+      } else if (normalizedSpeciesName === 'african catfish') {
         calculatedData = calculateFishGrowthAfricanCatfish(
           selectedGrowthModel,
           Number(data.fishWeight),
@@ -381,6 +427,9 @@ function AdHoc({ data, setData }: Iprops) {
           data?.timeInterval,
           undefined,
           wasteFactor,
+          defaultFeeds,
+          data.feedSupplier,
+          data.mortalityRate,
         );
       } else {
         calculatedData = calculateFishGrowthTilapia(
@@ -394,14 +443,17 @@ function AdHoc({ data, setData }: Iprops) {
           data?.timeInterval,
           undefined,
           wasteFactor,
+          defaultFeeds,
+          data.feedSupplier,
+          data.mortalityRate,
         );
       }
       
       // Add mortality rate, waste factor, and update feedType from default feeds
+      const selectedSupplierId = data.feedSupplier;
       const dataWithMortality = calculatedData.map((row) => {
         const fishSize = parseFloat(row.fishSize) || 0;
-        const feedTypeFromDefault = getFeedTypeForAdhoc(fishSize);
-        
+        const feedTypeFromDefault = getFeedTypeForAdhoc(fishSize, selectedSupplierId);
         return {
           ...row,
           mortalityRate: mortalityRate,
@@ -1055,6 +1107,8 @@ function AdHoc({ data, setData }: Iprops) {
               </Typography>
             )}
           </Grid>
+          
+       
           {/* Growth model selection is automatic; no UI dropdown needed */}
         </Grid>
 
@@ -1473,9 +1527,38 @@ function AdHoc({ data, setData }: Iprops) {
               </Typography>
             )}
           </Grid>
-        </Grid>
-
-        <Grid container spacing={3} mt={2} mb={5} alignItems={'start'}>
+             {/* Feed Supplier Dropdown */}
+             <Grid item lg={3} md={4} sm={6} xs={12}>
+            <FormControl className="form-input" fullWidth focused>
+              <InputLabel id="feed-supplier-label">
+                Feed Supplier *
+              </InputLabel>
+              <Controller
+                name="feedSupplier"
+                control={control}
+                defaultValue={''}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    labelId="feed-supplier-label"
+                    label="Feed Supplier *"
+                  >
+                    {feedSuppliers.map((supplier) => (
+                      <MenuItem value={String(supplier.id)} key={supplier.id}>
+                        {supplier.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              />
+            </FormControl>
+            {errors.feedSupplier && (
+              <Typography variant="body2" color="red" fontSize={13} mt={0.5}>
+                {ValidationMessages.required}
+              </Typography>
+            )}
+          </Grid>
           <Grid item lg={3} md={4} sm={6} xs={12}>
             <Box position={'relative'}>
               <Box position={'relative'}>
@@ -1555,7 +1638,6 @@ function AdHoc({ data, setData }: Iprops) {
               </Typography>
             )}
           </Grid>
-
           <Grid item lg={3} md={4} sm={6} xs={12}>
             <Box>
               <Button
@@ -1575,6 +1657,10 @@ function AdHoc({ data, setData }: Iprops) {
               </Button>
             </Box>
           </Grid>
+        </Grid>
+
+        <Grid container spacing={3} mt={2} mb={5} alignItems={'start'}>
+       
         </Grid>
 
         {/* <Box
@@ -1816,6 +1902,12 @@ function AdHoc({ data, setData }: Iprops) {
                           );
                         const kg = intake.toFixed(2);
                         const bags = (intake / 20).toFixed(2);
+                        // Get selected supplier name from form
+                        const selectedSupplierId = watch('feedSupplier');
+                        const selectedSupplier = feedSuppliers.find(
+                          (s) => String(s.id) === String(selectedSupplierId)
+                        );
+                        const supplierName = selectedSupplier?.name || 'Unknown Supplier';
                         return (
                           <TableRow key={feed}>
                             <TableCell
@@ -1826,7 +1918,7 @@ function AdHoc({ data, setData }: Iprops) {
                                 whiteSpace: 'nowrap',
                               }}
                             >
-                              SA Feeds
+                              {supplierName}
                             </TableCell>
                             <TableCell
                               sx={{

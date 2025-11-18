@@ -5,6 +5,8 @@ import { SingleUser } from '@/app/_typeModels/User';
 import { getCookie } from 'cookies-next';
 import { Metadata } from 'next';
 import { cookies } from 'next/headers';
+import { getUserAccessConfig } from '@/app/_lib/constants/userAccessMatrix';
+import { canEditOrganisation } from '@/app/_lib/utils/permissions/access';
 export const metadata: Metadata = {
   title: 'Organisations',
 };
@@ -21,7 +23,7 @@ export default async function Page({
   const tab = searchParams?.tab || 'all';
   const loggedUser = getCookie('logged-user', { cookies });
   const user: SingleUser = JSON.parse(loggedUser ?? '');
-
+  console.log("user", user);
   const organisations = await getOrganisations({
     organisationId: Number(user?.organisationId),
     query,
@@ -29,6 +31,13 @@ export default async function Page({
     tab,
   });
 
+  // Get user's access configuration
+  const loggedUserOrgType = user?.organisationType || '';
+  const loggedUserType = user?.role || '';
+  console.log("loggedUserOrgType", loggedUserOrgType);
+  console.log("loggedUserType", loggedUserType);
+  const userAccess = getUserAccessConfig(loggedUserOrgType, loggedUserType);
+ console.log("userAccess", userAccess);
   return (
     <>
       <BasicBreadcrumbs
@@ -43,19 +52,22 @@ export default async function Page({
             name:
               tab === 'all'
                 ? 'All'
-                : tab === 'feedSuppliers'
-                  ? 'Feed Suppliers'
+                : tab === 'feedManufacturers'
+                  ? 'Feed Manufacturers'
                   : 'Fish Producers',
             link: `/dashboard/organisation?tab=${tab}`,
           },
         ]}
-        permissions={user?.permissions.editOrganisation}
+        permissions={canEditOrganisation(userAccess, undefined, String(user?.role))}
+        userAccess={userAccess}
       />
       <BasicTable
         key={organisations?.data?.length}
         organisations={organisations?.data}
         userRole={String(user?.role)}
-        permissions={user?.permissions.editOrganisation}
+        permissions={canEditOrganisation(userAccess, undefined, String(user?.role))}
+        userAccess={userAccess}
+        loggedUserOrgType={loggedUserOrgType}
       />
     </>
   );

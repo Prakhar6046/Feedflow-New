@@ -5,6 +5,7 @@ import {
   getLocalItem,
   ProductionSortTables,
   setLocalItem,
+  getDayMonthDifference,
 } from '@/app/_lib/utils';
 import {
   farmManagerFishHead,
@@ -54,18 +55,35 @@ import Test from '../models/Test';
 import WaterQualityParameter from '../models/WaterQualityParameter';
 import ProductionManagerFilter from '../ProductionManagerFilter';
 import { Co2Sharp } from '@mui/icons-material';
+import { SingleOrganisation } from '@/app/_typeModels/Organization';
+
+import { UserAccessConfig } from '@/app/_lib/constants/userAccessMatrix';
+import { canEditProduction, canViewProduction } from '@/app/_lib/utils/permissions/access';
 
 interface Props {
   productions?: Production[];
   farms: Farm[];
-  batches: { batchNumber: string; id: number }[];
+  batches: { batchNumber: string; id: number; speciesId?: string | null }[];
+  organisations?: SingleOrganisation[];
+  userAccess?: UserAccessConfig;
+  userRole?: string;
+  canEdit?: boolean;
+  canView?: boolean;
 }
 
 export default function ProductionTable({
   productions,
   farms,
   batches,
+  organisations,
+  userAccess,
+  userRole,
+  canEdit,
+  canView,
 }: Props) {
+  console.log('Productions in ProductionTable:', productions);    
+              console.log('Farms in ProductionTable:', farms);
+              console.log('Batches in ProductionTable:', batches);
   // Safety check for undefined productions
   if (!productions) {
     return (
@@ -243,9 +261,8 @@ export default function ProductionTable({
                       >
                         {farm.units.map((unit, i) => {
                           return (
-                            <>
+                            <React.Fragment key={i}>
                               <Typography
-                                key={i}
                                 variant="h6"
                                 sx={{
                                   fontWeight: 500,
@@ -264,7 +281,7 @@ export default function ProductionTable({
                               >
                                 {unit.productionUnit.name}
                               </Typography>
-                            </>
+                            </React.Fragment>
                           );
                         })}
                       </TableCell>
@@ -351,7 +368,14 @@ export default function ProductionTable({
                                           unit.individualAveragesWater?.DO,
                                         ) || ''
                                       : (unit.DO ?? '')
-                              : unit?.fishSupply?.age;
+                              : (() => {
+                                  // Calculate age dynamically from hatching date (not from stored age)
+                                  // Age = Today's date - Hatching date
+                                  const fishSupply = unit?.fishSupply as any;
+                                  return fishSupply?.hatchingDate
+                                    ? getDayMonthDifference(fishSupply.hatchingDate)
+                                    : fishSupply?.age || 'N/A';
+                                })();
 
                           // Calculate padding based on whether a value exists
                           const paddingValue = value
@@ -1341,9 +1365,8 @@ export default function ProductionTable({
                       >
                         {farm.units.map((unit, i) => {
                           return (
-                            <>
+                            <React.Fragment key={i}>
                               <Typography
-                                key={i}
                                 variant="h6"
                                 sx={{
                                   fontWeight: 500,
@@ -1362,7 +1385,7 @@ export default function ProductionTable({
                               >
                                 {unit.productionUnit.name}
                               </Typography>
-                            </>
+                            </React.Fragment>
                           );
                         })}
                       </TableCell>
@@ -1449,7 +1472,14 @@ export default function ProductionTable({
                                           unit.individualAveragesWater?.DO,
                                         ) || ''
                                       : (unit.DO ?? '')
-                              : unit?.fishSupply?.age;
+                              : (() => {
+                                  // Calculate age dynamically from hatching date (not from stored age)
+                                  // Age = Today's date - Hatching date
+                                  const fishSupply = unit?.fishSupply as any;
+                                  return fishSupply?.hatchingDate
+                                    ? getDayMonthDifference(fishSupply.hatchingDate)
+                                    : fishSupply?.age || 'N/A';
+                                })();
 
                           // Calculate padding based on whether a value exists
                           const paddingValue = value
@@ -2290,6 +2320,7 @@ export default function ProductionTable({
         farms={farms}
         batches={batches}
         productions={productions}
+        organisations={organisations}
       />
       <Test
         open={test}

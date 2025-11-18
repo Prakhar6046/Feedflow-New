@@ -4,6 +4,8 @@ import GrowthModelTable from '@/app/_components/table/GrowthModelTable';
 import BasicBreadcrumbs from '@/app/_components/Breadcrumbs';
 import { cookies } from 'next/headers';
 import { SingleUser } from '@/app/_typeModels/User';
+import { getUserAccessConfig } from '@/app/_lib/constants/userAccessMatrix';
+import { canAddGrowthModel, canEditGrowthModel } from '@/app/_lib/utils/permissions/access';
 export const metadata: Metadata = {
   title: 'Growth Models',
 };
@@ -20,15 +22,22 @@ export default async function GrowthModelPage({
   const loggedUser: any = getCookie('logged-user', { cookies });
 
   let organisationId = 0;
+  let user: SingleUser | null = null;
 
   if (loggedUser) {
     try {
-      const user: SingleUser = JSON.parse(loggedUser)
-      organisationId = user.organisationId;
+      user = JSON.parse(loggedUser);
+      organisationId = user?.organisationId || 0;
     } catch (error) {
       console.error('Error parsing user data:', error);
     }
   }
+  
+  // Get user's access configuration
+  const loggedUserOrgType = user?.organisationType || '';
+  const loggedUserType = user?.role || '';
+  const userAccess = getUserAccessConfig(loggedUserOrgType, loggedUserType);
+  
   let growthModels = [];
 
   try {
@@ -65,6 +74,9 @@ export default async function GrowthModelPage({
     { id: 'actions', numeric: false, disablePadding: false, label: 'Actions' },
   ];
 
+  const canAdd = canAddGrowthModel(userAccess, loggedUserType);
+  const canEdit = canEditGrowthModel(userAccess, loggedUserType);
+
   return (
     <>
       <BasicBreadcrumbs
@@ -75,6 +87,8 @@ export default async function GrowthModelPage({
         ]}
         buttonName="Add Model"
         buttonRoute="/dashboard/growthModel/create"
+        permissions={canAdd}
+        userAccess={userAccess}
         extraButton={{
           buttonName: 'Species & Production System',
           route: '/dashboard/growthModel/species-production-system',
@@ -84,7 +98,9 @@ export default async function GrowthModelPage({
         <GrowthModelTable
           tableData={tableData}
           growthModels={growthModels}
-          permisions={true}
+          permisions={canEdit}
+          userAccess={userAccess}
+          userRole={loggedUserType}
         />
       </div>
     </>

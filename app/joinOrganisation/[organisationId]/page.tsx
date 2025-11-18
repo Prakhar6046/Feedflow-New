@@ -35,7 +35,7 @@ const Page = ({ params }: { params: { organisationId: string } }) => {
         userId: params.organisationId,
         password: data.password,
       };
-      const response = await clientSecureFetch('/api/add-new-user/setPassword', {
+      const response = await fetch('/api/add-new-user/setPassword', {
         method: 'POST',
         body: JSON.stringify(payload),
       });

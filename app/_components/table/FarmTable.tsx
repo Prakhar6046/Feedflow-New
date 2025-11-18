@@ -36,11 +36,17 @@ import toast from 'react-hot-toast';
 import { clientSecureFetch } from '@/app/_lib/clientSecureFetch';
 import { compareSync } from 'bcryptjs';
 
+import { UserAccessConfig } from '@/app/_lib/constants/userAccessMatrix';
+import { canEditFarm, canViewFarm, canDeleteFarm } from '@/app/_lib/utils/permissions/access';
+
 interface Props {
   farms: Farm[];
-  permisions: boolean;
+  userAccess?: UserAccessConfig;
+  userRole?: string;
+  canEdit?: boolean;
+  canView?: boolean;
 }
-export default function FarmTable({ farms, permisions }: Props) {
+export default function FarmTable({ farms, userAccess, userRole, canEdit, canView }: Props) {
   const router = useRouter();
   const pathName = usePathname();
   const dispatch = useAppDispatch();
@@ -136,7 +142,7 @@ export default function FarmTable({ farms, permisions }: Props) {
     return (
       <TableHead>
         <TableRow>
-          {(role == 'SUPERADMIN' || permisions
+          {((role == 'SUPERADMIN' || canEdit || canView)
             ? farmTableHead
             : farmTableHeadMember
           ).map((headCell, idx, headCells) => (
@@ -384,7 +390,7 @@ export default function FarmTable({ farms, permisions }: Props) {
                       {farm?.productionUnits?.length ?? ''}
                     </TableCell>
 
-                    {(role === 'SUPERADMIN' || permisions) && (
+                    {(canEdit || canView) && (
                       <TableCell
                         // align="center"
                         sx={{
@@ -435,38 +441,43 @@ export default function FarmTable({ farms, permisions }: Props) {
                             left: '-10px',
                           }}
                         >
-                          <MenuItem onClick={handleEdit}>
-                            <Stack
-                              display="flex"
-                              gap={1.2}
-                              alignItems="center"
-                              direction="row"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="1em"
-                                height="1em"
-                                viewBox="0 0 24 24"
+                          {(canEdit || canView) && (
+                            <MenuItem onClick={handleEdit}>
+                              <Stack
+                                display="flex"
+                                gap={1.2}
+                                alignItems="center"
+                                direction="row"
                               >
-                                <path
-                                  fill="currentColor"
-                                  d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"
-                                />
-                              </svg>
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="1em"
+                                  height="1em"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    fill="currentColor"
+                                    d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"
+                                  />
+                                </svg>
 
-                              <Typography variant="subtitle2">Edit</Typography>
-                            </Stack>
-                          </MenuItem>
-                          <Divider
-                            sx={{
-                              borderColor: '#9797971A',
-                              my: 0.5,
-                            }}
-                          />
-                          <MenuItem
-                            disabled={user?.role !== 'SUPERADMIN'}
-                            onClick={() => handleDeleteFarms(selectedFarm?.id)}
-                          >
+                                <Typography variant="subtitle2">
+                                  {canEdit ? 'Edit' : 'View'}
+                                </Typography>
+                              </Stack>
+                            </MenuItem>
+                          )}
+                          {canDeleteFarm(userAccess, userRole) && (
+                            <>
+                              <Divider
+                                sx={{
+                                  borderColor: '#9797971A',
+                                  my: 0.5,
+                                }}
+                              />
+                              <MenuItem
+                                onClick={() => handleDeleteFarms(selectedFarm?.id)}
+                              >
                             <Stack
                               display="flex"
                               gap={1.2}
@@ -492,6 +503,8 @@ export default function FarmTable({ farms, permisions }: Props) {
                               </Typography>
                             </Stack>
                           </MenuItem>
+                            </>
+                          )}
                         </Menu>
                       </TableCell>
                     )}

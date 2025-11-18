@@ -12,6 +12,7 @@ import {
   Radio,
   Stack,
   Typography,
+  Alert,
 } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -42,6 +43,7 @@ interface Props {
   feedStores: FeedProduct[];
   feedSuppliers: FeedSupplier[];
   productionUnits: productionUnits[];
+  isViewOnly: boolean;
 }
 
 interface FormData {
@@ -77,12 +79,14 @@ const ProductionUnitFeedProfile: React.FC<Props> = ({
   feedStores,
   feedSuppliers,
   productionUnits,
+  isViewOnly = false,
 }) => {
 
   const isEditFarm = getCookie('isEditFarm');
   const [radioValueMap, setRadioValueMap] = useState<Record<string, Record<string, string>>>({});
   const [supplierOptions, setSupplierOptions] = useState<SupplierOptions[]>([]);
   const [selectedSupplier, setSelectedSupplier] = useState<SupplierOptions[]>([]);
+  const [gapError, setGapError] = useState<string>('');
 
   const { control, handleSubmit, setValue, watch, reset } = useForm<FormData>();
 
@@ -392,6 +396,7 @@ const currentUnit = units.find((p) => p.name === selectedUnitName);
                   <Radio
                     checked={isChecked}
                     onChange={() => {
+                      if (isViewOnly) return;
                       const columnIndex = Number(columnName.replace('col', '')) - 1;
                       const storeId = String((radioValueMap[columnName]?.[opt] ?? `${columnName}_${opt}`).split('_')[1] || '');
                       const store = getStoreByIdInColumn(columnIndex, storeId);
@@ -407,6 +412,11 @@ const currentUnit = units.find((p) => p.name === selectedUnitName);
                       field.onChange(updated);
                     }}
                     onClick={(e) => {
+                      if (isViewOnly) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return;
+                      }
                       const columnIndex = Number(columnName.replace('col', '')) - 1;
                       const storeId = String((radioValueMap[columnName]?.[opt] ?? `${columnName}_${opt}`).split('_')[1] || '');
                       const store = getStoreByIdInColumn(columnIndex, storeId);
@@ -426,6 +436,10 @@ const currentUnit = units.find((p) => p.name === selectedUnitName);
                       e.preventDefault();
                       e.stopPropagation();
                     }}
+                    disabled={isViewOnly}
+                    sx={{
+                      cursor: isViewOnly ? 'not-allowed' : 'pointer',
+                    }}
                   />
                 }
                 label=""
@@ -437,7 +451,65 @@ const currentUnit = units.find((p) => p.name === selectedUnitName);
     />
   );
 
+  // Validate that there are no gaps in feed profile selections
+  const validateFeedProfileGaps = (data: FormData): { isValid: boolean; missingSizes: number[] } => {
+    // Get all selected fish sizes across all rows
+    const selectedSizes: number[] = [];
+    dynamicFishSizes.forEach((size) => {
+      const rowName = `selection_${size}`;
+      const rowData = data[rowName];
+      // Check if this row has any feed selected
+      if (rowData && Array.isArray(rowData) && rowData.length > 0) {
+        // Check if there's at least one valid selection (starts with 'col')
+        const hasValidSelection = rowData.some((val) => /^col\d+_/.test(val));
+        if (hasValidSelection) {
+          selectedSizes.push(size);
+        }
+      }
+    });
+
+    if (selectedSizes.length === 0) {
+      return { isValid: true, missingSizes: [] }; // No selections is valid (user might not have selected anything yet)
+    }
+
+    // Sort selected sizes
+    selectedSizes.sort((a, b) => a - b);
+    const minSelected = selectedSizes[0];
+    const maxSelected = selectedSizes[selectedSizes.length - 1];
+
+    // Find gaps between min and max selected sizes in the dynamicFishSizes array
+    const missingSizes: number[] = [];
+    for (let i = 0; i < dynamicFishSizes.length; i++) {
+      const size = dynamicFishSizes[i];
+      // Check if this size is between min and max selected, but not itself selected
+      if (size >= minSelected && size <= maxSelected && !selectedSizes.includes(size)) {
+        missingSizes.push(size);
+      }
+    }
+
+    return {
+      isValid: missingSizes.length === 0,
+      missingSizes: missingSizes,
+    };
+  };
+
   const onSubmit: SubmitHandler<FormData> = (data) => {
+    // Clear previous error
+    setGapError('');
+
+    // Validate for gaps in feed profile selections
+    const validation = validateFeedProfileGaps(data);
+    if (!validation.isValid && validation.missingSizes.length > 0) {
+      // Format the missing sizes for display
+      const missingSizesText = validation.missingSizes
+        .map((size) => (size === 1001 ? '>1000' : size))
+        .join(', ');
+      setGapError(
+        `Please select feed profiles for fish size(s): ${missingSizesText} to fill the gap.`
+      );
+      return;
+    }
+
     const result: {
       supplierId: number;
       storeId: string;
@@ -639,12 +711,13 @@ const currentUnit = units.find((p) => p.name === selectedUnitName);
                                   </Typography>
                                   <IconButton
                                     size="small"
+                                    disabled={isViewOnly}
                                     onClick={() => handleAutoSelect(store, group.supplier.id)}
                                     sx={
                                       isSelectedForStore
                                         ? {
-                                          background: '#06A19B',
-                                          color: '#fff',
+                                          background: '#06A19B !important',
+                                          color: '#fff !important',
                                           fontWeight: 600,
                                           padding: '8px',
                                           width: 'fit-content',
@@ -705,6 +778,14 @@ const currentUnit = units.find((p) => p.name === selectedUnitName);
               </Table>
             </TableContainer>
           </Paper>
+          {gapError && (
+            <Box mt={2}>
+              <Alert severity="error" onClose={() => setGapError('')}>
+                {gapError}
+              </Alert>
+            </Box>
+          )}
+          {!isViewOnly && (
           <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'} gap={3} mt={4}>
             <Button
               type="submit"
@@ -721,6 +802,7 @@ const currentUnit = units.find((p) => p.name === selectedUnitName);
               Save
             </Button>
           </Box>
+          )}
         </form>
       </Stack>
     </Modal>

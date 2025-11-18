@@ -28,9 +28,10 @@ import { clientSecureFetch } from '@/app/_lib/clientSecureFetch';
 interface Props {
   feedSuppliers: any;
   filteredStores: any;
+  selectedSupplierCount?: number;
 }
 
-export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
+export const TransposedTable = ({ feedSuppliers, filteredStores, selectedSupplierCount = 0 }: Props) => {
   const { control, handleSubmit, reset, setValue } = useForm();
   const [speciesList, setSpeciesList] = useState<Species[]>([]);
   const featuredSpecies = speciesList?.filter((sp) => sp.isFeatured);
@@ -50,10 +51,21 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
   ];
 
   const fetchData = async () => {
-    const res = await clientSecureFetch('/api/species', {
-      method: 'GET',
-    }); 
-    setSpeciesList(await res.json());
+    try {
+      const res = await clientSecureFetch('/api/species', {
+        method: 'GET',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setSpeciesList(data || []);
+      } else {
+        console.error('Failed to fetch species:', res.status);
+        setSpeciesList([]);
+      }
+    } catch (error) {
+      console.error('Error fetching species:', error);
+      setSpeciesList([]);
+    }
   };
 
   useEffect(() => {
@@ -67,24 +79,36 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
       filteredStores.forEach((item: any, colIndex: number) => {
         Object.entries(item).forEach(([key, value]) => {
           if (!['createdAt', 'updatedAt', 'organaisationId'].includes(key)) {
-            defaultValues[`${key}-${colIndex}`] = value;
+            // Ensure values are never undefined - use empty string for strings, 0 for numbers
+            const defaultValue = value ?? (typeof value === 'number' ? 0 : '');
+            defaultValues[`${key}-${colIndex}`] = defaultValue;
           }
         });
         defaultValues[`speciesId-${colIndex}`] = item.speciesId || '';
         defaultValues[`isDefault-${colIndex}`] = item.isDefault || false;
+        defaultValues[`feedIngredients-${colIndex}`] = item.feedIngredients || '';
+        defaultValues[`feedingGuide-${colIndex}`] = item.feedingGuide || '';
       });
       reset(defaultValues);
+    } else {
+      // Reset form when no data
+      reset({});
     }
   }, [filteredStores, reset]);
 
   useEffect(() => {
-    if (filteredStores) {
-      filteredStores?.map((store: any, i: number) => {
-        return setValue(`suppliers[${i}].supplierIds`, store.ProductSupplier);
+    if (filteredStores && filteredStores.length > 0) {
+      filteredStores.forEach((store: any, i: number) => {
+        setValue(`suppliers[${i}].supplierIds`, store.ProductSupplier || [], {
+          shouldValidate: false,
+          shouldDirty: false,
+        });
       });
     }
-  }, [filteredStores]);
+  }, [filteredStores, setValue]);
+  // Watch all form values for overlap checks and calculations
   const watchedValues = useWatch({ control });
+
   const calculatedValues = useMemo(() => {
     if (!filteredStores || filteredStores.length === 0) return {};
 
@@ -129,7 +153,36 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
 
     return values;
   }, [watchedValues, filteredStores]);
-  if (!filteredStores || filteredStores.length === 0) return null;
+
+  // Check if we should show empty state message
+  if (!filteredStores || filteredStores.length === 0) {
+    return (
+      <Box
+        sx={{
+          height: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexDirection: 'column',
+          p: 10,
+          backgroundColor: '#FAFAFA',
+          borderRadius: 2,
+          border: '1px solid #e0e0e0',
+        }}
+      >
+        <Typography sx={{ textAlign: 'center' }} variant="h6" color="text.secondary" gutterBottom>
+          {selectedSupplierCount === 0
+            ? 'Please select at least one feed supplier to view feeds'
+            : 'No Feed Data Available'}
+        </Typography>
+        <Typography sx={{ textAlign: 'center' }} variant="body1" color="text.secondary">
+          {selectedSupplierCount === 0
+            ? 'Select feed suppliers from the dropdown above to filter and view available feeds.'
+            : 'Please add feed products to view and manage them here.'}
+        </Typography>
+      </Box>
+    );
+  }
 
   const keys = Object.keys(filteredStores[0]).filter(
     (key) =>
@@ -137,7 +190,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
       key !== 'feedIngredients' &&
       key !== 'feedingGuide'
   );
-    
+
   function transformFeedProductsWithSuppliers(flatData: Record<string, any>) {
     const result: any[] = [];
     const suppliersArray = flatData.suppliers || [];
@@ -172,43 +225,66 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
   // Helper function to check if a feed would cause overlap when set as default
   const wouldCauseOverlap = (colIndex: number, wantsToBeDefault: boolean, allFeeds: any[], watchedValues: any) => {
     if (!wantsToBeDefault) return false;
-    
+
     // Get current feed data
     const currentFeed = allFeeds[colIndex];
     const minFishSize = Number(watchedValues[`minFishSizeG-${colIndex}`]) || currentFeed?.minFishSizeG;
     const maxFishSize = Number(watchedValues[`maxFishSizeG-${colIndex}`]) || currentFeed?.maxFishSizeG;
-    
+
+    // Get current feed's suppliers (from form or original data)
+    const currentSupplierIds = watchedValues[`suppliers[${colIndex}].supplierIds`] || currentFeed?.ProductSupplier || [];
+    const currentSupplierIdsNormalized = currentSupplierIds.map((id: any) => String(id));
+
     // Check against all other feeds
     for (let i = 0; i < allFeeds.length; i++) {
       if (i === colIndex) continue;
-      
+
       const otherFeedIsDefault = watchedValues[`isDefault-${i}`] || allFeeds[i]?.isDefault;
       if (!otherFeedIsDefault) continue;
-      
+
+      // Get other feed's suppliers
+      const otherSupplierIds = watchedValues[`suppliers[${i}].supplierIds`] || allFeeds[i]?.ProductSupplier || [];
+      const otherSupplierIdsNormalized = otherSupplierIds.map((id: any) => String(id));
+
+      // Check if feeds share any common supplier
+      const hasCommonSupplier = currentSupplierIdsNormalized.some((id: string) =>
+        otherSupplierIdsNormalized.includes(id)
+      );
+
+      // Only check for overlap if feeds share a common supplier
+      if (!hasCommonSupplier) continue;
+
       const otherMin = Number(watchedValues[`minFishSizeG-${i}`]) || allFeeds[i]?.minFishSizeG;
       const otherMax = Number(watchedValues[`maxFishSizeG-${i}`]) || allFeeds[i]?.maxFishSizeG;
-      
-      // Check if ranges overlap
-      const rangesOverlap = 
-        minFishSize <= otherMax && 
-        otherMin <= maxFishSize;
-      
+
+      // Check if ranges overlap (excluding touching edges)
+      // Ranges overlap if there's actual intersection, not just touching at edges
+      // Standard overlap: maxFishSize > otherMin AND minFishSize < otherMax
+      // With tolerance: maxFishSize - EPSILON > otherMin + EPSILON AND minFishSize + EPSILON < otherMax - EPSILON
+      const EPSILON = 0.001;
+      const rangesOverlap =
+        maxFishSize - EPSILON > otherMin + EPSILON &&
+        minFishSize + EPSILON < otherMax - EPSILON;
+
       if (rangesOverlap) {
         const otherProductName = watchedValues[`productName-${i}`] || allFeeds[i]?.productName || 'Unknown';
+        const supplierName = feedSuppliers?.find((s: any) =>
+          currentSupplierIdsNormalized.includes(String(s.id))
+        )?.name || 'Unknown Supplier';
         return {
           error: true,
-          message: `Cannot set as default. Overlaps with "${otherProductName}" (${otherMin}-${otherMax}g). Please ensure only one default feed exists for any given fish size range.`
+          message: `Cannot set as default for ${supplierName}. Overlaps with "${otherProductName}" (${otherMin}-${otherMax}g) within the same supplier. Only one default feed can exist per supplier for any given fish size range.`
         };
       }
     }
-    
+
     return { error: false };
   };
 
   const validateDefaultFeeds = (payload: any[]) => {
     // Group feeds by supplier
     const supplierGroups: Record<string, any[]> = {};
-    
+
     payload.forEach((feed) => {
       const suppliers = feed.ProductSupplier || [];
       suppliers.forEach((supplierId: string) => {
@@ -222,24 +298,23 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
     // Validate each supplier group
     for (const [supplierId, feeds] of Object.entries(supplierGroups)) {
       const defaultFeeds = feeds.filter((f: any) => f.isDefault);
-      
+
       if (defaultFeeds.length === 0) continue;
-      
+
       // Sort by minFishSizeG
       defaultFeeds.sort((a, b) => a.minFishSizeG - b.minFishSizeG);
-      
-      // Check for overlaps - compare all pairs of default feeds
+
+      const EPSILON = 0.001; 
+
       for (let i = 0; i < defaultFeeds.length; i++) {
         for (let j = i + 1; j < defaultFeeds.length; j++) {
           const feed1 = defaultFeeds[i];
           const feed2 = defaultFeeds[j];
-          
-          // Check if ranges overlap
-          // Ranges overlap if: feed1.min <= feed2.max && feed2.min <= feed1.max
-          const rangesOverlap = 
-            feed1.minFishSizeG <= feed2.maxFishSizeG && 
-            feed2.minFishSizeG <= feed1.maxFishSizeG;
-          
+
+          const rangesOverlap =
+            feed1.maxFishSizeG - EPSILON > feed2.minFishSizeG + EPSILON &&
+            feed1.minFishSizeG + EPSILON < feed2.maxFishSizeG - EPSILON;
+
           if (rangesOverlap) {
             throw new Error(
               `Cannot set multiple default feeds for overlapping fish size ranges. ` +
@@ -250,28 +325,34 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
           }
         }
       }
-      
-      // Check for coverage (optional - based on client requirements)
-      // This ensures there are no gaps, but can be commented out if partial coverage is acceptable
-      const firstFeed = defaultFeeds[0];
-      const lastFeed = defaultFeeds[defaultFeeds.length - 1];
-      
+
+
+      // Check for gaps in fish size coverage within this supplier
       if (defaultFeeds.length > 1) {
-        // Check for gaps
+        // Sort by minFishSizeG to check sequential gaps
         for (let i = 0; i < defaultFeeds.length - 1; i++) {
           const current = defaultFeeds[i];
           const next = defaultFeeds[i + 1];
-          
-          if (current.maxFishSizeG < next.minFishSizeG - 1) {
-            // Gap detected (allow 1 unit gap for rounding)
-            const gap = next.minFishSizeG - current.maxFishSizeG;
-            if (gap > 1) {
-              console.warn(
-                `Gap detected in default feeds for supplier. ` +
-                `Between "${current.productName}" (${current.maxFishSizeG}g) and "${next.productName}" (${next.minFishSizeG}g).`
-              );
-            }
+          const EPSILON = 0.001;
+
+          // Check if there's a gap (current.max < next.min - EPSILON)
+          if (current.maxFishSizeG + EPSILON < next.minFishSizeG) {
+            const gapStart = current.maxFishSizeG;
+            const gapEnd = next.minFishSizeG;
+            const supplierName = feedSuppliers?.find((s: any) =>
+              String(s.id) === supplierId
+            )?.name || 'Unknown Supplier';
+
+            throw new Error(
+              `Gap detected in default feeds for ${supplierName}. ` +
+              `Fish size range between ${gapStart.toFixed(2)}g and ${gapEnd.toFixed(2)}g ` +
+              `is not covered between "${current.productName}" ` +
+              `(${current.minFishSizeG}-${current.maxFishSizeG}g) and ` +
+              `"${next.productName}" (${next.minFishSizeG}-${next.maxFishSizeG}g). ` +
+              `Please ensure continuous coverage (even for decimal values).`
+            );
           }
+
         }
       }
     }
@@ -280,12 +361,27 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
   const onSubmit = async (data: any) => {
     setIsSaving(true);
     const payload = transformFeedProductsWithSuppliers(data);
-    const updatedPayload = payload.map((feed) => {
+    const updatedPayload = payload.map((feed, index) => {
       const { ProductSupplier, supplierIds, minFishSizeG, maxFishSizeG, isDefault, ...rest } = feed;
-      return { 
-        ...rest, 
-        ProductSupplier: supplierIds, 
-        minFishSizeG: Number(minFishSizeG), 
+      
+      // Override with freshly calculated values from calculatedValues memo
+      const calculatedOverrides = {
+        carbohydratesGPerKg: calculatedValues[`carbohydratesGPerKg-${index}`],
+        ge: calculatedValues[`ge-${index}`],
+        digCP: calculatedValues[`digCP-${index}`],
+        digCF: calculatedValues[`digCF-${index}`],
+        digNFE: calculatedValues[`digNFE-${index}`],
+        deCP: calculatedValues[`deCP-${index}`],
+        deCF: calculatedValues[`deCF-${index}`],
+        deNFE: calculatedValues[`deNFE-${index}`],
+        de: calculatedValues[`de-${index}`],
+      };
+    
+      return {
+        ...rest,
+        ...calculatedOverrides, // Apply calculated values
+        ProductSupplier: supplierIds,
+        minFishSizeG: Number(minFishSizeG),
         maxFishSizeG: Number(maxFishSizeG),
         isDefault: Boolean(isDefault)
       };
@@ -374,30 +470,6 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
       .replace(/([a-z])([A-Z])/g, "$1 $2")
       .replace(/_/g, " ")
       .replace(/\b\w/g, (char) => char.toUpperCase());
-  }
-    if (!filteredStores || filteredStores.length === 0) {
-    return (
-      <Box
-        sx={{
-          height: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          flexDirection: 'column',
-          p: 10,
-          backgroundColor: '#FAFAFA',
-          borderRadius: 2,
-          border: '1px solid #e0e0e0',
-        }}
-      >
-        <Typography  sx={{textAlign:'center'}} variant="h6" color="text.secondary" gutterBottom>
-          No Feed Data Available 
-        </Typography>
-        <Typography sx={{textAlign:'center'}} variant="body1" color="text.secondary">
-          Please add feed products to view and manage them here.
-        </Typography>
-      </Box>
-    );
   }
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="bg-red-600">
@@ -636,13 +708,19 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
             {firstRows.map((key) => (
               <TableRow key={key}>
                 <TableCell sx={{ background: '#FAFAFA' }}>{formatLabel(key)}</TableCell>
-                {filteredStores.map((_: any, colIndex: number) => (
+                {filteredStores.map((store: any, colIndex: number) => (
                   <TableCell key={colIndex} sx={{ background: '#FAFAFA' }}>
                     <Controller
                       name={`${key}-${colIndex}`}
                       control={control}
+                      defaultValue={store[key] ?? ''}
                       render={({ field }) => (
-                        <TextField {...field} size="small" fullWidth />
+                        <TextField
+                          {...field}
+                          size="small"
+                          fullWidth
+                          value={field.value ?? ''}
+                        />
                       )}
                     />
                   </TableCell>
@@ -700,12 +778,12 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
                         onClick={() => {
                           const wantsToBeDefault = !field.value;
                           const overlapCheck = wouldCauseOverlap(colIndex, wantsToBeDefault, filteredStores, watchedValues);
-                          
+
                           if (overlapCheck && overlapCheck.error) {
                             toast.error(overlapCheck.message);
                             return;
                           }
-                          
+
                           field.onChange(wantsToBeDefault);
                         }}
                         sx={{
@@ -727,11 +805,12 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
             {remainingRows.map((key) => (
               <TableRow key={key}>
                 <TableCell>{formatLabel(key)}</TableCell>
-                {filteredStores.map((_: any, colIndex: number) => (
+                {filteredStores.map((store: any, colIndex: number) => (
                   <TableCell key={colIndex}>
                     <Controller
                       name={`${key}-${colIndex}`}
                       control={control}
+                      defaultValue={store[key] ?? ''}
                       render={({ field }) => {
                         const isCalculated = calculatedFields.includes(key);
                         return (
@@ -742,8 +821,8 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
                             disabled={isCalculated}
                             value={
                               isCalculated
-                                ? calculatedValues[`${key}-${colIndex}`]
-                                : field.value
+                                ? (calculatedValues[`${key}-${colIndex}`] ?? '')
+                                : (field.value ?? '')
                             }
                           />
                         );
@@ -784,11 +863,12 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
             </TableRow> */}
             <TableRow>
               <TableCell>{formatLabel("feedIngredients")}</TableCell>
-              {filteredStores.map((_: any, colIndex: number) => (
+              {filteredStores.map((store: any, colIndex: number) => (
                 <TableCell key={colIndex}>
                   <Controller
                     name={`feedIngredients-${colIndex}`}
                     control={control}
+                    defaultValue={store.feedIngredients || ''}
                     render={({ field }) => (
                       <TextField
                         {...field}
@@ -802,6 +882,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
                           },
                         }}
                         fullWidth
+                        value={field.value ?? ''}
                       />
                     )}
                   />
@@ -810,11 +891,12 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
             </TableRow>
             <TableRow>
               <TableCell >{formatLabel("feedingGuide")}</TableCell>
-              {filteredStores.map((_: any, colIndex: number) => (
+              {filteredStores.map((store: any, colIndex: number) => (
                 <TableCell key={colIndex} >
                   <Controller
                     name={`feedingGuide-${colIndex}`}
                     control={control}
+                    defaultValue={store.feedingGuide || ''}
                     render={({ field }) => (
                       <TextField
                         {...field}
@@ -828,6 +910,7 @@ export const TransposedTable = ({ feedSuppliers, filteredStores }: Props) => {
                           },
                         }}
                         fullWidth
+                        value={field.value ?? ''}
                       />
                     )}
                   />

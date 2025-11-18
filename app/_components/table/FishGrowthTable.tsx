@@ -13,9 +13,10 @@ import { FishFeedingData } from '../feedPrediction/AdHoc';
 
 interface Props {
   data: FishFeedingData[];
+  showBiomass?: boolean; // Optional prop to show biomass column (for Feeding Plan)
 }
 
-function FishGrowthTable({ data }: Props) {
+function FishGrowthTable({ data, showBiomass = false }: Props) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -49,19 +50,28 @@ function FishGrowthTable({ data }: Props) {
         <Table>
           <TableHead>
             <TableRow>
-              {[
-                'Date',
-                'Temp(c)',
-                'Number of Fish',
-                'Fish Size(g)',
-                'Growth(g)',
-                'Feed Type',
-                'Feed Size',
-                'Est. FCR',
-                'Feed Intake (g)',
-                'Feeding Rate',
-                'Mortality rate %/day',
-              ].map((head, idx) => (
+              {(() => {
+                const headers = [
+                  'Date',
+                  'Temp(c)',
+                  'Number of Fish',
+                ];
+                // Add Biomass column only for Feeding Plan
+                if (showBiomass) {
+                  headers.push('Biomass(kg)');
+                }
+                headers.push(
+                  'Fish Size(g)',
+                  'Growth(g)',
+                  'Feed Type',
+                  'Feed Size',
+                  'Est. FCR',
+                  'Feed Intake (g)',
+                  'Feeding Rate',
+                  'Mortality rate %/day',
+                );
+                return headers;
+              })().map((head, idx) => (
                 <TableCell
                   key={idx}
                   sx={{
@@ -113,6 +123,18 @@ function FishGrowthTable({ data }: Props) {
                 >
                   {row.numberOfFish}
                 </TableCell>
+                {showBiomass && (
+                  <TableCell
+                    sx={{
+                      borderBottomColor: '#F5F6F8',
+                      borderBottomWidth: 2,
+                      color: '#555555',
+                      fontWeight: 500,
+                    }}
+                  >
+                    {row.biomass || '-'}
+                  </TableCell>
+                )}
                 <TableCell
                   sx={{
                     borderBottomColor: '#F5F6F8',

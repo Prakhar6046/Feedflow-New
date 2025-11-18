@@ -41,8 +41,11 @@ import toast from 'react-hot-toast';
 import CalculateMeanLength from './CalculateMeanLength';
 import CalculateMeanWeigth from './CalculateMeanWeigth';
 import Confirmation from './Confirmation';
+import RestockConfirmationModal from './RestockConfirmationModal';
+import CreateBatchModal from './CreateBatchModal';
 import { getCookie } from 'cookies-next';
 import { clientSecureFetch } from '../../_lib/clientSecureFetch';
+import { SingleOrganisation } from '@/app/_typeModels/Organization';
 const style = {
   position: 'absolute' as const,
   top: '50%',
@@ -58,8 +61,10 @@ interface Props {
   open: boolean;
   selectedProduction: Production;
   farms: Farm[];
-  batches: { batchNumber: string; id: number }[];
+  batches: { batchNumber: string; id: number; speciesId?: string | null }[];
   productions: Production[];
+  onBatchesUpdate?: (batches: { batchNumber: string; id: number; speciesId?: string | null }[]) => void;
+  organisations?: SingleOrganisation[];
 }
 interface InputTypes {
   manager: {
@@ -87,7 +92,10 @@ const TransferModal: React.FC<Props> = ({
   farms,
   batches,
   productions,
+  onBatchesUpdate,
+  organisations,
 }) => {
+  console.log('selectedProduction in FarmManager:', selectedProduction);
   const searchParams = useSearchParams();
   const isFish = searchParams.get('isFish');
   const router = useRouter();
@@ -115,6 +123,63 @@ const TransferModal: React.FC<Props> = ({
   const [isApiCallInProgress, setIsApiCallInProgress] =
     useState<boolean>(false);
   const [currentInput, setCurrentInput] = useState('');
+  const [openRestockConfirmation, setOpenRestockConfirmation] = useState<boolean>(false);
+  const [openCreateBatchModal, setOpenCreateBatchModal] = useState<boolean>(false);
+  const [batchesList, setBatchesList] = useState<{ batchNumber: string; id: number; speciesId?: string | null }[]>(batches);
+  const [pendingBatchChange, setPendingBatchChange] = useState<{ idx: number; newBatchId: string } | null>(null);
+  const [existingStockData, setExistingStockData] = useState<any>(null); // Store existing stock's fishSupply data for restocking
+  const [newlyCreatedBatchId, setNewlyCreatedBatchId] = useState<number | null>(null); // Track newly created batch ID to avoid restock confirmation loop
+  
+  // Auto-calculation function for Mean Weight and Biomass
+  const handleAutoCalculation = (idx: number, fieldName: 'biomass' | 'count' | 'meanWeight', newValue?: string) => {
+    // Skip calculation if idx is 0 (first row is read-only)
+    if (idx === 0) return;
+
+    // Use getValues to get the latest form values
+    const formValues = getValues();
+    const currentRow = formValues.manager[idx];
+    
+    // Use the new value if provided, otherwise use the current form value
+    let biomass = currentRow?.biomass || '';
+    let fishCount = currentRow?.count || '';
+    let meanWeight = currentRow?.meanWeight || '';
+
+    // Update the value that was just changed
+    if (fieldName === 'biomass' && newValue !== undefined) {
+      biomass = newValue;
+    } else if (fieldName === 'count' && newValue !== undefined) {
+      fishCount = newValue;
+    } else if (fieldName === 'meanWeight' && newValue !== undefined) {
+      meanWeight = newValue;
+    }
+
+    const biomassNum = parseFloat(biomass) || 0;
+    const fishCountNum = parseFloat(fishCount) || 0;
+    const meanWeightNum = parseFloat(meanWeight) || 0;
+
+    // Case 1: If biomass and fishCount are entered, calculate meanWeight
+    // This happens when user enters biomass or fishCount
+    if (fieldName === 'biomass' || fieldName === 'count') {
+      if (biomassNum > 0 && fishCountNum > 0) {
+        const calculatedMeanWeight = biomassNum / fishCountNum;
+        setValue(`manager.${idx}.meanWeight`, calculatedMeanWeight.toFixed(2), {
+          shouldValidate: true,
+        });
+      }
+    }
+
+    // Case 2: If meanWeight and fishCount are entered, calculate biomass
+    // This happens when user enters meanWeight or fishCount
+    if (fieldName === 'meanWeight' || fieldName === 'count') {
+      if (meanWeightNum > 0 && fishCountNum > 0) {
+        const calculatedBiomass = meanWeightNum * fishCountNum;
+        setValue(`manager.${idx}.biomass`, calculatedBiomass.toFixed(2), {
+          shouldValidate: true,
+        });
+      }
+    }
+  };
+
   const {
     register,
     setValue,
@@ -163,7 +228,26 @@ const TransferModal: React.FC<Props> = ({
     setIsApiCallInProgress(true);
 
     try {
-      const addIdToData = data.manager.map((field) => {
+      // Filter out row 0 (the read-only display row) and only send rows with actual changes
+      const dataToProcess = data.manager.filter((_, index) => index !== 0);
+      
+      const addIdToData = dataToProcess.map((field) => {
+        // For Stock, Mortalities, Harvest: use the selected production ID
+        if (field.field === 'Stock' || field.field === 'Mortalities' || field.field === 'Harvest') {
+          return { ...field, id: selectedProduction?.id };
+        }
+        
+        // For Transfer: find the production ID for the source unit
+        if (field.field === 'Transfer') {
+          const sourceProduction = productions.find(
+            (prod) =>
+              prod.fishFarmId === field.fishFarm &&
+              prod.productionUnitId === selectedProduction?.productionUnitId,
+          );
+          return { ...field, id: sourceProduction?.id || selectedProduction?.id };
+        }
+        
+        // For other fields, try to find matching production
         const fishFarm = productions.find(
           (OldField) =>
             OldField.fishFarmId === field.fishFarm &&
@@ -180,23 +264,23 @@ const TransferModal: React.FC<Props> = ({
         }
       });
 
-      const filteredData = addIdToData.filter(
-        (field) => field.field !== 'Stock',
-      );
-      const addDataInSample = filteredData.map((data) => {
+      // Process the data and format dates
+      const addDataInSample = addIdToData.map((data) => {
         const formattedDate = data?.currentDate?.format
           ? data.currentDate.format('MM/DD/YYYY')
           : data?.currentDate;
 
         if (data.field === 'Sample') {
+          // For Sample, use the first non-sample entry's batch and unit info
+          const firstNonSample = addIdToData.find((d) => d.field !== 'Sample');
           return {
             ...data,
-            batchNumber: filteredData[0].batchNumber,
-            productionUnit: filteredData[0].productionUnit,
-            id: filteredData[0].id,
+            batchNumber: firstNonSample?.batchNumber || selectedProduction?.batchNumberId || '',
+            productionUnit: firstNonSample?.productionUnit || selectedProduction?.productionUnitId || '',
+            id: firstNonSample?.id || selectedProduction?.id,
             currentDate: formattedDate,
-            stockingDensityKG: filteredData[0].stockingDensityKG,
-            stockingDensityNM: filteredData[0].stockingDensityNM,
+            stockingDensityKG: firstNonSample?.stockingDensityKG || '',
+            stockingDensityNM: firstNonSample?.stockingDensityNM || '',
           };
         } else {
           return {
@@ -205,20 +289,43 @@ const TransferModal: React.FC<Props> = ({
           };
         }
       });
+      
       if (!isEnteredBiomassGreater && !isEnteredFishCountGreater) {
-        const addStockField = addDataInSample.map((data) => {
-          if (!data.field && !selectedProduction.batchNumberId) {
+        // Check if any Stock entry has a different batch than existing production
+        const stockEntries = addDataInSample.filter(d => d.field === 'Stock' || (!d.field && !selectedProduction?.batchNumberId));
+        const hasDifferentBatch = stockEntries.some(entry => {
+          if (selectedProduction?.batchNumberId && entry.batchNumber) {
+            return String(entry.batchNumber) !== String(selectedProduction.batchNumberId);
+          }
+          return false;
+        });
+
+        // If there's a different batch and it doesn't exist in batches list, we should have already handled it
+        // But as a safety check, verify all batches exist
+        const missingBatches = stockEntries
+          .filter(entry => entry.batchNumber)
+          .filter(entry => !batchesList.find(b => String(b.id) === String(entry.batchNumber)));
+        
+        if (missingBatches.length > 0 && hasDifferentBatch) {
+          toast.error('Please create the batch first before saving');
+          setIsApiCallInProgress(false);
+          return;
+        }
+
+        // Ensure Stock entries have the field set
+        const finalData = addDataInSample.map((data) => {
+          if (!data.field && !selectedProduction?.batchNumberId) {
             return { ...data, field: 'Stock' };
           } else {
             return data;
           }
         });
+        
         const payload = {
-          organisationId: selectedProduction.organisationId,
-          data: addStockField,
+          organisationId: selectedProduction?.organisationId,
+          data: finalData,
         };
 
-        const token = getCookie('auth-token');
         const response = await clientSecureFetch('/api/production/mange', {
           method: 'POST',
           body: JSON.stringify(payload),
@@ -234,6 +341,9 @@ const TransferModal: React.FC<Props> = ({
           router.push('/dashboard/production');
           reset();
           router.refresh();
+        } else {
+          toast.dismiss();
+          toast.error(res.error || 'Something went wrong. Please try again.');
         }
       } else {
         toast.dismiss();
@@ -242,6 +352,7 @@ const TransferModal: React.FC<Props> = ({
         );
       }
     } catch (error) {
+      console.error('Error submitting form:', error);
       toast.error('Something went wrong. Please try again.');
     } finally {
       setIsApiCallInProgress(false);
@@ -267,6 +378,8 @@ const TransferModal: React.FC<Props> = ({
     params.delete('isFish');
     removeLocalItem('productionData');
     removeLocalItem('transferformData');
+    // Clear the newly created batch tracking when modal closes
+    setNewlyCreatedBatchId(null);
     router.replace(`/dashboard/production`);
     toast.dismiss();
   };
@@ -293,8 +406,8 @@ const TransferModal: React.FC<Props> = ({
         stockingDensityKG: '',
         field,
         batchNumber:
-          field === 'Harvest' || field === 'Mortalities'
-            ? selectedProduction.batchNumberId
+          field === 'Harvest' || field === 'Mortalities' || field === 'Transfer'
+            ? selectedProduction?.batchNumberId || ''
             : '',
       });
       setAnchorEl(null);
@@ -328,6 +441,11 @@ const TransferModal: React.FC<Props> = ({
       toast.error('Please select production unit first');
     }
   };
+  // Update batches list when batches prop changes
+  useEffect(() => {
+    setBatchesList(batches);
+  }, [batches]);
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const data = getLocalItem('transferformData');
@@ -377,17 +495,17 @@ const TransferModal: React.FC<Props> = ({
     if ((isStockDeleted || selectedProduction) && !formData) {
       const data: any = [
         {
-          id: selectedProduction.id,
-          fishFarm: selectedProduction.fishFarmId,
+          id: selectedProduction?.id,
+          fishFarm: selectedProduction?.fishFarmId,
           productionUnit: selectedProduction?.productionUnitId,
-          biomass: selectedProduction.biomass,
-          count: selectedProduction.fishCount,
-          meanWeight: selectedProduction.meanWeight,
-          meanLength: selectedProduction.meanLength,
-          stockingDensityNM: selectedProduction.stockingDensityNM,
-          stockingLevel: selectedProduction.stockingLevel,
-          stockingDensityKG: selectedProduction.stockingDensityKG,
-          batchNumber: selectedProduction.batchNumberId,
+          biomass: selectedProduction?.biomass,
+          count: selectedProduction?.fishCount,
+          meanWeight: selectedProduction?.meanWeight,
+          meanLength: selectedProduction?.meanLength,
+          stockingDensityNM: selectedProduction?.stockingDensityNM,
+          stockingLevel: selectedProduction?.stockingLevel,
+          stockingDensityKG: selectedProduction?.stockingDensityKG,
+          batchNumber: selectedProduction?.batchNumberId,
           currentDate: selectedProduction?.currentDate,
         },
       ];
@@ -407,104 +525,134 @@ const TransferModal: React.FC<Props> = ({
   }, [selectedProduction, isStockDeleted, formData]);
   useEffect(() => {
     if (selectedProduction) {
-      const index0Biomass = Number(selectedProduction.biomass) || 0; // Ensure a number
-      const index0Count = Number(selectedProduction.fishCount) || 0; // Ensure a number
-      const fishFarm = selectedProduction.fishFarmId;
+      const index0Biomass = Number(selectedProduction?.biomass) || 0; // Ensure a number
+      const index0Count = Number(selectedProduction?.fishCount) || 0; // Ensure a number
+      const fishFarm = selectedProduction?.fishFarmId;
 
-      // Initialize updated values
+      // Initialize updated values with the current production values (previous stock)
       let updatedBiomass = index0Biomass;
       let updatedCount = index0Count;
 
       // Iterate through watched fields, skipping index 0
       watchedFields.forEach((field, index) => {
         if (index === 0) return; // Skip index 0
-        if (field.fishFarm === fishFarm) {
-          if (
-            !selectedProduction.biomass &&
-            !selectedProduction.fishCount &&
-            !selectedProduction.meanLength &&
-            !selectedProduction.meanWeight &&
-            field.field === 'Stock'
-          ) {
-            updatedBiomass = Number(field.biomass);
-            updatedCount = Number(field.count);
-            setValue(`manager.0.meanLength`, field.meanLength);
-            setValue(`manager.0.meanWeight`, field.meanWeight);
-
-            setValue(
-              `manager.0.stockingDensityKG`,
-              Number(field.stockingDensityKG).toFixed(2),
-            );
-
-            setValue(
-              `manager.0.stockingDensityNM`,
-              Number(field.stockingDensityNM).toFixed(2),
-            );
-
-            setValue(`manager.0.batchNumber`, field.batchNumber);
-          }
-
+        if (field.fishFarm === fishFarm && field.productionUnit === selectedProduction?.productionUnitId) {
           const currentBiomass = Number(field.biomass) || 0; // Convert to number
           const currentCount = Number(field.count) || 0; // Convert to number
-          if (
-            field.field !== 'Stock' &&
-            currentBiomass > updatedBiomass &&
-            currentInput === 'biomass'
-          ) {
-            toast.dismiss();
-            toast.error(`Please enter a value lower than ${updatedBiomass}`);
-            setIsEnteredBiomassGreater(true);
-          }
-          if (
-            field.field !== 'Stock' &&
-            currentCount > updatedCount &&
-            currentInput === 'fishCount'
-          ) {
-            toast.dismiss();
-            toast.error(`Please enter a value lower than ${updatedCount}`);
-            setIsEnteredFishCountGreater(true);
-          }
-          // Update biomass if current value is valid
-          if (currentBiomass > 0 && updatedBiomass > currentBiomass) {
-            updatedBiomass -= currentBiomass;
+
+          if (field.field === 'Stock') {
+            // For Stock: Add new stock to previous stock
+            updatedBiomass = index0Biomass + currentBiomass;
+            updatedCount = index0Count + currentCount;
+            
+            // Calculate mean weight from total biomass and count
+            const totalMeanWeight = updatedCount > 0 
+              ? (updatedBiomass / updatedCount).toFixed(2) 
+              : '0';
+            
+            // Calculate stocking density
+            const farm = farms
+              ?.find((f) => f.id === selectedFarm)
+              ?.productionUnits?.find((unit) => unit.id === field.productionUnit);
+            
+            if (farm && farm.capacity) {
+              const capacity = Number(farm.capacity) || 1;
+              const updatedStockingDensityKG = (updatedBiomass / capacity).toFixed(2);
+              const updatedStockingDensityNM = (updatedCount / capacity).toFixed(2);
+              
+              setValue(`manager.0.stockingDensityKG`, updatedStockingDensityKG);
+              setValue(`manager.0.stockingDensityNM`, updatedStockingDensityNM);
+              setValue(`manager.${index}.stockingDensityKG`, updatedStockingDensityKG);
+              setValue(`manager.${index}.stockingDensityNM`, updatedStockingDensityNM);
+            }
+            
+            setValue(`manager.0.meanWeight`, totalMeanWeight);
+            setValue(`manager.0.meanLength`, field.meanLength || selectedProduction?.meanLength || '');
+            setValue(`manager.0.batchNumber`, field.batchNumber || selectedProduction?.batchNumberId || '');
             setIsEnteredBiomassGreater(false);
-          } else if (field.field === 'Stock') {
-            // trigger(`manager.${0}`);
-
-            updatedBiomass = currentBiomass;
-            setValue(`manager.0.meanLength`, field.meanLength);
-            setValue(`manager.0.meanWeight`, field.meanWeight);
-            setValue(
-              `manager.0.stockingDensityNM`,
-              Number(field.stockingDensityNM).toFixed(2),
-            );
-            setValue(
-              `manager.0.stockingDensityKG`,
-              Number(field.stockingDensityKG).toFixed(2),
-            );
-
-            setValue(`manager.0.batchNumber`, field.batchNumber);
-          }
-
-          // Update count if current value is valid
-          if (currentCount > 0 && updatedCount > currentCount) {
-            updatedCount -= currentCount;
             setIsEnteredFishCountGreater(false);
-          } else if (field.field === 'Stock') {
-            updatedCount = currentCount;
-            setValue(`manager.0.meanLength`, field.meanLength);
-            setValue(`manager.0.meanWeight`, field.meanWeight);
-            setValue(
-              `manager.0.stockingDensityNM`,
-              Number(field.stockingDensityNM).toFixed(2),
-            );
-            setValue(
-              `manager.0.stockingDensityKG`,
-              Number(field.stockingDensityKG).toFixed(2),
-            );
-            setValue(`manager.0.batchNumber`, field.batchNumber);
+          } else if (field.field === 'Mortalities' || field.field === 'Harvest') {
+            // For Mortalities/Harvest: Subtract from current stock
+            if (currentBiomass > updatedBiomass && currentInput === 'biomass') {
+              toast.dismiss();
+              toast.error(`Please enter a value lower than ${updatedBiomass}`);
+              setIsEnteredBiomassGreater(true);
+            } else if (currentBiomass > 0 && updatedBiomass >= currentBiomass) {
+              updatedBiomass -= currentBiomass;
+              setIsEnteredBiomassGreater(false);
+            }
+            
+            if (currentCount > updatedCount && currentInput === 'fishCount') {
+              toast.dismiss();
+              toast.error(`Please enter a value lower than ${updatedCount}`);
+              setIsEnteredFishCountGreater(true);
+            } else if (currentCount > 0 && updatedCount >= currentCount) {
+              updatedCount -= currentCount;
+              setIsEnteredFishCountGreater(false);
+            }
+            
+            // Calculate mean weight and stocking density after subtraction
+            const totalMeanWeight = updatedCount > 0 
+              ? (updatedBiomass / updatedCount).toFixed(2) 
+              : '0';
+            
+            const farm = farms
+              ?.find((f) => f.id === selectedFarm)
+              ?.productionUnits?.find((unit) => unit.id === field.productionUnit);
+            
+            if (farm && farm.capacity) {
+              const capacity = Number(farm.capacity) || 1;
+              const updatedStockingDensityKG = (updatedBiomass / capacity).toFixed(2);
+              const updatedStockingDensityNM = (updatedCount / capacity).toFixed(2);
+              
+              setValue(`manager.0.stockingDensityKG`, updatedStockingDensityKG);
+              setValue(`manager.0.stockingDensityNM`, updatedStockingDensityNM);
+            }
+            
+            setValue(`manager.0.meanWeight`, totalMeanWeight);
+          } else if (field.field === 'Transfer') {
+            // For Transfer: Subtract from source (current production)
+            if (currentBiomass > updatedBiomass && currentInput === 'biomass') {
+              toast.dismiss();
+              toast.error(`Please enter a value lower than ${updatedBiomass}`);
+              setIsEnteredBiomassGreater(true);
+            } else if (currentBiomass > 0 && updatedBiomass >= currentBiomass) {
+              updatedBiomass -= currentBiomass;
+              setIsEnteredBiomassGreater(false);
+            }
+            
+            if (currentCount > updatedCount && currentInput === 'fishCount') {
+              toast.dismiss();
+              toast.error(`Please enter a value lower than ${updatedCount}`);
+              setIsEnteredFishCountGreater(true);
+            } else if (currentCount > 0 && updatedCount >= currentCount) {
+              updatedCount -= currentCount;
+              setIsEnteredFishCountGreater(false);
+            }
+            
+            // Calculate mean weight and stocking density after transfer
+            const totalMeanWeight = updatedCount > 0 
+              ? (updatedBiomass / updatedCount).toFixed(2) 
+              : '0';
+            
+            const farm = farms
+              ?.find((f) => f.id === selectedFarm)
+              ?.productionUnits?.find((unit) => unit.id === selectedProduction?.productionUnitId);
+            
+            if (farm && farm.capacity) {
+              const capacity = Number(farm.capacity) || 1;
+              const updatedStockingDensityKG = (updatedBiomass / capacity).toFixed(2);
+              const updatedStockingDensityNM = (updatedCount / capacity).toFixed(2);
+              
+              setValue(`manager.0.stockingDensityKG`, updatedStockingDensityKG);
+              setValue(`manager.0.stockingDensityNM`, updatedStockingDensityNM);
+            }
+            
+            setValue(`manager.0.meanWeight`, totalMeanWeight);
           }
         }
+        
+        // Calculate stocking density for each row based on its production unit
         const farm = farms
           ?.find((f) => f.id === selectedFarm)
           ?.productionUnits?.find((unit) => unit.id === field.productionUnit);
@@ -525,8 +673,8 @@ const TransferModal: React.FC<Props> = ({
         }
       });
 
-      // Set the index 0 values after calculation
-      setValue(`manager.0.biomass`, updatedBiomass.toString());
+      // Set the index 0 values after calculation (this shows the updated total)
+      setValue(`manager.0.biomass`, updatedBiomass.toFixed(2));
       setValue(`manager.0.count`, updatedCount.toString());
     }
 
@@ -592,6 +740,46 @@ const TransferModal: React.FC<Props> = ({
       setValue('manager', updatedFields);
     }
   }, [avgOfMeanLength]);
+  
+  // Auto-calculate Mean Weight and Biomass when values change
+  useEffect(() => {
+    watchedFields.forEach((field, idx) => {
+      // Skip calculation for index 0 (first row is read-only)
+      if (idx === 0) return;
+
+      const biomassNum = parseFloat(field.biomass) || 0;
+      const fishCountNum = parseFloat(field.count) || 0;
+      const meanWeightNum = parseFloat(field.meanWeight) || 0;
+
+      // Case 1: If biomass and fishCount are entered, calculate meanWeight
+      // Only calculate if meanWeight is empty or zero
+      if (biomassNum > 0 && fishCountNum > 0 && meanWeightNum === 0) {
+        const calculatedMeanWeight = biomassNum / fishCountNum;
+        setValue(`manager.${idx}.meanWeight`, calculatedMeanWeight.toFixed(2), {
+          shouldValidate: true,
+        });
+      }
+
+      // Case 2: If meanWeight and fishCount are entered, calculate biomass
+      // Only calculate if biomass is empty or zero
+      if (meanWeightNum > 0 && fishCountNum > 0 && biomassNum === 0) {
+        const calculatedBiomass = meanWeightNum * fishCountNum;
+        setValue(`manager.${idx}.biomass`, calculatedBiomass.toFixed(2), {
+          shouldValidate: true,
+        });
+      }
+    });
+  }, [
+    watchedFields.map((field) => field.biomass).join(','),
+    watchedFields.map((field) => field.count).join(','),
+    watchedFields.map((field) => field.meanWeight).join(','),
+    setValue,
+  ]);
+
+  // Early return if selectedProduction is not available
+  if (!selectedProduction) {
+    return null;
+  }
 
   return (
     <div>
@@ -937,6 +1125,7 @@ const TransferModal: React.FC<Props> = ({
                                       readOnly:
                                         item.field === 'Harvest' ||
                                           item.field === 'Mortalities' ||
+                                          item.field === 'Transfer' ||
                                           idx === 0
                                           ? true
                                           : false,
@@ -948,12 +1137,44 @@ const TransferModal: React.FC<Props> = ({
                                         idx !== 0
                                         ? false
                                         : true,
-                                    onChange: (e) =>
-                                      item.field === 'Stock' &&
-                                      setValue(
-                                        `manager.0.batchNumber`,
-                                        e.target.value,
-                                      ),
+                                    onChange: async (e) => {
+                                      const newBatchId = e.target.value;
+                                      
+                                      // Check if this is a Stock field and production already has stock with a different batch
+                                      if (item.field === 'Stock' && idx !== 0 && selectedProduction?.batchNumberId) {
+                                        const currentBatchId = String(selectedProduction.batchNumberId);
+                                        
+                                        // If a different batch is selected (and it exists in the list), show confirmation
+                                        // BUT: Don't show confirmation if this is the newly created batch (to avoid loop)
+                                        if (newBatchId && newBatchId !== currentBatchId && newBatchId !== '') {
+                                          // Check if this is the newly created batch - if so, allow it without confirmation
+                                          if (newlyCreatedBatchId && String(newlyCreatedBatchId) === String(newBatchId)) {
+                                            // This is the newly created batch, just update the form
+                                            setValue(`manager.${idx}.batchNumber`, newBatchId);
+                                            if (item.field === 'Stock') {
+                                              setValue(`manager.0.batchNumber`, newBatchId);
+                                            }
+                                            return;
+                                          }
+                                          
+                                          const batchExists = batchesList.find(b => String(b.id) === newBatchId);
+                                          
+                                          if (batchExists) {
+                                            // Batch exists but is different from current - show restock confirmation
+                                            setPendingBatchChange({ idx, newBatchId });
+                                            setOpenRestockConfirmation(true);
+                                            // Don't update the form yet - wait for user confirmation
+                                            return;
+                                          }
+                                          // If batch doesn't exist, we'll handle it differently (maybe show create modal directly)
+                                        }
+                                      }
+                                      
+                                      // Normal update - same batch or no existing batch
+                                      if (item.field === 'Stock') {
+                                        setValue(`manager.0.batchNumber`, newBatchId);
+                                      }
+                                    },
                                   })}
                                   inputProps={{
                                     shrink: watch(`manager.${idx}.batchNumber`),
@@ -962,23 +1183,114 @@ const TransferModal: React.FC<Props> = ({
                                     watch(`manager.${idx}.batchNumber`) || ''
                                   } // Ensure only the current entry is updated
                                 >
-                                  {batches?.map(
-                                    (
-                                      batch: {
-                                        batchNumber: string;
-                                        id: number;
-                                      },
-                                      i,
-                                    ) => (
-                                      <MenuItem
-                                        value={String(batch.id)}
-                                        key={i}
-                                      >
-                                        {batch.batchNumber}
-                                      </MenuItem>
-                                    ),
-                                  )}
+                                  {(() => {
+                                    // Filter batches based on field type
+                                    let filteredBatches = batchesList;
+                                    
+                                    // For Transfer: Only show the batch from the source unit's production
+                                    if (item.field === 'Transfer' && idx !== 0 && selectedProduction?.batchNumberId) {
+                                      // Only show the batch that exists in the source production unit
+                                      const sourceBatch = batchesList.find(b => b.id === Number(selectedProduction.batchNumberId));
+                                      if (sourceBatch) {
+                                        filteredBatches = [sourceBatch];
+                                      } else {
+                                        filteredBatches = [];
+                                      }
+                                    }
+                                    // For Stock: Filter by species ID when production already has stock
+                                    else if (item.field === 'Stock' && idx !== 0 && selectedProduction?.batchNumberId) {
+                                      // Get the species ID from the first stocked batch
+                                      const firstBatch = batchesList.find(b => b.id === Number(selectedProduction.batchNumberId));
+                                      const firstBatchSpeciesId = firstBatch?.speciesId;
+                                      
+                                      if (firstBatchSpeciesId) {
+                                        // Filter to only show batches with the same species ID
+                                        filteredBatches = batchesList.filter(b => b.speciesId === firstBatchSpeciesId);
+                                      }
+                                    }
+                                    
+                                    // Show error message if no batches found
+                                    if (filteredBatches.length === 0) {
+                                      if (item.field === 'Transfer' && idx !== 0 && selectedProduction?.batchNumberId) {
+                                        return (
+                                          <MenuItem disabled value="">
+                                            <Typography variant="body2" color="error">
+                                              No batch found in source production unit.
+                                            </Typography>
+                                          </MenuItem>
+                                        );
+                                      } else if (item.field === 'Stock' && idx !== 0 && selectedProduction?.batchNumberId) {
+                                        return (
+                                          <MenuItem disabled value="">
+                                            <Typography variant="body2" color="error">
+                                              No batches found with matching species. Please create a batch first in Fish Supply.
+                                            </Typography>
+                                          </MenuItem>
+                                        );
+                                      }
+                                    }
+                                    
+                                    return filteredBatches.map(
+                                      (
+                                        batch: {
+                                          batchNumber: string;
+                                          id: number;
+                                          speciesId?: string | null;
+                                        },
+                                        i,
+                                      ) => (
+                                        <MenuItem
+                                          value={String(batch.id)}
+                                          key={i}
+                                        >
+                                          {batch.batchNumber}
+                                        </MenuItem>
+                                      ),
+                                    );
+                                  })()}
                                 </Select>
+                                {(() => {
+                                  // Show helper text if no matching batches found
+                                  if (item.field === 'Stock' && idx !== 0 && selectedProduction?.batchNumberId) {
+                                    const firstBatch = batchesList.find(b => b.id === Number(selectedProduction.batchNumberId));
+                                    const firstBatchSpeciesId = firstBatch?.speciesId;
+                                    
+                                    if (firstBatchSpeciesId) {
+                                      const filteredBatches = batchesList.filter(b => b.speciesId === firstBatchSpeciesId);
+                                      
+                                      if (filteredBatches.length === 0) {
+                                        return (
+                                          <Box sx={{ mt: 1 }}>
+                                            <Typography variant="caption" color="error" sx={{ display: 'block', mb: 1 }}>
+                                              No batches found with matching species. Please create a batch first in Fish Supply.
+                                            </Typography>
+                                            <Button
+                                              variant="outlined"
+                                              size="small"
+                                              onClick={() => {
+                                                // Set pending batch change to track which row this is for
+                                                setPendingBatchChange({ idx, newBatchId: '' });
+                                                setOpenCreateBatchModal(true);
+                                              }}
+                                              sx={{
+                                                textTransform: 'capitalize',
+                                                borderColor: '#06A19B',
+                                                color: '#06A19B',
+                                                '&:hover': {
+                                                  borderColor: '#058a85',
+                                                  backgroundColor: 'rgba(6, 161, 155, 0.04)',
+                                                },
+                                              }}
+                                            >
+                                              Create New Batch
+                                            </Button>
+                                          </Box>
+                                        );
+                                      }
+                                    }
+                                  }
+                                  return null;
+                                })()}
 
                                 {errors &&
                                   !watch(`manager.${idx}.batchNumber`) &&
@@ -1189,6 +1501,10 @@ const TransferModal: React.FC<Props> = ({
                                   required: true,
                                   pattern: /^\d+(\.\d+)?(e[+-]?\d+)?$/,
                                   maxLength: 10,
+                                  onChange: (e) => {
+                                    setCurrentInput('biomass');
+                                    handleAutoCalculation(idx, 'biomass', e.target.value);
+                                  },
                                 })}
                                 onClick={() =>
                                   handleCheckUnitSelected(idx, 'biomass')
@@ -1301,6 +1617,10 @@ const TransferModal: React.FC<Props> = ({
                                 required: true,
                                 pattern: /^\d+(\.\d+)?(e[+-]?\d+)?$/,
                                 maxLength: 10,
+                                onChange: (e) => {
+                                  setCurrentInput('fishCount');
+                                  handleAutoCalculation(idx, 'count', e.target.value);
+                                },
                               })}
                               onClick={() =>
                                 handleCheckUnitSelected(idx, 'fishCount')
@@ -1441,6 +1761,9 @@ const TransferModal: React.FC<Props> = ({
                                     : true,
                                 pattern: validationPattern.numbersWithDot,
                                 maxLength: 10,
+                                onChange: (e) => {
+                                  handleAutoCalculation(idx, 'meanWeight', e.target.value);
+                                },
                               })}
                               focused
                             />
@@ -2074,6 +2397,110 @@ const TransferModal: React.FC<Props> = ({
             open={isMeanLengthCal}
             setOpen={setIsMeanLengthCal}
             setAvgOfMeanLength={setAvgOfMeanLength}
+          />
+          <RestockConfirmationModal
+            open={openRestockConfirmation}
+            setOpen={(open) => {
+              setOpenRestockConfirmation(open);
+              if (!open && pendingBatchChange) {
+                // If modal is closed without confirming, reset the batch selection
+                setValue(`manager.${pendingBatchChange.idx}.batchNumber`, String(selectedProduction?.batchNumberId || ''));
+                setPendingBatchChange(null);
+              }
+            }}
+            onConfirm={async () => {
+              // Fetch existing stock's fishSupply data for restocking
+              // batchNumberId in production is the fishSupply ID
+              if (selectedProduction?.batchNumberId) {
+                try {
+                  const response = await clientSecureFetch(
+                    `/api/fish/${selectedProduction.batchNumberId}`,
+                    { method: 'GET' }
+                  );
+                  const data = await response.json();
+                  if (data.status && data.data) {
+                    const existingFishSupply = data.data;
+                    setExistingStockData({
+                      id: existingFishSupply.id,
+                      batchNumber: existingFishSupply.batchNumber,
+                      spawningDate: existingFishSupply.spawningDate,
+                      hatchingDate: existingFishSupply.hatchingDate,
+                      spawningNumber: existingFishSupply.spawningNumber,
+                      broodstockMale: existingFishSupply.broodstockMale || '',
+                      broodstockFemale: existingFishSupply.broodstockFemale || '',
+                      age: existingFishSupply.age,
+                      speciesId: existingFishSupply.speciesId || null, // Include speciesId from existing stock
+                    });
+                  }
+                } catch (error) {
+                  console.error('Error fetching existing stock data:', error);
+                  // Continue anyway - CreateBatchModal will handle it
+                }
+              }
+              setOpenRestockConfirmation(false);
+              setOpenCreateBatchModal(true);
+            }}
+            existingBatchNumber={
+              selectedProduction?.batchNumberId
+                ? batchesList.find(b => b.id === Number(selectedProduction.batchNumberId))?.batchNumber
+                : undefined
+            }
+          />
+          <CreateBatchModal
+            open={openCreateBatchModal}
+            setOpen={(open) => {
+              setOpenCreateBatchModal(open);
+              // Clear existing stock data when modal closes
+              if (!open) {
+                setExistingStockData(null);
+              }
+            }}
+            onBatchCreated={(batchId, batchNumber) => {
+              // Add new batch to the list
+              const existingBatch = batchesList.find(b => b.id === Number(selectedProduction?.batchNumberId));
+              const newBatch = { 
+                id: batchId, 
+                batchNumber,
+                speciesId: existingBatch?.speciesId || existingStockData?.speciesId || null
+              };
+              const updatedBatches = [...batchesList, newBatch];
+              setBatchesList(updatedBatches);
+              
+              // Track the newly created batch ID to avoid restock confirmation loop
+              setNewlyCreatedBatchId(batchId);
+              
+              // Update the form with the new batch
+              if (pendingBatchChange) {
+                setValue(`manager.${pendingBatchChange.idx}.batchNumber`, String(batchId));
+                setValue(`manager.0.batchNumber`, String(batchId));
+              }
+              
+              // Notify parent component if callback provided
+              if (onBatchesUpdate) {
+                onBatchesUpdate(updatedBatches);
+              }
+              
+              setPendingBatchChange(null);
+              setExistingStockData(null); // Clear after batch is created
+              toast.success(`Batch "${batchNumber}" created and selected`);
+            }}
+            selectedFarm={farms.find(f => f.id === selectedProduction?.fishFarmId) || null}
+            organisationId={selectedProduction?.organisationId || 0}
+            existingBatchNumber={
+              selectedProduction?.batchNumberId
+                ? batchesList.find(b => b.id === Number(selectedProduction.batchNumberId))?.batchNumber
+                : undefined
+            }
+            existingSpeciesId={
+              // For restocking: Get speciesId from existing stock data, otherwise from batchesList
+              existingStockData?.speciesId ||
+              (selectedProduction?.batchNumberId
+                ? batchesList.find(b => b.id === Number(selectedProduction.batchNumberId))?.speciesId || null
+                : null)
+            }
+            organisations={organisations}
+            batchesToMerge={existingStockData ? [existingStockData] : []}
+            isRestocking={!!existingStockData}
           />
         </Stack>
       </Modal>

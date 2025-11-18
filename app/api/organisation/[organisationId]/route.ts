@@ -109,6 +109,25 @@ export const GET = async (request: NextRequest, context: ContextParams) => {
         hatchery: true,
         Farm: { include: { farmAddress: true, FarmManger: true } },
         FishFarms: { include: { farmAddress: true, FarmManger: true } },
+        advisors: {
+          include: {
+            advisor: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                organisationId: true,
+                organisation: {
+                  select: {
+                    id: true,
+                    name: true,
+                    organisationType: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
 
@@ -189,6 +208,8 @@ export async function PUT(request: NextRequest, context: ContextParams) {
     const contactsRaw = formData.get('contacts');
     const hatcheryRaw = formData.get('hatchery');
     const hatcheryIdRaw = formData.get('hatcheryId');
+    const allocatedAdvisorsRaw = formData.get('allocatedAdvisors');
+    const advisorContactsRaw = formData.get('advisorContacts');
     const addressData = addressRaw ? JSON.parse(addressRaw.toString()) : null;
     const contactsData = contactsRaw
       ? JSON.parse(contactsRaw.toString())
@@ -203,10 +224,46 @@ export async function PUT(request: NextRequest, context: ContextParams) {
       where: { id: Number(invitedById) },
       include: { contact: true },
     });
+    const allocatedAdvisorInput = allocatedAdvisorsRaw
+      ? JSON.parse(allocatedAdvisorsRaw.toString())
+      : [];
+    const advisorAssignments = Array.isArray(allocatedAdvisorInput)
+      ? allocatedAdvisorInput
+          .filter(
+            (item: any) =>
+              item &&
+              typeof item.advisorId === 'number' &&
+              !Number.isNaN(item.advisorId),
+          )
+          .reduce(
+            (
+              acc: Array<{ advisorId: number; accessLevel: number }>,
+              item: any,
+            ) => {
+              const advisorId = Number(item.advisorId);
+              if (!acc.some((existing) => existing.advisorId === advisorId)) {
+                acc.push({
+                  advisorId,
+                  accessLevel: Number(item.accessLevel ?? 0),
+                });
+              }
+              return acc;
+            },
+            [],
+          )
+      : [];
 
-    const findOrganisationAdmin = invitedByOrg?.contact.find(
-      (org) => org.permission === 'ADMIN' || org.permission === 'SUPERADMIN',
-    );
+    // Helper function to get primary contact (Business manager, Feedflow Administrator, or SUPERADMIN)
+    const getPrimaryContact = (contacts: any[]) => {
+      if (!contacts || contacts.length === 0) return null;
+      return (
+        contacts.find((c) => c.permission === 'SUPERADMIN') ||
+        contacts.find((c) => c.permission === 'Business manager') ||
+        contacts.find((c) => c.permission === 'Feedflow Administrator (Admin)') ||
+        contacts[0]
+      );
+    };
+    const findOrganisationAdmin = invitedByOrg?.contact ? getPrimaryContact(invitedByOrg.contact) : null;
     const checkContactExist = contactsData
       .filter((contact: Contact) => !contact.id)
       .map((contact: Contact) => contact.email)
@@ -270,6 +327,11 @@ export async function PUT(request: NextRequest, context: ContextParams) {
     for (const contact of contactsData) {
       let userId = contact.userId;
       const shouldSendInvite = contact.newInvite;
+      const userRole = contact.userType || contact.permission || contact.role || 'MEMBER';
+      const modulePermissions =
+        contact.permissions && typeof contact.permissions === 'object'
+          ? contact.permissions
+          : {};
 
       // If contact has no id, it's a new contact
       if (!contact.id) {
@@ -287,8 +349,9 @@ export async function PUT(request: NextRequest, context: ContextParams) {
               data: {
                 email: contact.email,
                 name: contact.name,
-                role: contact.role?.toUpperCase(),
-                permissions: contact.permissions || '',
+                role: userRole,
+                inputRole: contact.inputRole || contact.role || '',
+                permissions: modulePermissions,
                 organisationId: organisation.id,
                 invite: contact.newInvite || false,
               },
@@ -300,8 +363,9 @@ export async function PUT(request: NextRequest, context: ContextParams) {
               data: {
                 email: contact.email,
                 name: contact.name,
-                role: contact.role?.toUpperCase(),
-                permissions: contact.permissions || '',
+                role: userRole,
+                inputRole: contact.inputRole || contact.role || '',
+                permissions: modulePermissions,
                 organisationId: Number(organisationId),
                 invite: shouldSendInvite ? shouldSendInvite : false,
               },
@@ -316,9 +380,11 @@ export async function PUT(request: NextRequest, context: ContextParams) {
           data: {
             name: contact.name,
             role: contact.role,
+            inputRole: contact.inputRole || contact.role || '',
             email: contact.email,
             phone: contact.phone,
-            permission: contact.permission,
+            permission: contact.permission || contact.userType || '',
+            permissions: modulePermissions,
             user: {
               connect: { id: userId },
             },
@@ -329,7 +395,13 @@ export async function PUT(request: NextRequest, context: ContextParams) {
       } else {
         await prisma.user.update({
           where: { id: Number(userId) },
-          data: { email: contact?.email, name: contact?.name },
+          data: {
+            email: contact?.email,
+            name: contact?.name,
+            role: userRole,
+            inputRole: contact.inputRole || contact.role || '',
+            permissions: modulePermissions,
+          },
         });
         // If contact exists (has an id), update the contact information
         await prisma.contact.update({
@@ -337,13 +409,36 @@ export async function PUT(request: NextRequest, context: ContextParams) {
           data: {
             name: contact.name,
             role: contact.role,
+            inputRole: contact.inputRole || contact.role || '',
             email: contact.email,
             phone: contact.phone,
             userId,
-            permission: contact.permission,
+            permission: contact.permission || contact.userType || '',
+            permissions: modulePermissions,
             invite: contact.newInvite,
           },
         });
+
+        // If contact has advisor userType, ensure OrganisationAdvisor entry exists
+        const contactUserType = contact.userType || contact.permission || '';
+        if (contactUserType === 'Advisor: Technical services - adviser to Clients') {
+          await prisma.organisationAdvisor.upsert({
+            where: {
+              organisationId_advisorId: {
+                organisationId: Number(organisationId),
+                advisorId: userId,
+              },
+            },
+            update: {
+              accessLevel: 3, // Default access level, can be updated later
+            },
+            create: {
+              organisationId: Number(organisationId),
+              advisorId: userId,
+              accessLevel: 3,
+            },
+          });
+        }
       }
 
       if (shouldSendInvite) {
@@ -480,6 +575,98 @@ export async function PUT(request: NextRequest, context: ContextParams) {
         }
       }
     }
+
+    // Handle advisor assignments (manually added advisors)
+    if (advisorAssignments.length) {
+      await Promise.all(
+        advisorAssignments.map((assignment) =>
+          prisma.organisationAdvisor.upsert({
+            where: {
+              organisationId_advisorId: {
+                organisationId: Number(organisationId),
+                advisorId: assignment.advisorId,
+              },
+            },
+            update: {
+              accessLevel: assignment.accessLevel,
+            },
+            create: {
+              organisationId: Number(organisationId),
+              advisorId: assignment.advisorId,
+              accessLevel: assignment.accessLevel,
+            },
+          }),
+        ),
+      );
+    }
+
+    // Handle advisor contacts - create/update OrganisationAdvisor entries for contacts with advisor userType
+    const advisorContacts = advisorContactsRaw
+      ? JSON.parse(advisorContactsRaw.toString())
+      : [];
+    const advisorUserEntries: Array<{ organisationId: number; advisorId: number; accessLevel: number }> = [];
+    
+    if (advisorContacts.length > 0) {
+      // Find users that match advisor contacts by email
+      for (const advisorContact of advisorContacts) {
+        const matchingUser = await prisma.user.findFirst({
+          where: {
+            email: advisorContact.email.toLowerCase(),
+            organisationId: Number(organisationId),
+          },
+        });
+        if (matchingUser) {
+          advisorUserEntries.push({
+            organisationId: Number(organisationId),
+            advisorId: matchingUser.id,
+            accessLevel: advisorContact.accessLevel || 3,
+          });
+        }
+      }
+      
+      if (advisorUserEntries.length > 0) {
+        await Promise.all(
+          advisorUserEntries.map((entry) =>
+            prisma.organisationAdvisor.upsert({
+              where: {
+                organisationId_advisorId: {
+                  organisationId: entry.organisationId,
+                  advisorId: entry.advisorId,
+                },
+              },
+              update: {
+                accessLevel: entry.accessLevel,
+              },
+              create: {
+                organisationId: entry.organisationId,
+                advisorId: entry.advisorId,
+                accessLevel: entry.accessLevel,
+              },
+            }),
+          ),
+        );
+      }
+    }
+
+    // Delete advisors that are no longer in the list
+    // But keep advisor contacts that are still in contacts
+    const allAdvisorIds = [
+      ...advisorAssignments.map((a) => a.advisorId),
+      ...advisorUserEntries.map((e) => e.advisorId),
+    ];
+
+    await prisma.organisationAdvisor.deleteMany({
+      where: {
+        organisationId: Number(organisationId),
+        ...(allAdvisorIds.length
+          ? {
+              advisorId: {
+                notIn: allAdvisorIds,
+              },
+            }
+          : {}),
+      },
+    });
 
     //deleting contact
     const existingContacts = await prisma.contact.findMany({

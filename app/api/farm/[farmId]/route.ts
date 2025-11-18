@@ -24,6 +24,22 @@ export const GET = async (request: NextRequest, context: { params: any }) => {
   }
 
   try {
+    // Get user ID from verified token (user is the decoded JWT token)
+    const userId = (user as any)?.id || (user as any)?.userId;
+    
+    // Check if user is a General worker (level 1 or 2)
+    const isGeneralWorker = (user as any)?.role === 'General worker (level 1)' || (user as any)?.role === 'General worker (level 2)';
+
+    // If user is a General worker, get their assigned production unit IDs
+    let assignedProductionUnitIds: string[] = [];
+    if (isGeneralWorker && userId) {
+      const workerAssignments = await prisma.productionUnitWorker.findMany({
+        where: { userId: Number(userId) },
+        select: { productionUnitId: true },
+      });
+      assignedProductionUnitIds = workerAssignments.map((a) => a.productionUnitId);
+    }
+
     // Fetch farm with related entities
     const farm = await prisma.farm.findUnique({
       where: { id: farmId },
@@ -35,6 +51,18 @@ export const GET = async (request: NextRequest, context: { params: any }) => {
             YearBasedPredicationProductionUnit: true,
             FeedProfileProductionUnit: true,
             productionSystem: true,
+            ProductionUnitWorker: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    role: true,
+                  },
+                },
+              },
+            },
           },
         },
         production: true,
@@ -56,6 +84,19 @@ export const GET = async (request: NextRequest, context: { params: any }) => {
         JSON.stringify({ status: false, message: 'Farm not found' }),
         { status: 404 },
       );
+    }
+
+    // For General workers, check if they have access to this farm
+    if (isGeneralWorker && assignedProductionUnitIds.length > 0) {
+      const hasAccess = farm.productionUnits.some((unit: any) =>
+        assignedProductionUnitIds.includes(unit.id)
+      );
+      if (!hasAccess) {
+        return new NextResponse(
+          JSON.stringify({ status: false, message: 'Access denied. You are not assigned to any production units in this farm.' }),
+          { status: 403 },
+        );
+      }
     }
 
     // Extract all unique userIds from FarmManger
@@ -82,11 +123,25 @@ export const GET = async (request: NextRequest, context: { params: any }) => {
       user: users.find((u) => u.id === manager.userId) || null,
     }));
 
+    // Map production units to include allocatedWorkers array
+    // For General workers, only show production units they are assigned to
+    let productionUnitsWithWorkers = farm.productionUnits.map((unit: any) => ({
+      ...unit,
+      allocatedWorkers: unit.ProductionUnitWorker?.map((pw: any) => pw.userId) || [],
+    }));
+
+    if (isGeneralWorker && assignedProductionUnitIds.length > 0) {
+      productionUnitsWithWorkers = productionUnitsWithWorkers.filter((unit: any) =>
+        assignedProductionUnitIds.includes(unit.id)
+      );
+    }
+
     return new NextResponse(
       JSON.stringify({
         status: true,
         data: {
           ...farm,
+          productionUnits: productionUnitsWithWorkers,
           FarmManger: managersWithUserData,
         },
       }),

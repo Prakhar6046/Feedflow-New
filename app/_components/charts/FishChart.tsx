@@ -118,11 +118,11 @@ const FishChart = ({
         time: {
           unit: getUnit(dateDiff),
           displayFormats: {
-            hour: 'MMM d',
-            day: 'MMM d',
-            week: 'MMM d',
-            month: 'MMM yyyy',
-            year: 'yyyy',
+            hour: 'yyyy/MM/dd',
+            day: 'yyyy/MM/dd',
+            week: 'yyyy/MM/dd',
+            month: 'yyyy/MM/dd',
+            year: 'yyyy/MM/dd',
           },
         },
 
