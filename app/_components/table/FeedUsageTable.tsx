@@ -46,11 +46,11 @@ const FeedUsageTable: React.FC<FeedUsageTableProps> = ({
 }) => {
   // Helper function to get supplier name from feedLinks
   const getSupplierName = (feedProductName: string): string => {
-    if (!feedLinks || feedLinks.length === 0) return 'N/A';
+    if (!feedLinks || feedLinks.length === 0) return '-';
     const link = feedLinks.find(
       (l: any) => l?.feedStore?.productName === feedProductName,
     );
-    return link?.feedSupply?.name || 'N/A';
+    return link?.feedSupply?.name || '-';
   };
 
   // Process data to create hierarchical structure with calculations

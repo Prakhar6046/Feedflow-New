@@ -253,7 +253,7 @@ function FeedingPlanOutput() {
       const suppliers = getSupplierName(feed);
       return `
                 <tr>
-                  <td style="padding: 12px; border: none; background: #f8f9fa;">${suppliers || 'N/A'}</td>
+                  <td style="padding: 12px; border: none; background: #f8f9fa;">${suppliers || '-'}</td>
                   <td style="padding: 12px; border: none; background: #f8f9fa;">${feed}</td>
                   <td style="padding: 12px; border: none; background: #f8f9fa;">${feedBags} Bags (${feedKg} kg)</td>
                 </tr>
@@ -557,7 +557,7 @@ function FeedingPlanOutput() {
       pdf.setLineWidth(0.1);
       pdf.line(15, tableRowY - 3, 195, tableRowY - 3);
 
-      pdf.text(suppliers || 'N/A', 17, tableRowY);
+      pdf.text(suppliers || '-', 17, tableRowY);
       pdf.text(feed, 70, tableRowY);
       pdf.text(`${feedBags} Bags (${feedKg} kg)`, 120, tableRowY);
       tableRowY += 6;
@@ -2482,7 +2482,7 @@ function FeedingPlanOutput() {
                                       margin: '8px 0',
                                     }}
                                   >
-                                    {suppliers || 'N/A'}
+                                    {suppliers || '-'}
                                   </Typography>
                                 </TableCell>
                                 <TableCell

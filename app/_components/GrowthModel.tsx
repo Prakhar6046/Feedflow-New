@@ -1101,7 +1101,7 @@ function GrowthModel({
                   Production System: {
                     productionSystemList.find(
                       (ps) => ps.id === existingDefaultModel.models.productionSystemId
-                    )?.name || 'N/A'
+                    )?.name || '-'
                   }
                 </Typography>
                 <Typography component="div" sx={{ mt: 2 }}>

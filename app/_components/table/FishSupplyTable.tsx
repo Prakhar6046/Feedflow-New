@@ -303,10 +303,10 @@ export default function FishSupplyTable({
                 // Calculate age dynamically from hatching date (not from stored age)
                 // Age = Today's date - Hatching date
                 const calculatedAge = fish.status === 'Harvested' 
-                  ? 'N/A' 
+                  ? '-' 
                   : fish.hatchingDate 
                     ? getDayMonthDifference(fish.hatchingDate)
-                    : 'N/A';
+                    : '-';
 
                 return (
                   <TableRow
@@ -393,7 +393,7 @@ export default function FishSupplyTable({
                             />
                           </g>
                         </svg>
-                        {fish.broodstockMale ? fish.broodstockMale : 'N/A'}
+                        {fish.broodstockMale ? fish.broodstockMale : '-'}
                       </Box>
 
                       <Box
@@ -422,7 +422,7 @@ export default function FishSupplyTable({
                             d="M352 800h320q32 0 32 32t-32 32H352q-32 0-32-32t32-32"
                           />
                         </svg>
-                        {fish.broodstockFemale ? fish.broodstockFemale : 'N/A'}
+                        {fish.broodstockFemale ? fish.broodstockFemale : '-'}
                       </Box>
                     </TableCell>
                     <TableCell
@@ -467,7 +467,7 @@ export default function FishSupplyTable({
                         textWrap: 'nowrap',
                       }}
                     >
-                      {fish?.organisation ? String(fish.organisation) : 'N/A'}
+                      {fish?.organisation ? String(fish.organisation) : '-'}
                     </TableCell>{' '}
                     <TableCell
                       sx={{

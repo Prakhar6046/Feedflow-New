@@ -374,7 +374,7 @@ export default function ProductionTable({
                                   const fishSupply = unit?.fishSupply as any;
                                   return fishSupply?.hatchingDate
                                     ? getDayMonthDifference(fishSupply.hatchingDate)
-                                    : fishSupply?.age || 'N/A';
+                                    : fishSupply?.age || '-';
                                 })();
 
                           // Calculate padding based on whether a value exists
@@ -1478,7 +1478,7 @@ export default function ProductionTable({
                                   const fishSupply = unit?.fishSupply as any;
                                   return fishSupply?.hatchingDate
                                     ? getDayMonthDifference(fishSupply.hatchingDate)
-                                    : fishSupply?.age || 'N/A';
+                                    : fishSupply?.age || '-';
                                 })();
 
                           // Calculate padding based on whether a value exists
