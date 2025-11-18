@@ -225,6 +225,28 @@ const TransferModal: React.FC<Props> = ({
 
     // Prevent API call if one is already in progress
     if (isApiCallInProgress) return;
+    
+    // Validate Transfer operations before submission
+    const transferRows = data.manager.filter((row, index) => index !== 0 && row.field === 'Transfer');
+    for (const transferRow of transferRows) {
+      const sourceBiomass = parseFloat(selectedProduction?.biomass || '0');
+      const sourceFishCount = parseFloat(selectedProduction?.fishCount || '0');
+      const transferBiomass = parseFloat(transferRow.biomass || '0');
+      const transferFishCount = parseFloat(transferRow.count || '0');
+      
+      if (transferBiomass > sourceBiomass) {
+        toast.error(`Transfer biomass (${transferBiomass} kg) cannot exceed available biomass (${sourceBiomass} kg) in the source production unit.`);
+        setIsApiCallInProgress(false);
+        return;
+      }
+      
+      if (transferFishCount > sourceFishCount) {
+        toast.error(`Transfer fish count (${transferFishCount}) cannot exceed available fish count (${sourceFishCount}) in the source production unit.`);
+        setIsApiCallInProgress(false);
+        return;
+      }
+    }
+    
     setIsApiCallInProgress(true);
 
     try {
@@ -1501,6 +1523,17 @@ const TransferModal: React.FC<Props> = ({
                                   required: true,
                                   pattern: /^\d+(\.\d+)?(e[+-]?\d+)?$/,
                                   maxLength: 10,
+                                  validate: (value) => {
+                                    // For Transfer operations, validate against source production unit
+                                    if (watchedFields[idx].field === 'Transfer' && idx !== 0) {
+                                      const sourceBiomass = parseFloat(selectedProduction?.biomass || '0');
+                                      const transferBiomass = parseFloat(value || '0');
+                                      if (transferBiomass > sourceBiomass) {
+                                        return `Cannot exceed available biomass (${sourceBiomass} kg)`;
+                                      }
+                                    }
+                                    return true;
+                                  },
                                   onChange: (e) => {
                                     setCurrentInput('biomass');
                                     handleAutoCalculation(idx, 'biomass', e.target.value);
@@ -1583,6 +1616,21 @@ const TransferModal: React.FC<Props> = ({
                                   {validationMessage.numberMaxLength}
                                 </Typography>
                               )}
+                            {errors &&
+                              errors.manager &&
+                              errors.manager[idx] &&
+                              errors.manager[idx].biomass &&
+                              errors.manager[idx].biomass.type ===
+                              'validate' && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {errors.manager[idx].biomass.message}
+                                </Typography>
+                              )}
                           </Grid>
                         )}
                         {watchedFields[idx].field !== 'Sample' && (
@@ -1617,6 +1665,17 @@ const TransferModal: React.FC<Props> = ({
                                 required: true,
                                 pattern: /^\d+(\.\d+)?(e[+-]?\d+)?$/,
                                 maxLength: 10,
+                                validate: (value) => {
+                                  // For Transfer operations, validate against source production unit
+                                  if (watchedFields[idx].field === 'Transfer' && idx !== 0) {
+                                    const sourceFishCount = parseFloat(selectedProduction?.fishCount || '0');
+                                    const transferFishCount = parseFloat(value || '0');
+                                    if (transferFishCount > sourceFishCount) {
+                                      return `Cannot exceed available fish count (${sourceFishCount})`;
+                                    }
+                                  }
+                                  return true;
+                                },
                                 onChange: (e) => {
                                   setCurrentInput('fishCount');
                                   handleAutoCalculation(idx, 'count', e.target.value);
@@ -1687,6 +1746,21 @@ const TransferModal: React.FC<Props> = ({
                                   mt={0.5}
                                 >
                                   {validationMessage.numberMaxLength}
+                                </Typography>
+                              )}
+                            {errors &&
+                              errors.manager &&
+                              errors.manager[idx] &&
+                              errors.manager[idx].count &&
+                              errors.manager[idx].count.type ===
+                              'validate' && (
+                                <Typography
+                                  variant="body2"
+                                  color="red"
+                                  fontSize={13}
+                                  mt={0.5}
+                                >
+                                  {errors.manager[idx].count.message}
                                 </Typography>
                               )}
                           </Grid>
@@ -1896,11 +1970,11 @@ const TransferModal: React.FC<Props> = ({
                               {...register(
                                 `manager.${idx}.meanLength` as const,
                                 {
-                                  required:
-                                    watch(`manager.${idx}.meanLength`) &&
-                                      idx !== 0
-                                      ? false
-                                      : true,
+                                  // required:
+                                  //   watch(`manager.${idx}.meanLength`) &&
+                                  //     idx !== 0
+                                  //     ? false
+                                  //     : true,
                                   pattern: validationPattern.numbersWithDot,
                                   maxLength: 10,
                                 },
